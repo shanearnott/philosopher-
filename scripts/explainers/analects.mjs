@@ -1,0 +1,83 @@
+// Featured explainers: Confucius, The Analects (Legge).
+export default {
+  "analects.1": {
+    meaning: "The opening lines: isn't it a pleasure to keep learning and practising? Isn't it a joy when friends come from far away? And isn't someone truly good who isn't upset when others don't recognise them?",
+    today: "Learning, friendship and indifference to recognition: a surprisingly complete recipe for a contented life.",
+    you: "Check yourself against all three this week: are you still learning, seeing friends, and at peace when your work goes unnoticed?",
+  },
+  "analects.4": {
+    meaning: "Zengzi, a disciple, examined himself daily on three points: had he been loyal in working for others? Sincere with friends? Had he practised what his teacher taught?",
+    today: "A daily three-question review is a simple, powerful habit. Many leaders use a version of it.",
+    you: "Use Zengzi's three questions in your evening Reflect: was I faithful at work, sincere with friends, and did I practise what I learned?",
+  },
+  "analects.7": {
+    meaning: "A disciple says: someone who turns from chasing beauty to loving virtue, serves his parents with all his strength, gives his life to serving his ruler, and keeps his word with friends, has truly learned, even if people say he hasn't studied.",
+    today: "Character counts for more than credentials. How we treat people is the real test of education.",
+    you: "When assessing people, weigh how they serve family, duty and friends as heavily as their qualifications.",
+  },
+  "analects.17": {
+    meaning: "Confucius says that someone who governs through virtue is like the Pole Star: it stays in its place and all the other stars turn around it.",
+    today: "Leaders who model integrity become a fixed point others orient by, without needing to force them.",
+    you: "Be the fixed point for your team: consistent values that people can steer by when everything else is moving.",
+  },
+  "analects.20": {
+    meaning: "Confucius sums up his life: at fifteen he set his heart on learning; at thirty he stood firm; at forty he had no doubts; at fifty he understood Heaven's will; at sixty his ear was attuned; at seventy he could follow his heart without overstepping what was right.",
+    today: "Growth is a lifelong arc. Wisdom takes decades, and each stage has its task.",
+    you: "Where are you on Confucius's timeline? Name the task of your current decade and give it your attention.",
+  },
+  "analects.31": {
+    meaning: "Learning without thinking is wasted effort; thinking without learning is dangerous.",
+    today: "Consuming information without reflecting is pointless. Opinions without study are hazardous.",
+    you: "This is why Stoa pairs reading with reflection. For each idea you take in, spend a minute thinking about it.",
+  },
+  "analects.33": {
+    meaning: "Confucius tells his disciple: when you know something, say you know it; when you don't, admit you don't. That is knowledge.",
+    today: "Intellectual honesty, knowing the limits of what you know, is the foundation of good judgement and good science.",
+    you: "In your next briefing, say clearly what you know and what you don't. Confidence levels are a sign of competence, not weakness.",
+  },
+  "analects.64": {
+    meaning: "A border official met Confucius and came out telling his disciples not to worry about their master losing office. The world had long been without the right way, and Heaven was going to use Confucius as a bell to wake it.",
+    today: "Losing a position can free someone for their real work. Influence doesn't depend on office.",
+    you: "If you ever lose a role, remember: the most influential work of your life might come after it.",
+  },
+  "analects.82": {
+    meaning: "The noble person understands what is right; the petty person understands what is profitable.",
+    today: "Whether we frame choices around right or around gain says a great deal about our character.",
+    you: "In your next big decision, ask first what's right, then what's advantageous. The order matters.",
+  },
+  "analects.157": {
+    meaning: "Confucius tells his favourite student: take office when called, retire when not; only you and I manage that. Asked whom he'd take to command an army, he says not someone who'd fight a tiger bare-handed, but someone who approaches danger with caution and succeeds by planning.",
+    today: "Recklessness isn't courage. The best leaders in danger combine nerve with careful planning.",
+    you: "In defence and high-stakes work, value the careful planner over the bold talker. Be one yourself.",
+  },
+  "analects.168": {
+    meaning: "When I walk with two others, they can be my teachers. I copy their good qualities and avoid their bad ones.",
+    today: "Everyone around you is a lesson, positive or negative. Mentors are everywhere.",
+    you: "Pick two people you work with this week. Name one quality to copy from each and one to avoid.",
+  },
+  "analects.197": {
+    meaning: "Combine sincere faith with a love of learning, and hold to the right way until death. Don't enter a state on the edge of collapse. When good government prevails, serve openly; when it doesn't, stay out of view. Being poor under good government is shameful; being rich under bad government is equally shameful.",
+    today: "Where and how we serve matters. Thriving under corrupt leadership is a kind of complicity.",
+    you: "Be honest about whether the organisations you serve are well led. Prosperity under bad leadership should trouble you.",
+  },
+  "analects.278": {
+    meaning: "Confucius asked his disciples what they'd do if a ruler recognised them. One boasted he'd make a war-torn state brave within three years; others were modest. The last said he'd simply like to bathe in the river in spring with friends and walk home singing. Confucius sighed: I'm with him.",
+    today: "Beneath all our ambitions, simple joys with friends may be what we're really after.",
+    you: "Among all your plans, schedule the equivalent of a spring swim with friends. Confucius would approve.",
+  },
+  "analects.284": {
+    meaning: "Asked about perfect virtue, Confucius says: go out as though meeting an honoured guest; employ people as though conducting a sacred ceremony; don't do to others what you wouldn't want done to you. Then there'll be no resentment against you, in public or at home.",
+    today: "Treating everyday encounters with ceremony and respect transforms relationships.",
+    you: "Treat your next routine meeting as if the people were honoured guests. Notice what changes.",
+  },
+  "analects.301": {
+    meaning: "A ruler asked about executing the wicked to help the good. Confucius said: why kill at all? If you desire good, the people will be good. The ruler is like the wind and the people like grass; when the wind blows, the grass bends.",
+    today: "Culture comes from the top. Punishment can't achieve what example achieves.",
+    you: "Your team will bend to the wind you create. What you visibly want and do matters more than any rule.",
+  },
+  "analects.406": {
+    meaning: "Asked for one word to guide a whole life, Confucius offered reciprocity: what you don't want done to yourself, don't do to others.",
+    today: "The Golden Rule, stated five centuries before Jesus, appears in almost every ethical tradition.",
+    you: "Before a hard conversation this week, ask: if I were on the receiving end, how would I want this done?",
+  },
+}
