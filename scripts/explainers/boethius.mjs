@@ -1,0 +1,83 @@
+// Featured explainers: Boethius, The Consolation of Philosophy (James).
+export default {
+  "boethius.7": {
+    meaning: "Boethius, a senior Roman official jailed and awaiting execution, is visited by Philosophy, pictured as a woman. She says she could never desert him. Wisdom has always been attacked by folly; Socrates died with her help, and good people suffering for her name is nothing new.",
+    today: "Principled people have always paid a price. Knowing that you're in good company makes the price easier to bear.",
+    you: "If standing on principle at work ever costs you, remember you're joining a long line. Philosophy keeps company with the innocent.",
+  },
+  "boethius.14": {
+    meaning: "In a poem, Boethius praises God for ruling the seasons and stars with perfect order, then asks why only human life seems left to chance. The guilty prosper and the innocent are punished. It's an honest cry of protest.",
+    today: "Why do bad things happen to good people? Philosophy begins by admitting how unfair life can look.",
+    you: "It's fine to feel the unfairness of a setback fully before reasoning about it. Boethius did both.",
+  },
+  "boethius.26": {
+    meaning: "Philosophy tells Boethius he thinks Fortune has changed towards him, but she hasn't; changing is her nature. When she showered him with gifts, she was deceiving him. Take her as she is, or turn away from her, but don't complain that she behaved like herself.",
+    today: "Luck, markets and politics are fickle by nature. Being shocked by their fickleness is the real mistake.",
+    you: "Treat good fortune in your career as a loan from a fickle lender. Enjoy it, and don't build your identity on it.",
+  },
+  "boethius.28": {
+    meaning: "Even if abundance poured out gifts as numerous as the stars, people would still complain. Give them gold, honours and fame, and greed only grows wider. No one is rich who fears poverty is always close.",
+    today: "Hedonic adaptation: every raise or purchase resets the baseline. More rarely makes us feel like enough.",
+    you: "This is the Metric Cage in money form. Decide what enough looks like for your family, and write it down before the next pay rise.",
+  },
+  "boethius.32": {
+    meaning: "Boethius admits Philosophy is right that he was very fortunate. But remembering it hurts all the more: in misfortune, the worst sting is to have once been happy.",
+    today: "Loss hurts in proportion to what we had. Grief is partly the shadow of past joy.",
+    you: "If a past season, a role or a team, still stings to remember, recognise the sting as evidence of how good it was.",
+  },
+  "boethius.45": {
+    meaning: "A poem about Nero, who burned Rome, killed senators, murdered his brother and mother, and ruled the world anyway. Did great power restrain him? No. Terrible things happen when an evil heart is joined to the sword.",
+    today: "Power magnifies character, for good or ill. Institutions exist precisely because we can't count on the character of those in charge.",
+    you: "In defence and public service, you help build the checks on power. They matter most exactly when a Nero gets near the sword.",
+  },
+  "boethius.58": {
+    meaning: "All people, in their many pursuits, are seeking one goal: happiness. The supreme good is the one that leaves nothing more to want. People chase it by different roads, wealth, honour, power, fame, pleasure, each thinking their road leads there.",
+    today: "Beneath every ambition is the same desire to be fulfilled. The trouble is we mistake the road for the destination.",
+    you: "Pick one of your ambitions and ask what you're really hoping it will give you. Is there a more direct road?",
+  },
+  "boethius.70": {
+    meaning: "Does ruling, or being close to rulers, give real power? History is full of kings whose happiness turned to disaster. Power that can't even protect itself isn't much. And however far a kingdom stretches, there are always peoples beyond its reach.",
+    today: "Power is always partial and fragile. Even the mightiest are never fully in control.",
+    you: "Seniority brings reach, not security. Hold authority lightly, and don't mistake proximity to power for strength of your own.",
+  },
+  "boethius.83": {
+    meaning: "Philosophy argues that independence, power, fame, respect and pleasure are really one thing under different names. People break it into pieces and chase a single piece, and so they get neither the piece nor the whole.",
+    today: "Chasing one good in isolation, money without meaning or status without peace, tends to leave us empty.",
+    you: "When you set goals, aim at a whole good life, not one scorecard. Single metrics distort, as you well know.",
+  },
+  "boethius.98": {
+    meaning: "Philosophy asks whether independence, power, respect, fame and pleasure are parts of happiness, or whether they all point up to the good as their summit. She's steering Boethius towards seeing a single source behind them all.",
+    today: "It's a question worth asking of any set of goals: are they separate prizes, or expressions of one deeper aim?",
+    you: "Look at your objectives for the year. What single deeper good are they all serving? Lead with that.",
+  },
+  "boethius.102": {
+    meaning: "A poem invites everyone bound by craving to come to the one true refuge. Neither gold from famous rivers nor jewels from the Indus can light up the mind; they leave it in its natural darkness.",
+    today: "Things don't illuminate us. Clarity comes from inner understanding, not possessions.",
+    you: "When you feel the pull of a new purchase or gadget, ask whether it will actually make your mind clearer.",
+  },
+  "boethius.125": {
+    meaning: "Every action depends on two things: will and power. Without the will, nothing is attempted; without the power, the will is useless. So if someone wants something and fails to get it, they lacked the power.",
+    today: "Motivation and capability are separate problems. Good leaders diagnose which one is missing.",
+    you: "When a project stalls, ask: is the team missing the will or the power? The fix is different for each.",
+  },
+  "boethius.149": {
+    meaning: "Why all this fury? Death is coming anyway. Animals attack humans, but humans turn weapons on their own kind, waging unjust wars only because their lands and laws differ. Give each their due: love the good and pity the bad.",
+    today: "War over difference alone is a tragic waste. Pity for wrongdoers is harder than hatred, and wiser.",
+    you: "In defence work, keep this poem's question alive: is this conflict about justice, or only about difference?",
+  },
+  "boethius.150": {
+    meaning: "Boethius accepts that the good are truly rewarded and the wicked punished by their own characters. Still, he asks, surely nobody would prefer exile, poverty and disgrace to power and honour at home? And wise rulers spread their good fortune to others.",
+    today: "Philosophy doesn't deny that circumstances matter. Good leadership is partly about sharing prosperity.",
+    you: "It's legitimate to want a good position. The test is whether your good fortune reaches the people around you.",
+  },
+  "boethius.164": {
+    meaning: "No human can grasp the whole design of the universe. It's enough to understand that the creator guides all things to good, and keeps evil out through the chain of necessity. Seen from providence, the evils that seem everywhere aren't there.",
+    today: "We see only part of any complex system. Humility about the big picture can steady us in confusing times.",
+    you: "In a large organisation you rarely see the whole design. Do your part well and trust that the pattern is bigger than your view.",
+  },
+  "boethius.198": {
+    meaning: "God's knowledge isn't prediction but a single present gaze that takes in all time at once. So divine foreknowledge doesn't cause our actions. We remain free even though everything is seen.",
+    today: "It's an ancient answer to the free-will puzzle: being known isn't the same as being forced.",
+    you: "Whatever you believe, the practical upshot holds: your choices are still yours. Act as a free agent, responsible for what you do.",
+  },
+}

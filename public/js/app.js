@@ -1092,7 +1092,7 @@ function idsOf(vol) {
 }
 async function loadVolume(vol) {
   if (loadedVols.has(vol)) return;
-  const d = await fetch(`data/volumes/${vol}.json`).then((r) => r.json());
+  const [d] = await Promise.all([fetch(`data/volumes/${vol}.json`).then((r) => r.json()), loadExplainers(vol)]);
   Object.assign(library.passages, d.passages);
   loadedVols.add(vol);
   delete volIds[vol];
@@ -1150,6 +1150,9 @@ async function nextPassage(run) {
       const themed = ids.filter((id) => themesOf(id).length);
       if (themed.length) ids = themed;
     }
+    // Prefer cards whose explainer is already stored in the app
+    const explained = ids.filter((id) => explainers[id]);
+    if (explained.length) ids = explained;
     if (ids.length) return pick(ids);
   }
   return pick(idsOf("meditations"));
