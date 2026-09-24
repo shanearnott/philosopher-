@@ -2,7 +2,7 @@
   "id": "meditations",
   "title": "Marcus Aurelius, Meditations",
   "translation": "George Long (1862)",
-  "track": "Core path, Units 1–3 (prototype)",
+  "track": "Core path: 120 days in 12 themed units",
   "units": [
     {
       "n": 1,
@@ -18,6 +18,51 @@
       "n": 3,
       "title": "What is in your control",
       "intro": "The core Stoic move: events don't harm you, your judgement about them does, and that judgement is yours to change."
+    },
+    {
+      "n": 4,
+      "title": "The inner citadel",
+      "intro": "Marcus had no retreat from the job, so he built one inside: a mind that nothing outside can storm."
+    },
+    {
+      "n": 5,
+      "title": "Obstacles become the way",
+      "intro": "The Stoic judo move: whatever blocks the action becomes material for a different, often better, action."
+    },
+    {
+      "n": 6,
+      "title": "Other people",
+      "intro": "Difficult people were Marcus's daily reality. These passages are his toolkit for dealing with them without anger."
+    },
+    {
+      "n": 7,
+      "title": "Praise and fame",
+      "intro": "The most famous man alive keeps reminding himself how little fame is worth, and why."
+    },
+    {
+      "n": 8,
+      "title": "Work and duty",
+      "intro": "What it means to do your job well: without applause, without self-pity, and for the common good."
+    },
+    {
+      "n": 9,
+      "title": "Doing fewer things",
+      "intro": "Cutting the unnecessary from what you say, do and think, so that what's left can be done well."
+    },
+    {
+      "n": 10,
+      "title": "Change and impermanence",
+      "intro": "Everything flows. Marcus uses that fact to loosen his grip on things, not to despair over them."
+    },
+    {
+      "n": 11,
+      "title": "Death and time",
+      "intro": "Death is the frame that makes each day count. Marcus returns to it constantly, calmly."
+    },
+    {
+      "n": 12,
+      "title": "Living by reason",
+      "intro": "The capstone: truth, justice and self-correction as the whole of a good life."
     }
   ],
   "days": [
@@ -28,7 +73,11 @@
       "theme": "gratitude",
       "virtue": "temperance",
       "context": "Marcus was raised partly by his grandfather, Marcus Annius Verus, after his father died young. The Meditations were private notes, written in Greek and never meant for publication; Book 1 opens them with a ledger of debts.",
-      "keyword": { "greek": "ἦθος", "translit": "ēthos", "gloss": "character, settled habit; the root of 'ethics'" },
+      "keyword": {
+        "greek": "ἦθος",
+        "translit": "ēthos",
+        "gloss": "character, settled habit; the root of 'ethics'"
+      },
       "paraphrase": "My grandfather taught me decent behaviour and how to keep my temper in check.",
       "apply": {
         "work": "Who at work showed you, by example, how to keep your temper? What exactly did they do?",
@@ -43,7 +92,11 @@
       "theme": "work",
       "virtue": "temperance",
       "context": "His unnamed tutor kept the boy out of Rome's sporting obsessions: the Green and Blue chariot-racing factions, and the rival gladiator styles. The lessons he credits are plain ones: work hard, want little, do things yourself, mind your own business.",
-      "keyword": { "greek": "αὐτουργία", "translit": "autourgia", "gloss": "working with your own hands; doing it yourself" },
+      "keyword": {
+        "greek": "αὐτουργία",
+        "translit": "autourgia",
+        "gloss": "working with your own hands; doing it yourself"
+      },
       "paraphrase": "From my tutor: don't become a fan of one side in the games; put up with hard work, need little, do my own work, stay out of other people's affairs, and don't listen to gossip.",
       "apply": {
         "work": "Which 'faction' at work do you get drawn into cheering for? What would staying out of it look like this week?",
@@ -58,7 +111,11 @@
       "theme": "focus",
       "virtue": "wisdom",
       "context": "Diognetus taught Marcus as a boy, probably painting as well as philosophy. At about twelve Marcus took up the rough Greek philosopher's habits, sleeping on a plank bed and a skin, until his mother talked him out of it.",
-      "keyword": { "greek": "παρρησία", "translit": "parrhēsia", "gloss": "frank speech; saying what is true to someone's face" },
+      "keyword": {
+        "greek": "παρρησία",
+        "translit": "parrhēsia",
+        "gloss": "frank speech; saying what is true to someone's face"
+      },
       "paraphrase": "From Diognetus: don't waste effort on trivial things or believe in miracle-sellers; don't get obsessed with hobbies like quail-fighting; put up with people speaking frankly to me; take philosophy seriously; and choose a simple, disciplined life.",
       "apply": {
         "work": "What is your 'quail-fighting': a trivial thing you give real passion to? What would you rather spend that on?",
@@ -73,7 +130,11 @@
       "theme": "character",
       "virtue": "wisdom",
       "context": "Junius Rusticus was a Stoic and a senior Roman statesman, later Prefect of the City. He told the young Marcus his character needed work, and gave him his own copy of Epictetus's Discourses, which shaped Marcus more than any other book.",
-      "keyword": { "greek": "διόρθωσις", "translit": "diorthōsis", "gloss": "correction, setting straight" },
+      "keyword": {
+        "greek": "διόρθωσις",
+        "translit": "diorthōsis",
+        "gloss": "correction, setting straight"
+      },
       "paraphrase": "From Rusticus: I needed to improve. Don't show off with clever arguments, lectures or displays of virtue; write plainly; make peace easily with people who wronged me once they want it; read carefully instead of skimming; don't be quick to agree with smooth talkers. He also lent me Epictetus.",
       "apply": {
         "work": "Where are you tempted to show off discipline or good deeds rather than simply do them?",
@@ -88,7 +149,11 @@
       "theme": "steadiness",
       "virtue": "courage",
       "context": "Apollonius of Chalcedon was a Stoic teacher brought to Rome by Antoninus Pius to instruct Marcus. Marcus later lost many of his own children; being 'always the same' through the loss of a child was not an abstract ideal for him.",
-      "keyword": { "greek": "ἐλευθερία", "translit": "eleutheria", "gloss": "freedom; being moved by nothing but reason" },
+      "keyword": {
+        "greek": "ἐλευθερία",
+        "translit": "eleutheria",
+        "gloss": "freedom; being moved by nothing but reason"
+      },
       "paraphrase": "From Apollonius: be free and steady in purpose, guided only by reason, and the same person in pain, grief or illness. He showed me someone can be firm and flexible at once, and value his teaching skill least among his merits. He also taught me how to accept favours from friends without feeling small or taking them for granted.",
       "apply": {
         "work": "When you are under pressure, how do you change? What would 'always the same' look like in your next hard meeting?",
@@ -103,7 +168,11 @@
       "theme": "others",
       "virtue": "justice",
       "context": "Sextus of Chaeronea, a nephew of the biographer Plutarch, was a philosopher Marcus kept attending even as emperor. The portrait is of a man who was both warm and deeply respected, with no anger and no gushing.",
-      "keyword": { "greek": "εὔνοια", "translit": "eunoia", "gloss": "goodwill, kindly disposition toward others" },
+      "keyword": {
+        "greek": "εὔνοια",
+        "translit": "eunoia",
+        "gloss": "goodwill, kindly disposition toward others"
+      },
       "paraphrase": "From Sextus: goodwill, a household run like a caring father would run it, and living in line with nature. Be serious without pretension, look after friends' interests, and bear with people who haven't thought things through. He was easy company yet deeply respected, never angry, affectionate without fuss, learned without display.",
       "apply": {
         "work": "Who at work forms opinions without thinking? What would tolerating them, without flattering or fighting them, look like?",
@@ -118,7 +187,11 @@
       "theme": "friendship",
       "virtue": "justice",
       "context": "Cinna Catulus was a Stoic teacher. This is one of the shortest entries in Book 1, and one of the most practical: three lessons, the last only six words long.",
-      "keyword": { "greek": "φιλοστοργία", "translit": "philostorgia", "gloss": "natural, tender affection, especially within a family" },
+      "keyword": {
+        "greek": "φιλοστοργία",
+        "translit": "philostorgia",
+        "gloss": "natural, tender affection, especially within a family"
+      },
       "paraphrase": "From Catulus: when a friend criticises me, don't brush it off, even if they're wrong; try to bring them back to their usual self. Speak well of my teachers. Love my children genuinely.",
       "apply": {
         "work": "Think of a recent criticism from a colleague you thought was unfair. What would it take to bring them back to their usual self?",
@@ -133,7 +206,11 @@
       "theme": "self-government",
       "virtue": "temperance",
       "context": "Claudius Maximus was a Stoic and a provincial governor, so a working model of philosophy inside public office. Marcus describes him mostly through what he never did: hurry, procrastinate, sulk, or fake a laugh.",
-      "keyword": { "greek": "ἐγκράτεια", "translit": "enkrateia", "gloss": "self-mastery; holding power over oneself" },
+      "keyword": {
+        "greek": "ἐγκράτεια",
+        "translit": "enkrateia",
+        "gloss": "self-mastery; holding power over oneself"
+      },
       "paraphrase": "From Maximus: govern myself and don't get sidetracked; stay cheerful even when ill; mix warmth with dignity; do what's in front of me without complaining. Everyone trusted he meant what he said. He was never rushed, never put things off, never downcast, never laughed to hide annoyance.",
       "apply": {
         "work": "Which of Maximus's 'nevers' (hurry, putting off, complaining) is hardest for you at work right now?",
@@ -148,7 +225,11 @@
       "theme": "leadership",
       "virtue": "justice",
       "context": "This is the longest entry in Book 1, about Antoninus Pius, the emperor who adopted Marcus and ruled for 23 peaceful years. It is essentially Marcus's job description for a good leader, written by the man who inherited the job.",
-      "keyword": { "greek": "πρᾳότης", "translit": "praotēs", "gloss": "mildness, gentleness that stays firm" },
+      "keyword": {
+        "greek": "πρᾳότης",
+        "translit": "praotēs",
+        "gloss": "mildness, gentleness that stays firm"
+      },
       "paraphrase": "In my adoptive father I saw: a mild temper and firm decisions once made; no vanity about honours; hard, persistent work; willingness to hear anyone with something useful to say; fairness in rewards; knowing when to push and when to ease off. He listened carefully in council, kept a few friends without clinging, planned ahead and didn't chase popularity. (Read the whole passage; it is long for a reason.)",
       "apply": {
         "work": "Pick one trait from this portrait you'd most like said of you as a leader. What is one act this week that would earn it?",
@@ -163,7 +244,11 @@
       "theme": "gratitude",
       "virtue": "wisdom",
       "context": "Book 1 closes by thanking the gods for everything that went right: family, teachers, luck in what he was never tested by. Standard Ebooks prints a note after it, 'Among the Quadi at the Granua': Marcus wrote at least part of this on campaign against Germanic tribes on the Danube frontier.",
-      "keyword": { "greek": "εὐχαριστία", "translit": "eucharistia", "gloss": "gratitude, giving thanks" },
+      "keyword": {
+        "greek": "εὐχαριστία",
+        "translit": "eucharistia",
+        "gloss": "gratitude, giving thanks"
+      },
       "paraphrase": "I owe the gods good family, teachers and friends, nearly everything good. I'm grateful for temptations I was never exposed to, for the example of a father who stripped away vanity, for a brother who pushed me to improve, for children who were not dull or deformed, and that I found philosophy without getting lost in abstractions. All of it came as help from outside me.",
       "apply": {
         "work": "What good luck in your career have you been taking credit for? Write down who or what actually made it possible.",
@@ -178,7 +263,11 @@
       "theme": "others",
       "virtue": "justice",
       "context": "This is Marcus's famous morning drill. As emperor he spent his days in petitions, lawsuits and councils, and he prepared by expecting difficult people in advance, then reminding himself why they couldn't really harm him.",
-      "keyword": { "greek": "συνεργία", "translit": "synergia", "gloss": "working together; cooperation" },
+      "keyword": {
+        "greek": "συνεργία",
+        "translit": "synergia",
+        "gloss": "working together; cooperation"
+      },
       "paraphrase": "Start the day expecting to meet interfering, ungrateful, arrogant, dishonest, envious and unsociable people. They're like this because they don't know good from bad. But I do, and I know they're my kin, sharing the same reason. None of them can harm me or drag me into wrong, and I can't be angry with my own kind. We were made to work together, like hands or eyelids; working against each other is against nature.",
       "apply": {
         "work": "Who are you likely to find difficult today? Say in advance how you'll treat them as a fellow worker rather than an obstacle.",
@@ -193,7 +282,11 @@
       "theme": "work",
       "virtue": "courage",
       "context": "The emperor of Rome admits he doesn't want to get out of bed. Marcus argues with himself in dialogue, the second voice making excuses and the first answering, which is how many of the notes are built.",
-      "keyword": { "greek": "ἔργον", "translit": "ergon", "gloss": "work, function; what a thing exists to do" },
+      "keyword": {
+        "greek": "ἔργον",
+        "translit": "ergon",
+        "gloss": "work, function; what a thing exists to do"
+      },
       "paraphrase": "When you don't want to get up, remember: I'm getting up to do a human being's work. Was I made to stay warm under the covers? Plants, birds, ants and bees all do their part; why won't you do yours? Yes, you need rest, but nature sets limits, and you overshoot them in comfort while stopping short in effort. If you loved your own nature, you'd put into your real work the devotion others give to their crafts, their money or their fame.",
       "apply": {
         "work": "What is the 'work of a human being' you are rising to tomorrow? Put it in one sentence.",
@@ -208,7 +301,11 @@
       "theme": "focus",
       "virtue": "temperance",
       "context": "Marcus wrote this as a man constantly interrupted: letters, embassies, trials. 'As a Roman and a man' is a reminder of both his role and his humanity.",
-      "keyword": { "greek": "εὔροια", "translit": "euroia", "gloss": "a good flow; life that runs smoothly" },
+      "keyword": {
+        "greek": "εὔροια",
+        "translit": "euroia",
+        "gloss": "a good flow; life that runs smoothly"
+      },
       "paraphrase": "Every moment, do what you're doing with plain dignity, warmth, freedom and fairness, and put every other thought aside. You'll manage that if you treat each act as if it were your last, dropping carelessness, resistance to reason, pretence, self-love and resentment of your lot. It takes only a few things to live a life that flows quietly.",
       "apply": {
         "work": "What is one task tomorrow you could do 'as if it were the last', with full attention? What distraction would you have to drop?",
@@ -222,8 +319,12 @@
       "ref": "2.4",
       "theme": "time",
       "virtue": "courage",
-      "context": "Book 2 was written at Carnuntum, a legionary fortress on the Danube, during war. Marcus was in his late forties and often ill, so 'a limit of time is fixed' was concrete.",
-      "keyword": { "greek": "ἀναβολή", "translit": "anabolē", "gloss": "putting off, postponement" },
+      "context": "Book 2 was written at Carnuntum, a legionary fortress on the Danube, during war. Marcus was around fifty and often ill, so 'a limit of time is fixed' was concrete.",
+      "keyword": {
+        "greek": "ἀναβολή",
+        "translit": "anabolē",
+        "gloss": "putting off, postponement"
+      },
       "paraphrase": "Remember how long you've been putting this off, and how many chances you've been given and not used. Understand what you're part of, and that your time is limited. If you don't use it to clear your mind, it will pass, you will pass, and it won't come back.",
       "apply": {
         "work": "What change at work have you been 'putting off' for months? What is today's version of starting?",
@@ -238,7 +339,11 @@
       "theme": "attention",
       "virtue": "temperance",
       "context": "A Roman emperor lived surrounded by courtiers and rumour, which made speculating about others an occupational hazard. Marcus sets himself a test: think only what you'd be willing to say aloud if someone suddenly asked what's on your mind.",
-      "keyword": { "greek": "ἡγεμονικόν", "translit": "hēgemonikon", "gloss": "the ruling faculty; the mind's command centre" },
+      "keyword": {
+        "greek": "ἡγεμονικόν",
+        "translit": "hēgemonikon",
+        "gloss": "the ruling faculty; the mind's command centre"
+      },
       "paraphrase": "Don't spend your remaining life wondering about other people, what they're doing, saying, thinking or plotting, unless it serves some common good. It pulls you away from watching your own mind. Weed out aimless and nosy thoughts, especially malicious ones. Only think what you'd be happy to reveal if suddenly asked. A person like that is a priest of the god within, untouched by pleasure or pain, and does not live by the praise of people who can't even please themselves.",
       "apply": {
         "work": "Whose actions at work do you spend the most mental time speculating about? What would you think about instead?",
@@ -253,7 +358,11 @@
       "theme": "purpose",
       "virtue": "wisdom",
       "context": "One line. Marcus borrows the image of a craftsman: nothing in a good workshop is done at random. The shortest passages often carried the most weight for him because they could be recalled mid-day.",
-      "keyword": { "greek": "σκοπός", "translit": "skopos", "gloss": "target, aim; what an archer looks at" },
+      "keyword": {
+        "greek": "σκοπός",
+        "translit": "skopos",
+        "gloss": "target, aim; what an archer looks at"
+      },
       "paraphrase": "Don't do anything without a purpose, and do everything by the best rules of the craft.",
       "apply": {
         "work": "Look at tomorrow's calendar. Which item has no clear purpose? Cut it or give it one.",
@@ -268,7 +377,11 @@
       "theme": "work",
       "virtue": "courage",
       "context": "The 'divine part' is Marcus's name for the reasoning mind in each person, which he treats as on loan from the whole. Book 3 is thought to have been written at Carnuntum during the frontier wars.",
-      "keyword": { "greek": "δαίμων", "translit": "daimōn", "gloss": "the guiding spirit within; for Marcus, your reason" },
+      "keyword": {
+        "greek": "δαίμων",
+        "translit": "daimōn",
+        "gloss": "the guiding spirit within; for Marcus, your reason"
+      },
       "paraphrase": "If you do the job in front of you by right reason, seriously, energetically and calmly, without distraction, keeping your inner self clean as if you had to hand it back at any moment; if you expect nothing and fear nothing, content with acting well now and speaking the truth boldly, you'll live happily. Nobody can stop you.",
       "apply": {
         "work": "What piece of work tomorrow could you do 'seriously, vigorously, calmly', expecting nothing back?",
@@ -283,7 +396,11 @@
       "theme": "habit",
       "virtue": "wisdom",
       "context": "The dyeing image comes from Roman cloth-making: wool left long in the vat takes the colour for good. The palace line is personal. Marcus lived in one and insisted a good life was possible even there.",
-      "keyword": { "greek": "βάπτεται", "translit": "baptetai", "gloss": "is dyed, is steeped (the soul takes the colour of its thoughts)" },
+      "keyword": {
+        "greek": "βάπτεται",
+        "translit": "baptetai",
+        "gloss": "is dyed, is steeped (the soul takes the colour of its thoughts)"
+      },
       "paraphrase": "Your mind takes on the character of what you usually think; the soul is dyed by its thoughts. So soak it in thoughts like these: wherever you can live, you can live well, even in a palace. Everything exists for its purpose, and its good lies there. For rational beings, that good is life with others.",
       "apply": {
         "work": "What thought do you repeat most at work? What colour is it dyeing you?",
@@ -298,7 +415,11 @@
       "theme": "present",
       "virtue": "temperance",
       "context": "Marcus held more fame than almost anyone alive and returns again and again to how brief it is. This passage follows directly from his reminder to keep to a few essentials.",
-      "keyword": { "greek": "τὸ παρόν", "translit": "to paron", "gloss": "the present; the only time a person actually lives" },
+      "keyword": {
+        "greek": "τὸ παρόν",
+        "translit": "to paron",
+        "gloss": "the present; the only time a person actually lives"
+      },
       "paraphrase": "So let everything else go and keep hold of the few things that matter. Each of us lives only in the present moment, a single point; the rest is past or uncertain. Life is short, our corner of the earth small, and even the longest fame is carried by short-lived people who hardly know themselves, let alone the dead.",
       "apply": {
         "work": "Which part of your working life are you living for later recognition? How would you do it for its own sake?",
@@ -313,7 +434,11 @@
       "theme": "focus",
       "virtue": "wisdom",
       "context": "A two-sided warning. Marcus saw both the idle courtier and the frantic official, and considered them the same failure: no aim to organise their energy.",
-      "keyword": { "greek": "ῥέμβεσθαι", "translit": "rhembesthai", "gloss": "to be whirled about, to wander aimlessly" },
+      "keyword": {
+        "greek": "ῥέμβεσθαι",
+        "translit": "rhembesthai",
+        "gloss": "to be whirled about, to wander aimlessly"
+      },
       "paraphrase": "Are outside events distracting you? Make time to learn something good and new, and stop spinning. But avoid the opposite mistake: people who wear themselves out with busyness but have no aim to direct their efforts and thoughts are wasting their lives too.",
       "apply": {
         "work": "Are you spinning or busy-without-aim this week? What single aim would organise your effort?",
@@ -328,7 +453,11 @@
       "theme": "control",
       "virtue": "wisdom",
       "context": "This is Marcus restating Epictetus's central teaching: it isn't things that upset us, but our judgements about them. The dialogue shows him arguing himself out of every excuse in turn.",
-      "keyword": { "greek": "ὑπόληψις", "translit": "hypolēpsis", "gloss": "judgement, the opinion you form about something" },
+      "keyword": {
+        "greek": "ὑπόληψις",
+        "translit": "hypolēpsis",
+        "gloss": "judgement, the opinion you form about something"
+      },
       "paraphrase": "If something outside you distresses you, the distress comes from your judgement of it, and you can wipe that judgement out now. If it's your own character bothering you, correct your view. If you're upset at not doing something right, do it instead of complaining. If it's truly impossible, don't grieve; the cause isn't in you.",
       "apply": {
         "work": "What's upsetting you at work right now? Separate the event from your judgement about it.",
@@ -343,7 +472,11 @@
       "theme": "control",
       "virtue": "temperance",
       "context": "Book 12, the last, was likely written near the end of Marcus's life. The image is of a puppet pulled by strings, which Marcus uses several times for being jerked around by passions.",
-      "keyword": { "greek": "νευροσπαστεῖσθαι", "translit": "neurospasteisthai", "gloss": "to be pulled by strings, like a puppet" },
+      "keyword": {
+        "greek": "νευροσπαστεῖσθαι",
+        "translit": "neurospasteisthai",
+        "gloss": "to be pulled by strings, like a puppet"
+      },
       "paraphrase": "Realise at last that you have something in you better and more divine than the feelings that jerk you around like a puppet. What's in my mind right now: fear, suspicion, craving?",
       "apply": {
         "work": "What pulled your strings most at work this week: fear, suspicion or desire?",
@@ -358,7 +491,11 @@
       "theme": "control",
       "virtue": "wisdom",
       "context": "A compact statement of Stoic psychology. For Marcus, events are 'external' and neutral; only the mind's assent to an impression makes them good or bad for us.",
-      "keyword": { "greek": "φαντασία", "translit": "phantasia", "gloss": "impression; how a thing first appears to the mind" },
+      "keyword": {
+        "greek": "φαντασία",
+        "translit": "phantasia",
+        "gloss": "impression; how a thing first appears to the mind"
+      },
       "paraphrase": "Things themselves don't touch the soul at all. They can't get in or move it. The soul moves itself, and makes of each thing whatever its judgement decides.",
       "apply": {
         "work": "Name something at work that 'touched' you this week. What judgement did you add to it?",
@@ -373,7 +510,11 @@
       "theme": "harm",
       "virtue": "courage",
       "context": "Two sentences, built like a chain. Marcus uses this repeatedly: harm has three links (event, complaint, judgement), and breaking the last breaks the rest.",
-      "keyword": { "greek": "βέβλαμμαι", "translit": "beblammai", "gloss": "'I have been harmed', the complaint to be removed" },
+      "keyword": {
+        "greek": "βέβλαμμαι",
+        "translit": "beblammai",
+        "gloss": "'I have been harmed', the complaint to be removed"
+      },
       "paraphrase": "Drop your opinion and you drop the complaint 'I've been harmed'. Drop the complaint and the harm is gone.",
       "apply": {
         "work": "Where do you feel wronged at work? Try saying what happened without 'I've been harmed'.",
@@ -388,7 +529,11 @@
       "theme": "opinion",
       "virtue": "wisdom",
       "context": "Monimus was a Cynic philosopher who reportedly said that everything is 'smoke', meaning mere opinion. Marcus accepts the saying, but only as far as it's true: opinion shapes experience, not reality itself.",
-      "keyword": { "greek": "ὑπόληψις", "translit": "hypolēpsis", "gloss": "opinion, supposition" },
+      "keyword": {
+        "greek": "ὑπόληψις",
+        "translit": "hypolēpsis",
+        "gloss": "opinion, supposition"
+      },
       "paraphrase": "Remember that everything is opinion. Monimus the Cynic said as much, and the saying is useful if you take from it only what's true in it.",
       "apply": {
         "work": "Which 'fact' about your job is really an opinion you hold? What's true in it, and what isn't?",
@@ -403,7 +548,11 @@
       "theme": "calm",
       "virtue": "temperance",
       "context": "The promontory image is a sailor's: rounding a headland like Cape Malea in Greece meant leaving storm water for sheltered bay. Marcus uses the coast repeatedly as a picture of steadiness.",
-      "keyword": { "greek": "γαλήνη", "translit": "galēnē", "gloss": "calm sea; stillness after a storm" },
+      "keyword": {
+        "greek": "γαλήνη",
+        "translit": "galēnē",
+        "gloss": "calm sea; stillness after a storm"
+      },
       "paraphrase": "Everything is opinion, and opinion is up to you. Drop it when you choose, and like a sailor who has rounded the headland, you'll find calm, stability and a still bay.",
       "apply": {
         "work": "What storm at work could you round the headland on by changing one opinion?",
@@ -418,7 +567,11 @@
       "theme": "freedom",
       "virtue": "courage",
       "context": "Among the shortest entries in the book, and one of the most direct. It's a question with an obvious answer: no one.",
-      "keyword": { "greek": "σέσωσαι", "translit": "sesōsai", "gloss": "you are saved, kept safe" },
+      "keyword": {
+        "greek": "σέσωσαι",
+        "translit": "sesōsai",
+        "gloss": "you are saved, kept safe"
+      },
       "paraphrase": "Throw away the opinion and you're safe. Who is stopping you from throwing it away?",
       "apply": {
         "work": "Who, honestly, is stopping you from dropping the opinion that frustrates you at work?",
@@ -433,7 +586,11 @@
       "theme": "obstacles",
       "virtue": "courage",
       "context": "Marcus lived through plague, war and the betrayal of a trusted general. Here he refuses to ask why the world contains bitter things, comparing complaints to a customer grumbling about shavings on a carpenter's floor.",
-      "keyword": { "greek": "ἀρκεῖ", "translit": "arkei", "gloss": "'it is enough'; say no more" },
+      "keyword": {
+        "greek": "ἀρκεῖ",
+        "translit": "arkei",
+        "gloss": "'it is enough'; say no more"
+      },
       "paraphrase": "The cucumber's bitter? Throw it away. Briars on the path? Walk round them. That's enough. Don't add 'why do such things exist?' Nature wastes nothing; she remakes what seems to decay out of herself.",
       "apply": {
         "work": "What bitter cucumber at work are you still asking why about? What's the throw-it-away response?",
@@ -448,7 +605,11 @@
       "theme": "calm",
       "virtue": "temperance",
       "context": "One sentence of encouragement. Marcus often writes to himself the way a coach talks to an athlete: it's easy, you can do it now.",
-      "keyword": { "greek": "ἀταραξία", "translit": "ataraxia", "gloss": "untroubledness, tranquillity" },
+      "keyword": {
+        "greek": "ἀταραξία",
+        "translit": "ataraxia",
+        "gloss": "untroubledness, tranquillity"
+      },
       "paraphrase": "How easy it is to push away and wipe out every troubling or unhelpful impression, and be at peace straight away.",
       "apply": {
         "work": "What troubling impression will you wipe away the next time it appears at work?",
@@ -463,12 +624,1726 @@
       "theme": "judgement",
       "virtue": "wisdom",
       "context": "Marcus lost several children to illness, so the example of a sick child isn't theoretical. The practice of adding nothing from within closes this unit's work on judgements.",
-      "keyword": { "greek": "προσεπιλέγειν", "translit": "prosepilegein", "gloss": "to add a further comment; the extra story we tell" },
+      "keyword": {
+        "greek": "προσεπιλέγειν",
+        "translit": "prosepilegein",
+        "gloss": "to add a further comment; the extra story we tell"
+      },
       "paraphrase": "Tell yourself nothing beyond what first impressions report. Someone speaks ill of you: that's the report. That you've been harmed is not. My child is sick: I see it. That he's in danger, I don't see. Stay with the first appearance and add nothing from inside, and nothing happens to you.",
       "apply": {
         "work": "What report at work did you add a story to? Write the report alone.",
         "family": "Where at home do you jump from what you see to what you assume it means?",
         "decision": "Write the plain facts of your decision, then the story you've added. Decide on the facts."
+      }
+    },
+    {
+      "day": 31,
+      "unit": 4,
+      "ref": "4.3",
+      "theme": "retreat",
+      "virtue": "temperance",
+      "context": "Wealthy Romans escaped to country villas and seaside houses. Marcus, who could have had any of them, argues that the only retreat worth having is portable, and ends with a two-line summary he could carry anywhere.",
+      "keyword": {
+        "greek": "ἀναχώρησις",
+        "translit": "anachōrēsis",
+        "gloss": "retreat, withdrawal"
+      },
+      "paraphrase": "People long for getaways in the country or by the sea, but you can retreat into your own mind whenever you like, and nowhere is quieter. Do it often and keep it short. Remember two things there: things don't touch the mind, only your opinions do; and everything you see is already changing. The universe is change; life is how you judge it.",
+      "apply": {
+        "work": "Where could you take a two-minute mental retreat during tomorrow's working day? What would you do there?",
+        "family": "What do you escape to at home that doesn't actually restore you?",
+        "decision": "Before deciding, retreat for five minutes. What two truths would you remind yourself of?"
+      }
+    },
+    {
+      "day": 32,
+      "unit": 4,
+      "ref": "8.48",
+      "theme": "citadel",
+      "virtue": "courage",
+      "context": "Marcus spent years on the Danube frontier, where forts and citadels were life or death. He borrows the image for the mind: once it's free of passions, nothing can take it.",
+      "keyword": {
+        "greek": "ἀκρόπολις",
+        "translit": "akropolis",
+        "gloss": "citadel, the fortified high point of a city"
+      },
+      "paraphrase": "The ruling mind is unbeatable when it's collected and does only what it chooses. A mind free from passions is a citadel, the safest refuge a person has. Not knowing this is ignorance; knowing it and not using it is unhappiness.",
+      "apply": {
+        "work": "What at work tries hardest to storm your citadel? What would holding the wall look like?",
+        "family": "Which argument at home do you lose because you leave the gates open?",
+        "decision": "Is a passion (fear, pride, irritation) inside the walls of this decision? How would you put it out?"
+      }
+    },
+    {
+      "day": 33,
+      "unit": 4,
+      "ref": "7.28",
+      "theme": "retreat",
+      "virtue": "justice",
+      "context": "Just seven words of instruction, then a reason. Book 7 is full of these compressed reminders, many drawn from Marcus's reading.",
+      "keyword": {
+        "greek": "εἰς ἑαυτόν",
+        "translit": "eis heauton",
+        "gloss": "into yourself; the Meditations' Greek title is Ta eis heauton, things to himself"
+      },
+      "paraphrase": "Withdraw into yourself. Your reasoning mind is content with itself when it acts justly, and that alone gives it peace.",
+      "apply": {
+        "work": "When you did the right thing at work recently, did it bring its own peace? What else were you waiting for?",
+        "family": "Where at home could doing what's fair, rather than what's easy, settle something?",
+        "decision": "Which option would let you rest content with yourself, whatever the outcome?"
+      }
+    },
+    {
+      "day": 34,
+      "unit": 4,
+      "ref": "7.59",
+      "theme": "character",
+      "virtue": "wisdom",
+      "context": "One of the most-quoted lines in the book, and one of the shortest. The image is of a spring that keeps flowing only if you keep digging.",
+      "keyword": {
+        "greek": "πηγή",
+        "translit": "pēgē",
+        "gloss": "spring, fountain, source"
+      },
+      "paraphrase": "Look inside. The source of good is within you, and it will keep flowing as long as you keep digging.",
+      "apply": {
+        "work": "What source of motivation have you been looking for outside yourself at work?",
+        "family": "What good could you draw on today that doesn't depend on anyone else changing?",
+        "decision": "Is the answer to this decision already in you, waiting for you to dig?"
+      }
+    },
+    {
+      "day": 35,
+      "unit": 4,
+      "ref": "6.11",
+      "theme": "recovery",
+      "virtue": "temperance",
+      "context": "The image is musical: a player knocked off the beat gets back in time faster the more they practise returning. Marcus treats composure as a skill of recovery, not of never slipping.",
+      "keyword": {
+        "greek": "ἁρμονία",
+        "translit": "harmonia",
+        "gloss": "harmony, being in tune"
+      },
+      "paraphrase": "When events force you off balance, come back to yourself quickly and don't stay out of tune longer than you must. The more often you return, the better you'll master the harmony.",
+      "apply": {
+        "work": "How long did your last loss of composure at work last? What would shorten the next one?",
+        "family": "After a flare-up at home, what is your quickest way back in tune?",
+        "decision": "Are you still out of tune from something that happened? Wait until you're back before deciding."
+      }
+    },
+    {
+      "day": 36,
+      "unit": 4,
+      "ref": "7.16",
+      "theme": "control",
+      "virtue": "courage",
+      "context": "This is Stoic psychology in brief: the body can suffer, but the mind is disturbed only if it tells itself something terrible is happening.",
+      "keyword": {
+        "greek": "αὐτάρκης",
+        "translit": "autarkēs",
+        "gloss": "self-sufficient, needing nothing outside itself"
+      },
+      "paraphrase": "The mind doesn't upset itself; it doesn't frighten itself or cause itself pain. If something else can, let it try, but the mind won't choose that judgement. The body can speak for its own pains. The mind in itself wants nothing unless it invents the want, and so it stays free and untroubled.",
+      "apply": {
+        "work": "What fear at work is your mind manufacturing for itself?",
+        "family": "Which worry about your family comes from a want you've invented?",
+        "decision": "Remove the fear you're adding to this decision. What's left?"
+      }
+    },
+    {
+      "day": 37,
+      "unit": 4,
+      "ref": "5.11",
+      "theme": "attention",
+      "virtue": "wisdom",
+      "context": "A self-examination Marcus says he must run on every occasion. The list of 'souls' is blunt: am I thinking like a child, a tyrant, an animal?",
+      "keyword": {
+        "greek": "ψυχή",
+        "translit": "psychē",
+        "gloss": "soul, the living mind"
+      },
+      "paraphrase": "What am I using my mind for right now? Ask it on every occasion: what's in my ruling part, and whose soul do I have at this moment? A child's, a youth's, a tyrant's, a tame animal's, a wild beast's?",
+      "apply": {
+        "work": "In your last hard meeting, whose soul did you have? What should it have been?",
+        "family": "At home this evening, check in once: whose soul are you using right now?",
+        "decision": "Which part of you is making this decision: the reasoning part or the wild one?"
+      }
+    },
+    {
+      "day": 38,
+      "unit": 4,
+      "ref": "10.38",
+      "theme": "self",
+      "virtue": "wisdom",
+      "context": "Marcus writes as a man in failing health. He separates himself, the mind that moves things, from the body, which he treats as a set of tools.",
+      "keyword": {
+        "greek": "ἔνδον",
+        "translit": "endon",
+        "gloss": "within; the hidden power inside"
+      },
+      "paraphrase": "Remember that what pulls the strings is hidden inside you: the power to persuade, life itself, what you really are. When you think about yourself, leave out the body and its parts. They're tools, like an axe, a shuttle or a pen, and useless without what moves them.",
+      "apply": {
+        "work": "Which of your tools at work (title, skills, devices) have you mistaken for yourself?",
+        "family": "What would your family say is the real you, beneath what you do?",
+        "decision": "Is this decision about the tools or about the person using them?"
+      }
+    },
+    {
+      "day": 39,
+      "unit": 4,
+      "ref": "6.3",
+      "theme": "attention",
+      "virtue": "wisdom",
+      "context": "Another two-word opening, look within, which Marcus repeats in 7.59. This time the instruction is about seeing things accurately.",
+      "keyword": {
+        "greek": "ἀξία",
+        "translit": "axia",
+        "gloss": "worth, value"
+      },
+      "paraphrase": "Look inside things. Don't let either the real character of anything or its true value slip past you.",
+      "apply": {
+        "work": "What at work have you been valuing by its label rather than its real worth?",
+        "family": "Look closely at one ordinary thing at home today. What is it really worth to you?",
+        "decision": "What is the true value of each option, not its price or prestige?"
+      }
+    },
+    {
+      "day": 40,
+      "unit": 4,
+      "ref": "9.7",
+      "theme": "self-control",
+      "virtue": "temperance",
+      "context": "Four commands in a row, the most concentrated statement of Stoic practice in the book.",
+      "keyword": {
+        "greek": "ὁρμή",
+        "translit": "hormē",
+        "gloss": "impulse, drive toward action"
+      },
+      "paraphrase": "Wipe out fantasies. Check desire. Put out cravings. Keep your ruling mind in your own power.",
+      "apply": {
+        "work": "Which fantasy, desire or craving took over your working day this week?",
+        "family": "Which of the four commands would most improve your evenings at home?",
+        "decision": "Which craving is dressed up as a reason in this decision?"
+      }
+    },
+    {
+      "day": 41,
+      "unit": 5,
+      "ref": "5.20",
+      "theme": "obstacles",
+      "virtue": "courage",
+      "context": "The most-quoted idea in modern Stoicism comes from this passage. Marcus is writing about people who get in his way, not abstract misfortune.",
+      "keyword": {
+        "greek": "ἐμπόδιον",
+        "translit": "empodion",
+        "gloss": "obstacle, hindrance, something in the way"
+      },
+      "paraphrase": "People are closest to me in that I must do them good and put up with them. But when they block what I should be doing, they become neutral, like sun, wind or a wild animal. They can stop my action, not my attitude, which adapts. The mind turns every obstacle into a means: what blocks the road becomes the road.",
+      "apply": {
+        "work": "Who at work is blocking you right now? What action does that obstacle make possible?",
+        "family": "Which obstacle at home could become the reason for a better response?",
+        "decision": "If the obstacle in this decision became the path, what would you do?"
+      }
+    },
+    {
+      "day": 42,
+      "unit": 5,
+      "ref": "4.1",
+      "theme": "adaptation",
+      "virtue": "courage",
+      "context": "Book 4 opens with fire, a Stoic favourite. A small flame is smothered by what's thrown on it; a strong fire feeds on it.",
+      "keyword": {
+        "greek": "ὕλη",
+        "translit": "hylē",
+        "gloss": "material, fuel, raw matter"
+      },
+      "paraphrase": "A mind in its natural state adapts easily to whatever happens. It needs no particular material; it aims at its purpose and makes fuel out of whatever resists it, like a strong fire that consumes what's thrown on it and burns higher.",
+      "apply": {
+        "work": "What's being thrown on your fire at work right now? How could it fuel you?",
+        "family": "What resistance at home could you turn into fuel for patience?",
+        "decision": "What in this decision looks like it will smother you? How could you burn it instead?"
+      }
+    },
+    {
+      "day": 43,
+      "unit": 5,
+      "ref": "4.49",
+      "theme": "resilience",
+      "virtue": "courage",
+      "context": "The promontory image opens one of Marcus's fullest arguments against calling yourself unlucky. He ends with a principle to apply whenever something vexes him.",
+      "keyword": {
+        "greek": "ἄκρα",
+        "translit": "akra",
+        "gloss": "headland, promontory"
+      },
+      "paraphrase": "Be like the headland the waves keep breaking on: it stands, and the water calms around it. Don't say I'm unlucky this happened; say I'm lucky that I've stayed unbroken. Anyone could have met this, not everyone would have borne it. Whenever something upsets you, remember: this isn't misfortune; bearing it nobly is good fortune.",
+      "apply": {
+        "work": "What wave is breaking on you at work? What would bearing it nobly look like?",
+        "family": "What have you called bad luck at home that you could call a chance to stand firm?",
+        "decision": "How would a headland make this decision?"
+      }
+    },
+    {
+      "day": 44,
+      "unit": 5,
+      "ref": "8.32",
+      "theme": "adaptation",
+      "virtue": "justice",
+      "context": "A dialogue with himself about plans that get blocked. Marcus answers each objection until only the next useful action remains.",
+      "keyword": {
+        "greek": "τάξις",
+        "translit": "taxis",
+        "gloss": "order, arrangement, a well-ordered life"
+      },
+      "paraphrase": "Order your life one action at a time, and be content if each does its job as well as it can. Nothing can stop you acting justly, soberly and thoughtfully. If something external blocks a plan, accept it, move your effort to what's allowed, and a new chance to act appears in its place.",
+      "apply": {
+        "work": "Which blocked plan at work are you still pushing against? What's allowed instead?",
+        "family": "Where at home could you move your effort from what's blocked to what's possible?",
+        "decision": "What is the next single action in this decision that nobody can stop?"
+      }
+    },
+    {
+      "day": 45,
+      "unit": 5,
+      "ref": "10.33",
+      "theme": "excuses",
+      "virtue": "courage",
+      "context": "A long passage from Book 10. It closes on a chain: what doesn't harm the law doesn't harm the state, or the citizen.",
+      "keyword": {
+        "greek": "πρόφασις",
+        "translit": "prophasis",
+        "gloss": "excuse, pretext"
+      },
+      "paraphrase": "Ask what the most reasonable thing is that can be done or said with what you've been given; it's always in your power, so stop making excuses. Treat acting well as a pleasure, the way others treat luxury. Obstacles only stop things without reason; a reasoning person grows better by using them well.",
+      "apply": {
+        "work": "What excuse have you been using at work? What's the most reasonable thing you can do anyway?",
+        "family": "Which excuse at home sounds reasonable but isn't?",
+        "decision": "Strip the excuses from this decision. What is actually in your power?"
+      }
+    },
+    {
+      "day": 46,
+      "unit": 5,
+      "ref": "6.50",
+      "theme": "reservation",
+      "virtue": "wisdom",
+      "context": "This is the Stoic reserve clause: aim wholeheartedly, but hold the outcome with a silent condition: if nothing prevents it. Marcus uses it to stay calm when force blocks him.",
+      "keyword": {
+        "greek": "ὑπεξαίρεσις",
+        "translit": "hypexairesis",
+        "gloss": "reservation, the unspoken condition on every plan"
+      },
+      "paraphrase": "Try to persuade people, and act against their wishes if justice demands it. If someone forcibly stops you, accept it calmly and use the obstacle to practise another virtue. Your aim always carried a reservation; you never wanted the impossible. What you wanted was to try, and that you've done.",
+      "apply": {
+        "work": "What plan at work could you hold with a reservation, if nothing prevents it?",
+        "family": "Where at home are you demanding an outcome instead of making an effort?",
+        "decision": "Add the reservation to this decision. How does that change how hard you grip it?"
+      }
+    },
+    {
+      "day": 47,
+      "unit": 5,
+      "ref": "7.64",
+      "theme": "pain",
+      "virtue": "courage",
+      "context": "Marcus suffered from chronic ill health, reportedly in his stomach and chest. Here he borrows from Epicurus, a rival school, because the advice works.",
+      "keyword": {
+        "greek": "πόνος",
+        "translit": "ponos",
+        "gloss": "pain, hardship, toil"
+      },
+      "paraphrase": "In every pain, remember there's no dishonour in it and it doesn't make your mind worse. Epicurus helps: pain is neither unbearable nor endless if you remember its limits and add nothing in imagination. And many irritations, drowsiness, heat, poor appetite, are pain in disguise; don't be beaten by them.",
+      "apply": {
+        "work": "Which disguised pain (tiredness, heat, hunger) made you worse at work this week?",
+        "family": "When you're in pain at home, what do you add to it in imagination?",
+        "decision": "Is discomfort, rather than judgement, pushing this decision?"
+      }
+    },
+    {
+      "day": 48,
+      "unit": 5,
+      "ref": "10.3",
+      "theme": "endurance",
+      "virtue": "courage",
+      "context": "A simple fork, typical of Marcus's argument style: either you can bear it or you can't, and complaining helps neither case.",
+      "keyword": {
+        "greek": "ὑπομένειν",
+        "translit": "hypomenein",
+        "gloss": "to endure, to hold out under"
+      },
+      "paraphrase": "Everything that happens is either bearable by nature or not. If bearable, don't complain; bear it. If not, don't complain; it will end when it ends you. But remember: you can bear anything that your own judgement can make bearable, by seeing it as your interest or your duty.",
+      "apply": {
+        "work": "What are you complaining about at work that you are, in fact, able to bear?",
+        "family": "What at home becomes bearable once you see it as your duty?",
+        "decision": "Which option are you avoiding only because it would be hard to bear?"
+      }
+    },
+    {
+      "day": 49,
+      "unit": 5,
+      "ref": "6.20",
+      "theme": "others",
+      "virtue": "justice",
+      "context": "Romans trained in gymnasia, wrestling and boxing. Marcus notices that a scratch from a sparring partner causes no grudge, and asks why life can't be the same.",
+      "keyword": {
+        "greek": "γυμνάσιον",
+        "translit": "gymnasion",
+        "gloss": "gymnasium, training ground"
+      },
+      "paraphrase": "In training, if someone scratches you or butts your head, you don't sulk or suspect him afterwards. You watch out for him, without hostility, and quietly get out of his way. Treat the rest of life the same way: overlook a lot in people who are like sparring partners.",
+      "apply": {
+        "work": "Who at work is a sparring partner you've been treating as an enemy?",
+        "family": "Which knock at home could you simply step aside from, without a grudge?",
+        "decision": "Is an old scratch from someone influencing this decision?"
+      }
+    },
+    {
+      "day": 50,
+      "unit": 5,
+      "ref": "7.8",
+      "theme": "future",
+      "virtue": "courage",
+      "context": "Two lines against anxiety. Marcus's confidence is in his reasoning, not in how events will turn out.",
+      "keyword": {
+        "greek": "τὸ μέλλον",
+        "translit": "to mellon",
+        "gloss": "what is to come, the future"
+      },
+      "paraphrase": "Don't let the future disturb you. If you have to face it, you'll bring the same reason you're using for the present.",
+      "apply": {
+        "work": "What future problem at work are you rehearsing today? What reason will you have when it comes?",
+        "family": "What worry about your family's future could you hand to your future self?",
+        "decision": "Which part of this decision can wait for the future you, with the same reason you have now?"
+      }
+    },
+    {
+      "day": 51,
+      "unit": 6,
+      "ref": "5.25",
+      "theme": "others",
+      "virtue": "justice",
+      "context": "Among the most practical sentences in the book: responsibility belongs to the person who does the wrong.",
+      "keyword": {
+        "greek": "διάθεσις",
+        "translit": "diathesis",
+        "gloss": "disposition, how someone is inclined"
+      },
+      "paraphrase": "Someone wrongs me? That's their business: they have their own character and choices. I have what nature gives me now, and I'll do what my nature asks now.",
+      "apply": {
+        "work": "Whose wrong at work are you carrying as if it were yours to fix?",
+        "family": "Which family member's behaviour could you hand back to them, gently?",
+        "decision": "Are you deciding this to answer someone else's wrong? What does your own nature ask?"
+      }
+    },
+    {
+      "day": 52,
+      "unit": 6,
+      "ref": "6.6",
+      "theme": "revenge",
+      "virtue": "justice",
+      "context": "A single line, and a famous one. Marcus had real enemies, including a general who declared himself emperor.",
+      "keyword": {
+        "greek": "ἄμυνα",
+        "translit": "amyna",
+        "gloss": "retaliation, self-defence"
+      },
+      "paraphrase": "The best revenge is not to become like the person who wronged you.",
+      "apply": {
+        "work": "Is there a colleague you're starting to resemble in the way you resent them?",
+        "family": "What would refusing to become like the person who hurt you look like at home?",
+        "decision": "Does any option in this decision make you more like someone you disapprove of?"
+      }
+    },
+    {
+      "day": 53,
+      "unit": 6,
+      "ref": "11.18",
+      "theme": "others",
+      "virtue": "justice",
+      "context": "Marcus's nine rules for handling someone who has offended you, plus a tenth from Apollo, leader of the Muses. It's the fullest practical checklist in the Meditations.",
+      "keyword": {
+        "greek": "κοινωνία",
+        "translit": "koinōnia",
+        "gloss": "fellowship, partnership, community"
+      },
+      "paraphrase": "When someone offends you, consider: we're made for each other; how they behave elsewhere and what drives them; if they're right, don't be upset, and if wrong, it's ignorance; you do wrong too; you don't fully know their reasons; life is short; it's your judgement that disturbs you; anger hurts more than the offence; kindness is unbeatable if it's genuine. And tenth: expecting bad people never to do wrong is madness.",
+      "apply": {
+        "work": "Pick the rule that fits the colleague who annoys you most. Apply it once this week.",
+        "family": "Which of the nine rules would change your next family argument?",
+        "decision": "If someone's offence is part of this decision, run the nine rules on it first."
+      }
+    },
+    {
+      "day": 54,
+      "unit": 6,
+      "ref": "7.22",
+      "theme": "love",
+      "virtue": "justice",
+      "context": "Loving those who do wrong sounds like Christian teaching, but here it's Stoic, reasoned from kinship, ignorance and mortality.",
+      "keyword": {
+        "greek": "φιλεῖν",
+        "translit": "philein",
+        "gloss": "to love, to hold dear"
+      },
+      "paraphrase": "It's distinctly human to love even people who wrong you. It comes when you remember they're your kin, they err out of ignorance and don't mean it, you'll both soon be dead, and above all they haven't harmed you, because your mind is no worse than before.",
+      "apply": {
+        "work": "Who at work could you see as kin who errs out of ignorance?",
+        "family": "Who at home is hardest to love when they're wrong? Which of Marcus's reasons helps most?",
+        "decision": "Would you decide differently if you assumed ignorance rather than malice?"
+      }
+    },
+    {
+      "day": 55,
+      "unit": 6,
+      "ref": "9.42",
+      "theme": "others",
+      "virtue": "justice",
+      "context": "A long closing passage for Book 9. Marcus argues himself out of surprise at bad behaviour, then out of wanting thanks for good behaviour.",
+      "keyword": {
+        "greek": "ἀναίσχυντος",
+        "translit": "anaischyntos",
+        "gloss": "shameless"
+      },
+      "paraphrase": "When someone's shamelessness offends you, ask: could the world be without shameless people? No, so don't demand the impossible. Remembering this makes you kinder to each one. And when you've done good, don't look for thanks; an eye doesn't ask to be paid for seeing.",
+      "apply": {
+        "work": "Which colleague's behaviour are you still surprised by? What would expecting it change?",
+        "family": "Where at home are you waiting to be paid for doing good?",
+        "decision": "Is this decision built on the hope that someone will behave better than they ever have?"
+      }
+    },
+    {
+      "day": 56,
+      "unit": 6,
+      "ref": "10.30",
+      "theme": "self-examination",
+      "virtue": "wisdom",
+      "context": "Marcus's method for anger: first look in a mirror. Then remember the other person is compelled by their own opinions.",
+      "keyword": {
+        "greek": "ἁμάρτημα",
+        "translit": "hamartēma",
+        "gloss": "error, fault, a missing of the mark"
+      },
+      "paraphrase": "When someone's fault annoys you, turn to yourself and ask how you make a similar mistake, valuing money, pleasure or a little reputation. That cools anger fast, especially if you add that they're compelled by their views. Or, if you can, remove what compels them.",
+      "apply": {
+        "work": "Think of a colleague's fault that annoys you. Where do you make the same mistake?",
+        "family": "What fault in a family member mirrors one of yours?",
+        "decision": "Could you help remove what's compelling someone in this decision, instead of fighting them?"
+      }
+    },
+    {
+      "day": 57,
+      "unit": 6,
+      "ref": "8.59",
+      "theme": "others",
+      "virtue": "justice",
+      "context": "Two short sentences. Marcus reduces his social philosophy to a choice between two actions.",
+      "keyword": {
+        "greek": "ἀλλήλων ἕνεκα",
+        "translit": "allēlōn heneka",
+        "gloss": "for the sake of one another"
+      },
+      "paraphrase": "People exist for each other. So teach them, or put up with them.",
+      "apply": {
+        "work": "Who at work should you teach, and who should you simply bear with?",
+        "family": "At home, which situation calls for teaching, and which for patience?",
+        "decision": "In this decision, are you trying to teach someone who needs bearing with?"
+      }
+    },
+    {
+      "day": 58,
+      "unit": 6,
+      "ref": "9.11",
+      "theme": "patience",
+      "virtue": "justice",
+      "context": "Marcus notes that the gods are patient with wrongdoers and even help them. If the gods can, so can he.",
+      "keyword": {
+        "greek": "δίδασκε",
+        "translit": "didaske",
+        "gloss": "teach! (imperative)"
+      },
+      "paraphrase": "If you can, correct wrongdoers by teaching them. If you can't, remember patience was given to you for exactly this. The gods are patient too, and even help such people. You can do the same; who stops you?",
+      "apply": {
+        "work": "Who at work can't be taught right now? What would patience with them look like?",
+        "family": "Where at home would teaching work better than correcting?",
+        "decision": "Does this decision need a teacher or a patient person? Which are you being?"
+      }
+    },
+    {
+      "day": 59,
+      "unit": 6,
+      "ref": "7.26",
+      "theme": "pity",
+      "virtue": "justice",
+      "context": "A method for turning anger into understanding. Marcus assumes wrongdoing always comes from a mistaken idea of what's good.",
+      "keyword": {
+        "greek": "ἔλεος",
+        "translit": "eleos",
+        "gloss": "pity, compassion"
+      },
+      "paraphrase": "When someone wrongs you, ask right away what they thought was good or bad in doing it. Once you see it, you'll pity them rather than be angry. If you share their view, forgive them. If you don't, it's even easier to be kind to someone who's mistaken.",
+      "apply": {
+        "work": "When a colleague last wronged you, what did they think was good?",
+        "family": "What did a family member believe was good when they upset you?",
+        "decision": "What does the other side of this decision believe is good?"
+      }
+    },
+    {
+      "day": 60,
+      "unit": 6,
+      "ref": "11.13",
+      "theme": "contempt",
+      "virtue": "justice",
+      "context": "Phocion was an Athenian general famous for his calm under condemnation. Marcus uses him as the model for answering contempt.",
+      "keyword": {
+        "greek": "καταφρονεῖν",
+        "translit": "kataphronein",
+        "gloss": "to despise, look down on"
+      },
+      "paraphrase": "If someone despises me, that's their concern. Mine is to do nothing that deserves contempt. If someone hates me, that's theirs too. Mine is to be gentle and kind to everyone, ready to show even that person their mistake, without reproach or a show of patience, but honestly.",
+      "apply": {
+        "work": "Who at work looks down on you? What's your concern, as opposed to theirs?",
+        "family": "How could you point out a family member's mistake without reproach?",
+        "decision": "Is this decision driven by wanting to prove someone's contempt wrong?"
+      }
+    },
+    {
+      "day": 61,
+      "unit": 7,
+      "ref": "4.19",
+      "theme": "fame",
+      "virtue": "temperance",
+      "context": "Marcus's own fame was assured: emperor, philosopher, face on every coin. He argues against wanting it anyway.",
+      "keyword": {
+        "greek": "ὑστεροφημία",
+        "translit": "hysterophēmia",
+        "gloss": "fame after death, posthumous reputation"
+      },
+      "paraphrase": "Whoever craves lasting fame forgets that everyone who remembers him will soon die, and so will their successors, until the memory goes out. And even if memory were immortal, what is that to you, living or dead? Praise is worth only whatever practical use it has.",
+      "apply": {
+        "work": "Whose memory of your work are you working for? Would you do it the same way if no one remembered?",
+        "family": "What do you hope your family will say about you? What should you do today instead of hoping?",
+        "decision": "Is legacy distorting this decision? What would you choose if nobody would remember it?"
+      }
+    },
+    {
+      "day": 62,
+      "unit": 7,
+      "ref": "4.20",
+      "theme": "praise",
+      "virtue": "temperance",
+      "context": "A Stoic argument about beauty: praise is an addition, not a part. An emerald or a flower loses nothing by going unpraised.",
+      "keyword": {
+        "greek": "καλόν",
+        "translit": "kalon",
+        "gloss": "beautiful, noble, fine"
+      },
+      "paraphrase": "Anything beautiful is beautiful in itself; praise isn't part of it. Praise makes nothing better or worse. What is truly beautiful needs nothing more, like law, truth, kindness or modesty. Is an emerald worse for not being praised?",
+      "apply": {
+        "work": "Which piece of your work is good whether or not anyone praises it?",
+        "family": "What good thing in your family goes unpraised, and is no less good for it?",
+        "decision": "Would this option still be right if no one ever praised you for it?"
+      }
+    },
+    {
+      "day": 63,
+      "unit": 7,
+      "ref": "6.16",
+      "theme": "values",
+      "virtue": "temperance",
+      "context": "Marcus runs through what people value, breathing, feeding, applause, and rejects each in turn. Only one thing survives the test.",
+      "keyword": {
+        "greek": "κρότος",
+        "translit": "krotos",
+        "gloss": "applause, clapping"
+      },
+      "paraphrase": "What is worth valuing? Not breathing, not feeding, not applause, not the clapping of tongues, which is all praise is. What's left is to act and hold back according to our own nature. Value anything else and you'll be anxious, envious and suspicious. Honour your own mind and you'll be content, sociable and at peace with the gods.",
+      "apply": {
+        "work": "Whose applause at work do you value most? What would it be like to stop needing it?",
+        "family": "Where at home are you performing for approval rather than acting well?",
+        "decision": "Which option in this decision is really about applause?"
+      }
+    },
+    {
+      "day": 64,
+      "unit": 7,
+      "ref": "7.73",
+      "theme": "praise",
+      "virtue": "justice",
+      "context": "The fullest version of the vine idea from 5.6, in a single question. Marcus lists the third thing fools want.",
+      "keyword": {
+        "greek": "ἀμοιβή",
+        "translit": "amoibē",
+        "gloss": "return, repayment, recompense"
+      },
+      "paraphrase": "When you've done good and someone has benefited, why look for a third thing, as fools do: credit for having done it, or something in return?",
+      "apply": {
+        "work": "What good did you do at work this week that you're still waiting to be credited for?",
+        "family": "What have you done for family lately that you secretly expect to be repaid?",
+        "decision": "In this decision, are you after the good itself or the credit?"
+      }
+    },
+    {
+      "day": 65,
+      "unit": 7,
+      "ref": "4.33",
+      "theme": "oblivion",
+      "virtue": "temperance",
+      "context": "Marcus lists old Roman heroes, then emperors, ending with Hadrian and Antoninus, the man he called father. All have become just names.",
+      "keyword": {
+        "greek": "λήθη",
+        "translit": "lēthē",
+        "gloss": "forgetting, oblivion"
+      },
+      "paraphrase": "Words once common are now old-fashioned, and so are the names of the famous: Camillus, Scipio, Cato, then Augustus, Hadrian and Antoninus. Everything soon becomes a story, then is buried in forgetting. So what deserves our effort? A just mind, social acts, honest speech, and accepting whatever happens.",
+      "apply": {
+        "work": "Which work achievement will be forgotten soonest? What would still be worth doing well?",
+        "family": "What in your family life will outlast any fame?",
+        "decision": "Which option would you choose if you knew it would be forgotten?"
+      }
+    },
+    {
+      "day": 66,
+      "unit": 7,
+      "ref": "8.44",
+      "theme": "present",
+      "virtue": "temperance",
+      "context": "Posterity looks noble from a distance. Marcus points out it will be made up of people exactly like the ones who annoy him now.",
+      "keyword": {
+        "greek": "δόξα",
+        "translit": "doxa",
+        "gloss": "reputation, opinion, glory"
+      },
+      "paraphrase": "Hold on to the present. People chasing lasting fame forget that future generations will be just like the people they can't stand now, and just as mortal. What does it matter to you what they say or think about you?",
+      "apply": {
+        "work": "Would the people you're trying to impress at work in ten years be better judges than your colleagues now?",
+        "family": "Are you spending time at home on your future reputation rather than the people present?",
+        "decision": "Is this decision shaped by what future people will think?"
+      }
+    },
+    {
+      "day": 67,
+      "unit": 7,
+      "ref": "6.18",
+      "theme": "praise",
+      "virtue": "justice",
+      "context": "An observation on human oddity: people ignore their contemporaries but crave the praise of people not yet born.",
+      "keyword": {
+        "greek": "ἔπαινος",
+        "translit": "epainos",
+        "gloss": "praise"
+      },
+      "paraphrase": "How strange people are. They won't praise the people living alongside them, yet they value praise from posterity, people they'll never meet. It's like being upset that people born before you didn't praise you.",
+      "apply": {
+        "work": "Who at work deserves your praise now, while you're both here?",
+        "family": "Who in your family have you not praised lately?",
+        "decision": "Is this decision aimed at an audience that doesn't exist yet?"
+      }
+    },
+    {
+      "day": 68,
+      "unit": 7,
+      "ref": "7.34",
+      "theme": "fame",
+      "virtue": "wisdom",
+      "context": "One of a run of short headed notes in Book 7, on death, pain and fame. The sand dune image is characteristic.",
+      "keyword": {
+        "greek": "ψάμμος",
+        "translit": "psammos",
+        "gloss": "sand"
+      },
+      "paraphrase": "On fame: look at the minds of people who seek it, what they avoid and what they chase. And as heaped sand buries earlier sand, so in life what comes first is soon covered by what comes after.",
+      "apply": {
+        "work": "Look at the people chasing recognition at work. Do you want their minds?",
+        "family": "What earlier sand in your family's life has already been covered over?",
+        "decision": "Which part of this decision will be covered by the next event within a year?"
+      }
+    },
+    {
+      "day": 69,
+      "unit": 7,
+      "ref": "4.35",
+      "theme": "impermanence",
+      "virtue": "temperance",
+      "context": "Thirteen words that cover both halves of fame: the famous and their admirers.",
+      "keyword": {
+        "greek": "ἐφήμερον",
+        "translit": "ephēmeron",
+        "gloss": "lasting a day, ephemeral"
+      },
+      "paraphrase": "Everything lasts a day: both the one who remembers and the one remembered.",
+      "apply": {
+        "work": "What at work are you treating as permanent that lasts only a day?",
+        "family": "What small moment with your family is worth more because it lasts only a day?",
+        "decision": "Will this decision matter to the rememberer or the remembered in ten years?"
+      }
+    },
+    {
+      "day": 70,
+      "unit": 7,
+      "ref": "6.51",
+      "theme": "fame",
+      "virtue": "wisdom",
+      "context": "A neat three-way comparison, a favourite Stoic device: the fame-lover, the pleasure-lover and the wise person each place their good somewhere different.",
+      "keyword": {
+        "greek": "φιλόδοξος",
+        "translit": "philodoxos",
+        "gloss": "lover of fame or glory"
+      },
+      "paraphrase": "The fame-lover places his good in other people's actions, the pleasure-lover in his own sensations, and the person with understanding in his own actions.",
+      "apply": {
+        "work": "Where do you place your good at work: in what others do, what you feel, or what you do?",
+        "family": "At home, whose actions are you relying on for your own good?",
+        "decision": "Which option places your good in your own actions?"
+      }
+    },
+    {
+      "day": 71,
+      "unit": 8,
+      "ref": "5.6",
+      "theme": "work",
+      "virtue": "justice",
+      "context": "Marcus describes three kinds of benefactor, and prefers the one like a vine: it bears grapes and moves on to the next season.",
+      "keyword": {
+        "greek": "ἄμπελος",
+        "translit": "ampelos",
+        "gloss": "vine"
+      },
+      "paraphrase": "One person who does a favour counts it as a debt owed; another doesn't say so but still thinks it; a third hardly knows what he's done, like a vine that bears grapes and wants nothing more. Like a horse after its race or a bee after its honey, a good person doesn't call out for others to look but goes on to the next good act.",
+      "apply": {
+        "work": "What good work did you do recently that you mentally filed as a debt owed to you?",
+        "family": "Where at home could you be more like the vine?",
+        "decision": "Is this decision partly about collecting on a favour you did?"
+      }
+    },
+    {
+      "day": 72,
+      "unit": 8,
+      "ref": "6.54",
+      "theme": "common good",
+      "virtue": "justice",
+      "context": "The shortest statement of Stoic social ethics. Marcus led a vast state and judged everything by whether it served the whole.",
+      "keyword": {
+        "greek": "σμῆνος",
+        "translit": "smēnos",
+        "gloss": "swarm, hive"
+      },
+      "paraphrase": "What isn't good for the hive isn't good for the bee.",
+      "apply": {
+        "work": "What are you doing at work that helps you but hurts the team?",
+        "family": "What's good for you but not for the household?",
+        "decision": "Test each option: is it good for the hive?"
+      }
+    },
+    {
+      "day": 73,
+      "unit": 8,
+      "ref": "10.16",
+      "theme": "action",
+      "virtue": "courage",
+      "context": "The whole of Stoic philosophy in one instruction. Marcus had been writing about the good man for years; here he tells himself to stop.",
+      "keyword": {
+        "greek": "ἀγαθὸς ἀνήρ",
+        "translit": "agathos anēr",
+        "gloss": "a good man"
+      },
+      "paraphrase": "Stop talking about what a good person should be like. Be one.",
+      "apply": {
+        "work": "Which principle do you talk about at work but haven't practised this week?",
+        "family": "What would being good at home look like today, not in theory?",
+        "decision": "Stop deliberating about the right choice for a moment. What would a good person just do?"
+      }
+    },
+    {
+      "day": 74,
+      "unit": 8,
+      "ref": "6.22",
+      "theme": "duty",
+      "virtue": "justice",
+      "context": "A two-part sentence: first the task, then the dismissal of everything else. Marcus lists three kinds of distraction.",
+      "keyword": {
+        "greek": "τὸ καθῆκον",
+        "translit": "to kathēkon",
+        "gloss": "the appropriate act, duty"
+      },
+      "paraphrase": "I do my duty; other things don't bother me. They're either lifeless, or unreasoning, or have lost their way.",
+      "apply": {
+        "work": "What's distracting you from your duty at work: things, systems or people who've lost their way?",
+        "family": "What duty at home have you let other things crowd out?",
+        "decision": "Name your duty in this decision in one sentence."
+      }
+    },
+    {
+      "day": 75,
+      "unit": 8,
+      "ref": "9.12",
+      "theme": "work",
+      "virtue": "temperance",
+      "context": "Marcus warns against two ways of working badly: as a martyr, or as a performer.",
+      "keyword": {
+        "greek": "ἄθλιος",
+        "translit": "athlios",
+        "gloss": "wretched, miserable"
+      },
+      "paraphrase": "Don't work like someone miserable, or like someone who wants to be pitied or admired. Want only one thing: to move or hold back as reason and the common good require.",
+      "apply": {
+        "work": "Do you work more like a martyr or a performer? What's the third way?",
+        "family": "At home, do you do your chores to be pitied or to be praised?",
+        "decision": "Which option would you choose if no one would pity or admire you for it?"
+      }
+    },
+    {
+      "day": 76,
+      "unit": 8,
+      "ref": "11.4",
+      "theme": "reward",
+      "virtue": "justice",
+      "context": "The Stoic idea of reward, in two sentences: the good act is its own payment.",
+      "keyword": {
+        "greek": "τὸ κοινόν",
+        "translit": "to koinon",
+        "gloss": "the common good, what belongs to all"
+      },
+      "paraphrase": "Have I done something for the common good? Then I've been rewarded. Keep this in mind, and never stop doing such good.",
+      "apply": {
+        "work": "What have you done for the common good at work this week? Count that as the reward.",
+        "family": "What have you done for the household lately that was its own reward?",
+        "decision": "Which option serves the common good, whatever it pays you?"
+      }
+    },
+    {
+      "day": 77,
+      "unit": 8,
+      "ref": "6.30",
+      "theme": "leadership",
+      "virtue": "justice",
+      "context": "Marcus coins a word, apokaisarōthēs, to be Caesarified: to let the imperial role change you. He answers with a portrait of Antoninus, his model.",
+      "keyword": {
+        "greek": "ἀποκαισαρωθῇς",
+        "translit": "apokaisarōthēs",
+        "gloss": "be turned into a Caesar, corrupted by the role"
+      },
+      "paraphrase": "Take care not to be turned into a Caesar, dyed by the role. Stay simple, good, serious, unaffected, just, kind and hardworking. Life is short. Remember Antoninus: his steadiness, patience, hard work, openness to criticism and joy when shown something better. Imitate him.",
+      "apply": {
+        "work": "How has your role started to dye you? What would staying undyed look like?",
+        "family": "Does your work persona follow you home? Which trait of Antoninus would help?",
+        "decision": "Would you make this decision the same way without your title?"
+      }
+    },
+    {
+      "day": 78,
+      "unit": 8,
+      "ref": "7.5",
+      "theme": "competence",
+      "virtue": "wisdom",
+      "context": "A remarkably modest passage for an emperor: if I'm not up to it, step back or get help.",
+      "keyword": {
+        "greek": "διάνοια",
+        "translit": "dianoia",
+        "gloss": "understanding, intellect"
+      },
+      "paraphrase": "Is my understanding up to this or not? If it is, I use it as a tool. If not, I either step aside for someone better, unless there's reason not to, or I do my best with a helper. Whatever I do, alone or with others, should aim only at what's useful for all.",
+      "apply": {
+        "work": "What work are you not quite up to? Who could help?",
+        "family": "Where at home should you step aside for someone better suited?",
+        "decision": "Is your understanding sufficient for this decision? If not, who should you bring in?"
+      }
+    },
+    {
+      "day": 79,
+      "unit": 8,
+      "ref": "6.2",
+      "theme": "duty",
+      "virtue": "courage",
+      "context": "Marcus lists the conditions that don't matter when doing your duty: cold or warm, tired or rested, blamed or praised, even dying.",
+      "keyword": {
+        "greek": "τὸ ἐν χερσί",
+        "translit": "to en chersi",
+        "gloss": "what's in hand, the task at hand"
+      },
+      "paraphrase": "Don't care whether you're cold or warm, tired or rested, criticised or praised, dying or doing something else, as long as you're doing your duty. Dying is also one of life's acts. For it too, it's enough to do well what's in hand.",
+      "apply": {
+        "work": "What condition (tiredness, criticism) are you letting affect your work today?",
+        "family": "Which duty at home do you do only when you're feeling good?",
+        "decision": "Would you choose differently on a good night's sleep? Should you?"
+      }
+    },
+    {
+      "day": 80,
+      "unit": 8,
+      "ref": "7.7",
+      "theme": "help",
+      "virtue": "courage",
+      "context": "The soldier image fits a man who spent over a decade on campaign. Asking for help is part of doing the job.",
+      "keyword": {
+        "greek": "βοήθεια",
+        "translit": "boētheia",
+        "gloss": "help, assistance"
+      },
+      "paraphrase": "Don't be ashamed to be helped. Your job is to do your duty, like a soldier storming a wall. If you're lame and can't climb the battlements alone but can with help, what then?",
+      "apply": {
+        "work": "What are you refusing help with at work out of pride?",
+        "family": "Where at home would accepting help get the job done?",
+        "decision": "Who could help you with this decision? What's stopping you asking?"
+      }
+    },
+    {
+      "day": 81,
+      "unit": 9,
+      "ref": "4.24",
+      "theme": "focus",
+      "virtue": "temperance",
+      "context": "Marcus quotes Democritus, the laughing philosopher, then improves on him: not few things, but only the necessary ones.",
+      "keyword": {
+        "greek": "ὀλίγα πρᾶσσε",
+        "translit": "oliga prasse",
+        "gloss": "do few things"
+      },
+      "paraphrase": "Do few things if you want peace, says the philosopher. Better: do what's necessary, and only what reason requires. That brings the peace of doing well and of doing little. Most of what we say and do is unnecessary; cut it and you'll have more time and less worry. Ask each time: is this necessary?",
+      "apply": {
+        "work": "List what you'll do at work tomorrow. Which items aren't necessary?",
+        "family": "What unnecessary talk or activity fills your evenings at home?",
+        "decision": "Which parts of this decision are unnecessary to decide at all?"
+      }
+    },
+    {
+      "day": 82,
+      "unit": 9,
+      "ref": "8.36",
+      "theme": "present",
+      "virtue": "courage",
+      "context": "An anti-anxiety method: don't picture your whole life at once. Take the present on its own, and it shrinks to something bearable.",
+      "keyword": {
+        "greek": "ὅλος βίος",
+        "translit": "holos bios",
+        "gloss": "the whole of life"
+      },
+      "paraphrase": "Don't upset yourself by imagining your whole life and all its troubles at once. Ask of each moment: what here is unbearable? You'll be ashamed to answer. Neither past nor future hurts you, only the present, and that shrinks when you mark its limits.",
+      "apply": {
+        "work": "What at work feels overwhelming because you're picturing all of it at once?",
+        "family": "What in this hour at home is actually unbearable?",
+        "decision": "Break this decision down. What's unbearable about the next step?"
+      }
+    },
+    {
+      "day": 83,
+      "unit": 9,
+      "ref": "3.14",
+      "theme": "urgency",
+      "virtue": "courage",
+      "context": "Marcus kept notes and excerpts, planning to read them in old age. He realises that old age may not come.",
+      "keyword": {
+        "greek": "ὑπομνήματα",
+        "translit": "hypomnēmata",
+        "gloss": "notes, memoirs, reminders"
+      },
+      "paraphrase": "Stop wandering. You won't read your notes, the histories of Rome and Greece, or the extracts you saved for old age. Hurry to your goal, drop empty hopes, and help yourself while you still can.",
+      "apply": {
+        "work": "What have you been saving for later at work that you should do now?",
+        "family": "What are you putting off at home until you have more time?",
+        "decision": "Are you delaying this decision in the hope of some later, better moment?"
+      }
+    },
+    {
+      "day": 84,
+      "unit": 9,
+      "ref": "8.22",
+      "theme": "attention",
+      "virtue": "temperance",
+      "context": "Two notes that together make one section. The second sentence is Marcus's sharpest line against procrastination.",
+      "keyword": {
+        "greek": "προσοχή",
+        "translit": "prosochē",
+        "gloss": "attention, attentiveness"
+      },
+      "paraphrase": "Attend to what's in front of you: an opinion, an act or a word. You deserve this: you'd rather become good tomorrow than be good today.",
+      "apply": {
+        "work": "What are you going to be good at tomorrow instead of today?",
+        "family": "At home, what small good thing are you postponing?",
+        "decision": "What would doing this decision's next step today, rather than tomorrow, look like?"
+      }
+    },
+    {
+      "day": 85,
+      "unit": 9,
+      "ref": "7.29",
+      "theme": "present",
+      "virtue": "temperance",
+      "context": "A string of short commands, like a pilot's checklist. The last one sets aside other people's wrongs.",
+      "keyword": {
+        "greek": "περιγράφειν",
+        "translit": "perigraphein",
+        "gloss": "to draw a line around, to circumscribe"
+      },
+      "paraphrase": "Wipe out imaginings. Stop being pulled by strings. Limit yourself to the present. Understand what happens to you or another. Separate cause from material. Think of your last hour. Let another's wrong stay where it was done.",
+      "apply": {
+        "work": "Which command in the list would most improve your working day?",
+        "family": "What wrong at home could you leave where it was done?",
+        "decision": "Confine this decision to the present. What does it look like now?"
+      }
+    },
+    {
+      "day": 86,
+      "unit": 9,
+      "ref": "9.32",
+      "theme": "perspective",
+      "virtue": "temperance",
+      "context": "Marcus's cure for clutter: most disturbances are opinions you can drop, and the space they leave is filled by the whole of time.",
+      "keyword": {
+        "greek": "περιττός",
+        "translit": "perittos",
+        "gloss": "superfluous, excess"
+      },
+      "paraphrase": "You can clear away many of the useless things that disturb you, because they exist only in your opinion. Then you gain room to take in the universe, eternity, and how brief the time between birth and death really is.",
+      "apply": {
+        "work": "What useless worry at work exists only in your opinion?",
+        "family": "What clutter at home, physical or mental, could you clear this week?",
+        "decision": "Clear the opinions from this decision. How much room does that give you?"
+      }
+    },
+    {
+      "day": 87,
+      "unit": 9,
+      "ref": "11.21",
+      "theme": "purpose",
+      "virtue": "justice",
+      "context": "Marcus's argument for having one aim: only then are you the same person all through life.",
+      "keyword": {
+        "greek": "εἷς καὶ ὁ αὐτός",
+        "translit": "heis kai ho autos",
+        "gloss": "one and the same"
+      },
+      "paraphrase": "Someone without one consistent aim can't be one and the same person through life. And the aim must be the right one: something common and social. Whoever directs all efforts there makes all their acts alike, and stays the same.",
+      "apply": {
+        "work": "What single aim ties your work together? If none, what should it be?",
+        "family": "Would your family recognise one consistent aim in how you live?",
+        "decision": "Does this decision serve your one aim, or pull you in a new direction?"
+      }
+    },
+    {
+      "day": 88,
+      "unit": 9,
+      "ref": "7.31",
+      "theme": "simplicity",
+      "virtue": "temperance",
+      "context": "Four short commands and a line of poetry. The things that lie between virtue and vice are wealth, health, fame and the rest.",
+      "keyword": {
+        "greek": "ἁπλότης",
+        "translit": "haplotēs",
+        "gloss": "simplicity, sincerity"
+      },
+      "paraphrase": "Adorn yourself with simplicity, modesty, and indifference to things that are neither virtue nor vice. Love people. Follow God. The poet says law rules all, and it's enough to remember that.",
+      "apply": {
+        "work": "What indifferent thing (title, bonus) are you treating as if it were virtue?",
+        "family": "What would a simpler home life look like this week?",
+        "decision": "Which option in this decision is simpler? Why haven't you chosen it?"
+      }
+    },
+    {
+      "day": 89,
+      "unit": 9,
+      "ref": "2.2",
+      "theme": "focus",
+      "virtue": "temperance",
+      "context": "Written at Carnuntum during the frontier wars. Marcus, then around fifty, tells himself to put his books aside and act.",
+      "keyword": {
+        "greek": "βιβλία",
+        "translit": "biblia",
+        "gloss": "books"
+      },
+      "paraphrase": "Whatever I am, I'm a little flesh, a little breath and a ruling mind. Throw away your books; stop distracting yourself. The body is blood and bones; the breath comes and goes. The ruling mind is what matters: don't let it be a slave, jerked on strings, or grumble about fate.",
+      "apply": {
+        "work": "What are you reading or researching at work to avoid acting?",
+        "family": "What distraction at home would you throw away if you were as old as Marcus?",
+        "decision": "Have you researched this decision enough? What would acting now look like?"
+      }
+    },
+    {
+      "day": 90,
+      "unit": 9,
+      "ref": "10.1",
+      "theme": "self",
+      "virtue": "temperance",
+      "context": "Book 10 opens with Marcus addressing his own soul in a string of questions: will you never be simple and whole?",
+      "keyword": {
+        "greek": "γυμνός",
+        "translit": "gymnos",
+        "gloss": "naked, stripped, unadorned"
+      },
+      "paraphrase": "Soul, will you never be good, simple, whole and unadorned, plainer than the body around you? Will you never be content, wanting nothing, desiring neither pleasures nor more time nor a better place nor better company? Will you never be satisfied with what you have, and live at peace with gods and people?",
+      "apply": {
+        "work": "What are you still wanting at work that keeps you from being content?",
+        "family": "What would being satisfied with your home life as it is look like today?",
+        "decision": "Is this decision driven by a want you'd drop if you were content?"
+      }
+    },
+    {
+      "day": 91,
+      "unit": 10,
+      "ref": "4.48",
+      "theme": "impermanence",
+      "virtue": "wisdom",
+      "context": "A catalogue of the dead: doctors, astrologers, philosophers, heroes, tyrants, whole cities. It ends with one of the gentlest images in the book.",
+      "keyword": {
+        "greek": "ἐλαία",
+        "translit": "elaia",
+        "gloss": "olive, the olive tree"
+      },
+      "paraphrase": "Think how many doctors have died after frowning over the sick, how many astrologers after predicting others' deaths, how many heroes and tyrants, how many cities. Human things are brief. So pass through this short time in line with nature, and end content, like a ripe olive that falls, blessing the earth and thanking the tree.",
+      "apply": {
+        "work": "Which work pressure would look different if you pictured everyone involved a hundred years from now?",
+        "family": "What would ending each day content, like the ripe olive, look like at home?",
+        "decision": "Does this decision look as heavy when you remember how brief everything is?"
+      }
+    },
+    {
+      "day": 92,
+      "unit": 10,
+      "ref": "4.36",
+      "theme": "change",
+      "virtue": "wisdom",
+      "context": "Marcus reframes change as creation: what passes away is the seed of what comes next.",
+      "keyword": {
+        "greek": "μεταβολή",
+        "translit": "metabolē",
+        "gloss": "change, transformation"
+      },
+      "paraphrase": "See that everything happens by change, and get used to the idea that nature loves nothing more than changing what exists and making new things like it. Everything that exists is in a way the seed of what will be.",
+      "apply": {
+        "work": "What change at work could be a seed rather than a loss?",
+        "family": "What's changing in your family that could be the seed of something good?",
+        "decision": "What is this decision the seed of?"
+      }
+    },
+    {
+      "day": 93,
+      "unit": 10,
+      "ref": "4.43",
+      "theme": "time",
+      "virtue": "wisdom",
+      "context": "An image as old as Heraclitus, whom Marcus often quotes: you can't step in the same river twice.",
+      "keyword": {
+        "greek": "ποταμός",
+        "translit": "potamos",
+        "gloss": "river"
+      },
+      "paraphrase": "Time is a river of events, a violent current. As soon as something is seen it's swept away, another takes its place, and that will be swept away too.",
+      "apply": {
+        "work": "Which work problem from last month has already been swept downstream?",
+        "family": "What moment at home should you notice before it's carried away?",
+        "decision": "Will the current carry this decision away soon? How much weight should it get?"
+      }
+    },
+    {
+      "day": 94,
+      "unit": 10,
+      "ref": "5.23",
+      "theme": "impermanence",
+      "virtue": "temperance",
+      "context": "The river again, now with the abyss of past and future on either side of it.",
+      "keyword": {
+        "greek": "αἰών",
+        "translit": "aiōn",
+        "gloss": "age, eternity, the whole span of time"
+      },
+      "paraphrase": "Think often of how fast things pass and vanish. Substance flows like a river, activity changes constantly, causes vary without end; hardly anything stands still. And beside you is the endless gulf of past and future where everything disappears. How foolish, then, to be puffed up or tormented by such things.",
+      "apply": {
+        "work": "What are you puffed up or tormented about at work that is already flowing past?",
+        "family": "What family worry shrinks when you remember the gulf of time around it?",
+        "decision": "Is pride or anxiety inflating this decision?"
+      }
+    },
+    {
+      "day": 95,
+      "unit": 10,
+      "ref": "7.18",
+      "theme": "change",
+      "virtue": "courage",
+      "context": "A run of rhetorical questions from ordinary life: a hot bath, a meal. Nothing useful happens without change.",
+      "keyword": {
+        "greek": "φόβος",
+        "translit": "phobos",
+        "gloss": "fear"
+      },
+      "paraphrase": "Is anyone afraid of change? What can happen without it? Can you have a hot bath unless wood changes? Eat unless food changes? Don't you see that your own change is just the same, and just as necessary to nature?",
+      "apply": {
+        "work": "What change at work are you afraid of? What useful thing could it make possible?",
+        "family": "What change in your family are you resisting that is as natural as a meal?",
+        "decision": "Is fear of change the real reason you're hesitating?"
+      }
+    },
+    {
+      "day": 96,
+      "unit": 10,
+      "ref": "9.19",
+      "theme": "change",
+      "virtue": "wisdom",
+      "context": "One sentence that includes the reader. Marcus puts himself inside the flux he describes.",
+      "keyword": {
+        "greek": "ἀλλοίωσις",
+        "translit": "alloiōsis",
+        "gloss": "alteration, becoming other"
+      },
+      "paraphrase": "Everything is changing, and you yourself are in constant transformation and, in a way, constant destruction, and so is the whole universe.",
+      "apply": {
+        "work": "How have you changed at work in the last year? Did you notice it happening?",
+        "family": "Who in your family is changing in ways you haven't caught up with?",
+        "decision": "Are you deciding for the person you were, rather than the one you're becoming?"
+      }
+    },
+    {
+      "day": 97,
+      "unit": 10,
+      "ref": "9.35",
+      "theme": "loss",
+      "virtue": "courage",
+      "context": "Marcus lost many children. Here he defines loss as change, and challenges himself to say the universe is simply bad.",
+      "keyword": {
+        "greek": "ἀποβολή",
+        "translit": "apobolē",
+        "gloss": "loss, casting away"
+      },
+      "paraphrase": "Loss is only change, and nature delights in change. Everything happens well by her, has always happened this way, and always will. Would you say all things have always been bad, and no power among so many gods could ever put them right?",
+      "apply": {
+        "work": "What loss at work could you see as change?",
+        "family": "What family loss have you judged as simply bad? What would Marcus ask you?",
+        "decision": "Does this decision involve a loss? What does it change into?"
+      }
+    },
+    {
+      "day": 98,
+      "unit": 10,
+      "ref": "6.15",
+      "theme": "flow",
+      "virtue": "temperance",
+      "context": "An image of a sparrow flying past: you'd be foolish to fall in love with it. Marcus applies this to everything that hurries by.",
+      "keyword": {
+        "greek": "ῥύσις",
+        "translit": "rhysis",
+        "gloss": "flow, flux"
+      },
+      "paraphrase": "Some things are rushing into being, others out, and part of what's arriving is already gone. Change constantly renews the world. In this stream where nothing stays, what would you value highly? It would be like falling in love with a sparrow flying past. Even our life is like breathing in and giving the breath back.",
+      "apply": {
+        "work": "What at work are you prizing highly that is only flying past?",
+        "family": "Which moment at home is worth loving precisely because it passes?",
+        "decision": "Are you placing a high price on something in this decision that won't stay?"
+      }
+    },
+    {
+      "day": 99,
+      "unit": 10,
+      "ref": "10.11",
+      "theme": "magnanimity",
+      "virtue": "justice",
+      "context": "Marcus argues that studying change produces greatness of soul: a person who sees how all things pass stops caring what others say.",
+      "keyword": {
+        "greek": "μεγαλοφροσύνη",
+        "translit": "megalophrosynē",
+        "gloss": "greatness of mind, magnanimity"
+      },
+      "paraphrase": "Practise seeing how all things change into one another; nothing makes a mind so great. Such a person, knowing they must soon leave everything, gives themselves to acting justly and accepting what comes. What others say or do against them hardly crosses their mind; they're content with acting justly now and accepting their lot.",
+      "apply": {
+        "work": "Whose criticism at work would matter less if you saw how quickly things change?",
+        "family": "At home, what would a great-souled response to today's friction be?",
+        "decision": "Which option would a magnanimous person, content with acting justly, choose?"
+      }
+    },
+    {
+      "day": 100,
+      "unit": 10,
+      "ref": "2.17",
+      "theme": "philosophy",
+      "virtue": "wisdom",
+      "context": "The last passage of Book 2, written at Carnuntum. Marcus lists everything that is unstable, then names the one thing that can guide a person through it.",
+      "keyword": {
+        "greek": "φιλοσοφία",
+        "translit": "philosophia",
+        "gloss": "love of wisdom"
+      },
+      "paraphrase": "Life is a point in time, the body a flow, perception dull, the soul a whirl, fortune unpredictable, fame without judgement. Everything bodily is a river, everything of the soul a dream and a vapour, life a war and a stay abroad, later fame forgetting. What can guide us? Only philosophy: keeping the mind free from harm, above pleasure and pain, acting with purpose, and meeting death cheerfully.",
+      "apply": {
+        "work": "What steadies you at work when everything else is in flux?",
+        "family": "What guide do you use at home when things are a whirl?",
+        "decision": "What would philosophy, as Marcus defines it, advise here?"
+      }
+    },
+    {
+      "day": 101,
+      "unit": 11,
+      "ref": "2.11",
+      "theme": "death",
+      "virtue": "courage",
+      "context": "Marcus argues that death isn't evil whether or not the gods exist. Life, death, fame and pain come to good and bad people alike, so none of them is good or bad.",
+      "keyword": {
+        "greek": "θάνατος",
+        "translit": "thanatos",
+        "gloss": "death"
+      },
+      "paraphrase": "You could leave life at any moment, so let every act and thought reflect that. If there are gods, death isn't frightening; if there aren't, why live in a universe without them? But they exist and care. Death and life, honour and dishonour, pain and pleasure happen equally to good and bad people, and make neither better nor worse. So they are neither good nor evil.",
+      "apply": {
+        "work": "If you could leave today, which task at work would you do differently?",
+        "family": "What would you say at home tonight if you remembered you might not have tomorrow?",
+        "decision": "Is fear of loss making this decision? What would you choose if you remembered time is short?"
+      }
+    },
+    {
+      "day": 102,
+      "unit": 11,
+      "ref": "4.17",
+      "theme": "death",
+      "virtue": "courage",
+      "context": "Three short sentences, among the most quoted in the book. The last two words are the whole instruction.",
+      "keyword": {
+        "greek": "ὡς μύρια ἔτη",
+        "translit": "hōs myria etē",
+        "gloss": "as if for ten thousand years"
+      },
+      "paraphrase": "Don't act as if you'll live ten thousand years. Death hangs over you. While you're alive and able, be good.",
+      "apply": {
+        "work": "What would you stop putting off at work if you remembered you won't live ten thousand years?",
+        "family": "What good could you do at home today while it's in your power?",
+        "decision": "What would be good here, now, given that time is short?"
+      }
+    },
+    {
+      "day": 103,
+      "unit": 11,
+      "ref": "7.69",
+      "theme": "character",
+      "virtue": "temperance",
+      "context": "Marcus's definition of a perfected character: three ways not to be, and one way to live each day.",
+      "keyword": {
+        "greek": "τελειότης τοῦ ἤθους",
+        "translit": "teleiotēs tou ēthous",
+        "gloss": "perfection of character"
+      },
+      "paraphrase": "The perfection of character is this: to live each day as if it were the last, without frenzy, without apathy, without pretence.",
+      "apply": {
+        "work": "Were you frantic, apathetic or pretending at work today?",
+        "family": "What would living this evening as your last look like, without frenzy?",
+        "decision": "Would you make this decision the same way if today were your last?"
+      }
+    },
+    {
+      "day": 104,
+      "unit": 11,
+      "ref": "2.14",
+      "theme": "present",
+      "virtue": "wisdom",
+      "context": "An argument that the longest and shortest lives lose the same thing: only the present moment, because that's all anyone has.",
+      "keyword": {
+        "greek": "στιγμή",
+        "translit": "stigmē",
+        "gloss": "point, instant"
+      },
+      "paraphrase": "Even if you lived three thousand or thirty thousand years, you can only lose the life you're living now, and you only live the one you're losing. So the longest and shortest lives come to the same. The present is the same for all; you can't lose past or future, since you don't have them.",
+      "apply": {
+        "work": "What at work are you worried about losing that you don't actually have?",
+        "family": "What is the only moment you can give your family? Are you giving it?",
+        "decision": "Which part of this decision is about a future you don't own yet?"
+      }
+    },
+    {
+      "day": 105,
+      "unit": 11,
+      "ref": "4.50",
+      "theme": "death",
+      "virtue": "courage",
+      "context": "Marcus names ordinary long-lived Romans, now forgotten, to show that a long life gains little. The contrast of time before and after is vast.",
+      "keyword": {
+        "greek": "βραχύ",
+        "translit": "brachy",
+        "gloss": "short, brief"
+      },
+      "paraphrase": "A crude but useful help against fearing death: think of those who clung to life. What did they gain over those who died young? They lie in tombs anyway. The gap between birth and death is small, and lived with so much trouble. Look at the endless time behind you and ahead of you: in it, three days and three generations differ little.",
+      "apply": {
+        "work": "What at work are you clinging to that a longer career won't make more meaningful?",
+        "family": "What would be enough, in a life with your family, whatever its length?",
+        "decision": "Are you trying to buy more time in this decision rather than use the time well?"
+      }
+    },
+    {
+      "day": 106,
+      "unit": 11,
+      "ref": "6.28",
+      "theme": "death",
+      "virtue": "temperance",
+      "context": "Marcus defines death by what it ends: the senses, the pull of appetites, restless thought, service to the body.",
+      "keyword": {
+        "greek": "ἀνάπαυλα",
+        "translit": "anapaula",
+        "gloss": "rest, respite"
+      },
+      "paraphrase": "Death is a rest from the impressions of the senses, from the strings of the appetites that pull us around, from the wanderings of thought, and from serving the body.",
+      "apply": {
+        "work": "Which strings of appetite pull you most at work?",
+        "family": "What rest could you give yourself at home tonight, from the senses and from restless thoughts?",
+        "decision": "Which appetite is pulling this decision? What if you rested from it?"
+      }
+    },
+    {
+      "day": 107,
+      "unit": 11,
+      "ref": "9.3",
+      "theme": "death",
+      "virtue": "courage",
+      "context": "Death as a natural process, like teething or greying hair. Marcus closes with a rare moment of weariness at living among people who don't share his principles.",
+      "keyword": {
+        "greek": "διάλυσις",
+        "translit": "dialysis",
+        "gloss": "dissolution, breaking up"
+      },
+      "paraphrase": "Don't despise death; be content with it, as one of the things nature wants. Like youth, age, growth and grey hair, dissolution is natural. A thoughtful person is neither careless nor impatient nor scornful about death, but waits for it as one of nature's operations.",
+      "apply": {
+        "work": "How would you work differently if you accepted, calmly, that the job ends?",
+        "family": "What natural change in your family could you accept rather than fight?",
+        "decision": "Does this decision try to avoid something as natural as ageing?"
+      }
+    },
+    {
+      "day": 108,
+      "unit": 11,
+      "ref": "10.15",
+      "theme": "integrity",
+      "virtue": "courage",
+      "context": "From late in the Meditations. Live as on a mountain: the same person anywhere, in full view.",
+      "keyword": {
+        "greek": "ὄρος",
+        "translit": "oros",
+        "gloss": "mountain"
+      },
+      "paraphrase": "What's left of your life is short. Live as if on a mountain; it makes no difference whether here or there, if you live everywhere as a citizen of the world. Let people see a real person living by nature. If they can't stand it, let them kill him; that's better than living as they do.",
+      "apply": {
+        "work": "Would you work the same way if everyone could see you, as on a mountain?",
+        "family": "What would living in plain view look like at home?",
+        "decision": "Which option could you defend in full view of everyone?"
+      }
+    },
+    {
+      "day": 109,
+      "unit": 11,
+      "ref": "7.56",
+      "theme": "fresh start",
+      "virtue": "courage",
+      "context": "A thought experiment in one sentence: treat your life so far as finished, and everything after as a gift.",
+      "keyword": {
+        "greek": "τὸ λοιπόν",
+        "translit": "to loipon",
+        "gloss": "the rest, what remains"
+      },
+      "paraphrase": "Imagine you've died and your life so far is complete. Now live whatever remains, which is extra, according to nature.",
+      "apply": {
+        "work": "If your career so far were complete, what would you do with the bonus time?",
+        "family": "If the rest of your family life were a gift, how would you spend this week?",
+        "decision": "Make this decision as if everything from here is extra time."
+      }
+    },
+    {
+      "day": 110,
+      "unit": 11,
+      "ref": "4.32",
+      "theme": "impermanence",
+      "virtue": "wisdom",
+      "context": "Marcus looks back at the times of Vespasian and Trajan, a century before him. The same busy human scene, and all of it now gone.",
+      "keyword": {
+        "greek": "βίος",
+        "translit": "bios",
+        "gloss": "a life, a way of living"
+      },
+      "paraphrase": "Look at the time of Vespasian: people marrying, raising children, falling ill, dying, fighting, feasting, trading, farming, flattering, scheming, grumbling, loving, hoarding, chasing office. That life is gone. Then Trajan's time: the same, and gone. Think of those who strained after vain things instead of doing what suited them and being content.",
+      "apply": {
+        "work": "In a hundred years, which of your work worries will look like Vespasian's courtiers?",
+        "family": "What are you straining after at home instead of being content?",
+        "decision": "Is this decision the kind of thing Vespasian's contemporaries fussed over?"
+      }
+    },
+    {
+      "day": 111,
+      "unit": 12,
+      "ref": "6.21",
+      "theme": "truth",
+      "virtue": "wisdom",
+      "context": "One of the best-known lines Marcus wrote. He was emperor, surrounded by flatterers, and asked to be corrected anyway.",
+      "keyword": {
+        "greek": "ἀλήθεια",
+        "translit": "alētheia",
+        "gloss": "truth, unconcealment"
+      },
+      "paraphrase": "If anyone can show me I'm thinking or acting wrongly, I'll gladly change. I'm looking for the truth, which never harmed anyone. The one harmed is the person who stays in error and ignorance.",
+      "apply": {
+        "work": "Who at work could show you where you're wrong? Have you asked them?",
+        "family": "When were you last glad to be corrected at home?",
+        "decision": "Who could convince you that you're wrong about this decision? Have you let them try?"
+      }
+    },
+    {
+      "day": 112,
+      "unit": 12,
+      "ref": "9.29",
+      "theme": "realism",
+      "virtue": "justice",
+      "context": "Marcus warns himself against grand schemes. Don't expect Plato's Republic, an ideal state; be content if the smallest thing goes well.",
+      "keyword": {
+        "greek": "Πλάτωνος πολιτεία",
+        "translit": "Platōnos politeia",
+        "gloss": "Plato's Republic, the ideal state"
+      },
+      "paraphrase": "The universe carries everything along like a torrent. Those who play philosopher in politics are drivellers. Do what nature needs now; act if you can, without looking to see who notices. Don't hope for Plato's Republic; be content if the smallest thing goes well, and don't treat it as small.",
+      "apply": {
+        "work": "What ideal at work are you waiting for instead of improving one small thing?",
+        "family": "What small thing at home could you get right, without needing an ideal family?",
+        "decision": "Are you holding this decision up to an ideal it can't meet?"
+      }
+    },
+    {
+      "day": 113,
+      "unit": 12,
+      "ref": "12.17",
+      "theme": "integrity",
+      "virtue": "justice",
+      "context": "Two rules, from the last book. In Long's translation the sentence breaks off mid-thought.",
+      "keyword": {
+        "greek": "ἀληθές",
+        "translit": "alēthes",
+        "gloss": "true, not hidden"
+      },
+      "paraphrase": "If it isn't right, don't do it; if it isn't true, don't say it. Let your effort be...",
+      "apply": {
+        "work": "What at work isn't quite right that you're doing anyway?",
+        "family": "What isn't quite true that you've been saying at home?",
+        "decision": "Test each option: is it right? Is what you'll say about it true?"
+      }
+    },
+    {
+      "day": 114,
+      "unit": 12,
+      "ref": "3.6",
+      "theme": "virtue",
+      "virtue": "wisdom",
+      "context": "Marcus names the four cardinal virtues, justice, truth, temperance and courage, and challenges himself to find anything better.",
+      "keyword": {
+        "greek": "ἀρετή",
+        "translit": "aretē",
+        "gloss": "excellence, virtue"
+      },
+      "paraphrase": "If you find anything in life better than justice, truth, self-control and courage, and a mind content with acting by right reason, turn to it with your whole soul. But if nothing looks better than the god within you, don't give room to anything else, such as praise, power, wealth or pleasure. Choose the better, freely and simply, and hold to it.",
+      "apply": {
+        "work": "What at work are you tempted to rank above justice or truth?",
+        "family": "What at home competes with the four virtues for your attention?",
+        "decision": "Which option would you choose if nothing ranked above the four virtues?"
+      }
+    },
+    {
+      "day": 115,
+      "unit": 12,
+      "ref": "8.16",
+      "theme": "correction",
+      "virtue": "wisdom",
+      "context": "A companion to 6.21. Marcus insists that changing your mind is itself an act of freedom.",
+      "keyword": {
+        "greek": "μετατίθεσθαι",
+        "translit": "metatithesthai",
+        "gloss": "to change one's mind, to shift position"
+      },
+      "paraphrase": "Remember that changing your mind and following someone who corrects you is as free as persisting in error. It's still your own act, done by your own judgement and understanding.",
+      "apply": {
+        "work": "Where at work are you holding a position because changing it feels like losing?",
+        "family": "What would changing your mind at home, freely, look like?",
+        "decision": "Would changing your mind about this decision be a loss, or a free choice?"
+      }
+    },
+    {
+      "day": 116,
+      "unit": 12,
+      "ref": "5.9",
+      "theme": "failure",
+      "virtue": "temperance",
+      "context": "Marcus's advice on falling short: philosophy isn't a stern schoolmaster but a soothing remedy, like a bathe for sore eyes.",
+      "keyword": {
+        "greek": "ἐπανέρχεσθαι",
+        "translit": "epanerchesthai",
+        "gloss": "to come back, to return"
+      },
+      "paraphrase": "Don't be disgusted, discouraged or dissatisfied if you don't always act on right principles. When you fail, come back, and be content if most of what you do fits human nature. Love what you return to. Don't go back to philosophy as to a harsh master, but as someone with sore eyes goes to a soothing remedy.",
+      "apply": {
+        "work": "Where have you fallen short at work lately? What would returning, without disgust, look like?",
+        "family": "At home, how do you treat yourself after a bad day?",
+        "decision": "If this decision goes wrong, how will you return, rather than give up?"
+      }
+    },
+    {
+      "day": 117,
+      "unit": 12,
+      "ref": "7.55",
+      "theme": "self-direction",
+      "virtue": "justice",
+      "context": "Marcus tells himself to stop studying other people's minds and look straight at his own path, set by nature.",
+      "keyword": {
+        "greek": "φύσις",
+        "translit": "physis",
+        "gloss": "nature, the way a thing is made to grow"
+      },
+      "paraphrase": "Don't look around at other people's ruling minds. Look straight at where nature leads you: nature as a whole, through what happens to you, and your own, through what you must do. Everything should act by its make, and ours is made first for community, then for resisting the body's pulls, then for not being misled.",
+      "apply": {
+        "work": "Whose path at work are you watching instead of your own?",
+        "family": "At home, whose choices are you comparing yourself to?",
+        "decision": "Looking only at where your nature leads, what's your choice?"
+      }
+    },
+    {
+      "day": 118,
+      "unit": 12,
+      "ref": "12.1",
+      "theme": "now",
+      "virtue": "courage",
+      "context": "The opening of the final book. Everything you're trying to reach by a roundabout route is available now, if you stop refusing it.",
+      "keyword": {
+        "greek": "περίοδος",
+        "translit": "periodos",
+        "gloss": "a going round, a roundabout way"
+      },
+      "paraphrase": "All that you're trying to reach by a roundabout road you can have now, if you don't refuse it to yourself: let go of the past, trust the future to providence, and direct the present by reverence and justice. Fear not that your life will end, but that it will never have begun according to nature.",
+      "apply": {
+        "work": "What at work are you reaching by a roundabout road that you could simply do now?",
+        "family": "What would beginning to live by nature, at home, look like this week?",
+        "decision": "What does this decision look like if you take the direct road?"
+      }
+    },
+    {
+      "day": 119,
+      "unit": 12,
+      "ref": "11.1",
+      "theme": "reason",
+      "virtue": "wisdom",
+      "context": "Book 11 opens by listing what the rational soul does: it sees, analyses and shapes itself. Its work is complete at every moment, not only at the end.",
+      "keyword": {
+        "greek": "λογικὴ ψυχή",
+        "translit": "logikē psychē",
+        "gloss": "the rational soul"
+      },
+      "paraphrase": "The rational soul sees itself, examines itself, and makes itself what it chooses. It enjoys its own fruit. It reaches its end wherever life stops, unlike a dance or a play that's incomplete if cut short. At every point it can say: I have what is mine.",
+      "apply": {
+        "work": "Which part of your work is complete in itself, even if the project ends tomorrow?",
+        "family": "What at home is already whole, without waiting for some future milestone?",
+        "decision": "If this decision were your last act, would it be complete in itself?"
+      }
+    },
+    {
+      "day": 120,
+      "unit": 12,
+      "ref": "12.36",
+      "theme": "completion",
+      "virtue": "courage",
+      "context": "The last passage of the Meditations. Marcus compares life to a play: three acts can be the whole drama, and the one who ends it is satisfied.",
+      "keyword": {
+        "greek": "πόλις",
+        "translit": "polis",
+        "gloss": "city, state, the community one belongs to"
+      },
+      "paraphrase": "You've been a citizen of this great city, the world. What does it matter whether for five years or three? What's lawful is fair to all. Nature, which brought you in, sends you out, like a praetor dismissing an actor. But I've only played three of the five acts. True, but in life three acts are the whole play. Leave content, for the one who releases you is content.",
+      "apply": {
+        "work": "If your work stopped after act three, would it be a whole play?",
+        "family": "What would it mean to be content with your family life as a complete drama so far?",
+        "decision": "Make your last decision of this course as a citizen of the world. What do you choose?"
       }
     }
   ]

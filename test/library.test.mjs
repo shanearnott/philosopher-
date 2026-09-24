@@ -21,7 +21,8 @@ test("in-app SHA-256 agrees with node's", () => {
 });
 
 test("every course day points at a library passage", () => {
-  assert.equal(course.days.length, 30);
+  assert.equal(course.days.length, 120);
+  assert.equal(new Set(course.days.map((d) => d.ref)).size, 120, "no passage repeats");
   course.days.forEach((d, i) => {
     assert.equal(d.day, i + 1);
     assert.ok(library.passages[`meditations.${d.ref}`], d.ref);

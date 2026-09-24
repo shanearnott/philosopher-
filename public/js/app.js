@@ -302,6 +302,7 @@ function pendingCheckin(today) {
 function renderToday() {
   const today = dayKey();
   const { day: dayNum, done, finished } = todaysDay(state.progress, state.sessions, today, course.days.length);
+  if (finished && !state.sessions[today]) return renderReview();
   const day = dayByNum(dayNum);
   const passage = verifiedPassage(library, pid(day));
   const entry = state.journal.find((j) => j.date === today && j.day === day.day);
@@ -348,7 +349,7 @@ function renderToday() {
   const favMark = h("span", { class: "fav-mark" }, fav() ? "✦" : "");
   const qsize = passage ? Math.max(19, Math.min(34, 34 - (passage.text.length - 120) / 40)) : 24;
   const passageCard = h("section", { class: "card", style: { ...bg(180), "--qsize": `${qsize}px` } },
-    h("p", { class: "eyebrow" }, finished ? "Units 1–3 complete · revisiting" : `Day ${day.day} · ${unitOf(day).title}`),
+    h("p", { class: "eyebrow" }, `Day ${day.day} of ${course.days.length} · ${unitOf(day).title}`),
     h("div", { class: "card-scroll" },
       passage
         ? h("blockquote", { class: "quote" }, passage.text)
@@ -473,8 +474,15 @@ function renderToday() {
     draftTimer = setTimeout(() => { entryFor(today, day).reflection = ta.value; persist(); }, 500);
   });
   const mic = dictationButton(ta, updateCount);
+  // On this day: what you wrote on this passage last time round
+  const lastTime = state.journal
+    .filter((j) => j.passageId === pid(day) && j.date < today && wordCount(j.reflection) > 0)
+    .sort((a, b) => b.date.localeCompare(a.date))[0];
   const reflectCard = h("section", { class: "card", style: bg(120) },
     h("p", { class: "eyebrow" }, "Reflect"),
+    lastTime && h("details", { class: "last-time" },
+      h("summary", {}, `You wrote on this passage on ${fmtDate(lastTime.date)}`),
+      h("p", {}, lastTime.reflection)),
     questionEcho,
     ta,
     h("div", { class: "meta-row" }, counter, mic),
@@ -583,7 +591,7 @@ function renderToday() {
     const nextDay = dayByNum(state.progress.completedDay + 1);
     endMsg.textContent = nextDay
       ? `Tomorrow: day ${nextDay.day}, ${unitOf(nextDay).title.toLowerCase()}. Nothing more to see today.`
-      : "You've finished the prototype path: Units 1 to 3. The rest of the 120-day course comes next.";
+      : "That was the last day of the Meditations. Tomorrow: your review week.";
   };
   drawEnd(false);
   new IntersectionObserver((es) => {
@@ -606,6 +614,49 @@ function renderToday() {
   if (done && !finished) toast("Done for today. Revisiting.");
 }
 
+// Course 1 ends with a review week: your saved passages and your own best
+// reflections, as cards. Then you can start the path again.
+function renderReview() {
+  document.body.classList.add("on-cards");
+  const deck = h("div", { class: "deck" });
+  const bg = { "--card-bg": "radial-gradient(90% 60% at 50% 0%, #6b5a33 0%, transparent 70%), linear-gradient(180deg, #221d19, #0e0d0c)" };
+  const favs = Object.entries(state.favourites).sort((a, b) => a[1].localeCompare(b[1])).slice(0, 10)
+    .map(([id]) => verifiedPassage(library, id)).filter(Boolean);
+  const best = state.journal.filter((e) => e.ref && wordCount(e.reflection) >= REFLECTION_MIN_WORDS)
+    .sort((a, b) => wordCount(b.reflection) - wordCount(a.reflection)).slice(0, 5);
+  const cards = [
+    h("section", { class: "card", style: bg },
+      h("p", { class: "eyebrow" }, "Review week"),
+      h("h2", {}, `You've finished the Meditations.`),
+      h("p", { class: "lede" }, `${course.days.length} days, ${Object.keys(state.sessions).length} ${Object.keys(state.sessions).length === 1 ? "session" : "sessions"}. Swipe through the passages you saved and the best of what you wrote.`)),
+    ...favs.map((p, i) => h("section", { class: "card", style: bg },
+      h("p", { class: "eyebrow" }, `Saved passage ${i + 1} of ${favs.length}`),
+      h("div", { class: "card-scroll" }, h("blockquote", { class: "quote", style: { "--qsize": `${Math.max(19, Math.min(30, 30 - (p.text.length - 120) / 40))}px` } }, p.text),
+        h("p", { class: "quote-ref" }, `${p.work} ${p.ref}`)))),
+    ...best.map((e) => h("section", { class: "card", style: bg },
+      h("p", { class: "eyebrow" }, `You wrote · ${fmtDate(e.date)} · on ${e.ref}`),
+      h("div", { class: "card-scroll" }, h("p", { class: "lede", style: { whiteSpace: "pre-wrap" } }, e.reflection)))),
+    h("section", { class: "card end", style: bg },
+      h("p", { class: "eyebrow" }, "What next"),
+      h("h2", {}, "Begin again, or wander."),
+      h("p", { class: "soft" }, "Repeat the path from day one; your journal stays, so you'll see what you wrote last time. Or explore the library in Mix."),
+      h("div", { class: "btn-row", style: { justifyContent: "center" } },
+        h("button", { class: "btn primary", onclick: () => {
+          if (!confirm("Start the 120-day path again from day 1? Your journal and points stay.")) return;
+          state.progress.completedDay = 0;
+          state.progress.round = (state.progress.round || 1) + 1;
+          persist();
+          renderToday();
+        } }, "Start again"),
+        h("button", { class: "btn", onclick: () => go("journal") }, "Journal"))),
+  ];
+  if (!favs.length) cards.splice(1, 0, h("section", { class: "card", style: bg },
+    h("p", { class: "eyebrow" }, "Saved passages"), h("p", { class: "lede" }, "You didn't save any passages this time. Next round, hold a passage card to keep it.")));
+  const io = new IntersectionObserver((es) => es.forEach((en) => en.isIntersecting && en.target.classList.add("in")), { threshold: 0.35 });
+  cards.forEach((c) => { deck.append(c); io.observe(c); });
+  view.replaceChildren(deck);
+}
+
 // Records the day's session; returns points earned now.
 function completeSession(day, mode) {
   const today = dayKey();
@@ -619,6 +670,7 @@ function completeSession(day, mode) {
     state.progress.completedDay = day.day;
     const unitDays = course.days.filter((d) => d.unit === day.unit);
     if (unitDays[unitDays.length - 1].day === day.day) earned += award("unit", `${course.id}.${day.unit}`);
+    if (day.day === course.days.length) earned += award("course", course.id);
   }
   persist();
   return earned;
@@ -915,7 +967,7 @@ function renderYou() {
     h("h2", {}, "How points work"),
     h("div", { class: "panel muted" },
       h("p", { style: { margin: 0 } },
-        `Daily session ${POINTS.session} · quick mode ${POINTS.quick} · reflection of ${REFLECTION_MIN_WORDS}+ words ${POINTS.reflection} · next-day check-in ${POINTS.checkin} · evening review ${POINTS.evening} · favourite ${POINTS.favourite} (up to 5 a day) · finish a unit ${POINTS.unit}. Swipes, time in app and extra words score nothing.`),
+        `Daily session ${POINTS.session} · quick mode ${POINTS.quick} · reflection of ${REFLECTION_MIN_WORDS}+ words ${POINTS.reflection} · next-day check-in ${POINTS.checkin} · evening review ${POINTS.evening} · favourite ${POINTS.favourite} (up to 5 a day) · finish a unit ${POINTS.unit} · finish the course ${POINTS.course}. Swipes, time in app and extra words score nothing.`),
       h("p", { style: { marginBottom: 0 } }, "Ranks: ", RANKS.map((r) => `${r.name} ${r.min.toLocaleString()}`).join(" · "))),
     h("h2", {}, "About you"),
     h("div", { class: "panel" },

@@ -2,7 +2,7 @@
 
 A phone app to take Instagram's slot on your home screen. The same thumb-swipe habit, but each swipe moves you through real philosophy, and the day's session ends after one passage.
 
-This is **Phase 1** of the plan (*Stoa — A Philosophy Feed to Replace Instagram*): a web app you save to your home screen, covering Meditations Units 1–3 (30 days).
+This is **Phase 1** of the plan (*Stoa — A Philosophy Feed to Replace Instagram*): a web app you save to your home screen, covering the full 120-day Meditations core path in 12 themed units, ending with a review week.
 
 ## What's in it
 
@@ -68,7 +68,7 @@ Any other Node host with HTTPS (Fly, Railway, a VPS) works the same way as Rende
 
 ## Texts and numbering
 
-`npm run ingest` re-downloads the text and rebuilds `public/data/library.json`. Standard Ebooks paragraphs don't carry section numbers, and a few paragraphs split or merge the standard sections (for example, 4.3 spans two paragraphs). So every passage is mapped to its paragraph explicitly in `scripts/ingest.mjs` and checked against its opening words. The library currently holds 42 passages: the 30 course days plus anchor passages for later units. Adding a day means adding its mapping there first.
+`npm run ingest` re-downloads the text and rebuilds `public/data/library.json`. Standard Ebooks paragraphs don't carry section numbers, and a few paragraphs split or merge the standard sections (for example, 4.3 spans two paragraphs). So every passage is mapped to its paragraph explicitly in `scripts/ingest.mjs` and checked against its opening words. Each book is aligned in `ALIGN` (which paragraphs merge, which hold two sections and are left out) and checked against well-known passages in `ANCHORS`; every book must come out at its standard section count. The library holds 471 of the ~488 sections; the 17 left out sit in verse clusters (e.g. 7.36–7.41) where the edition doesn't separate sections cleanly.
 
 ## Layout
 

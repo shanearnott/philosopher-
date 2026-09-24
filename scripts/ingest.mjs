@@ -5,9 +5,8 @@
 // doesn't match.
 //
 // Standard Ebooks paragraphs don't carry section numbers, and a few paragraphs
-// split or merge sections, so every passage is mapped explicitly to its
-// paragraph ordinal and checked against its opening words. Only mapped
-// passages enter the library.
+// split or merge sections, so each book is aligned explicitly (ALIGN) and a
+// set of well-known passages is checked against their opening words (ANCHORS).
 //
 // Usage: node scripts/ingest.mjs [--from <dir with book-N.xhtml>]
 
@@ -20,59 +19,72 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const SOURCE =
   "https://raw.githubusercontent.com/standardebooks/marcus-aurelius_meditations_george-long/master/src/epub/text";
 
-// ref -> [book, first paragraph ordinal, last paragraph ordinal, opening words]
-// Paragraph ordinals count top-level <p> elements in each book's chapter.
-export const PASSAGES = {
-  // Book 1: one paragraph per section
-  "1.1": [1, 1, 1, "From my grandfather Verus"],
-  "1.5": [1, 5, 5, "From my governor"],
-  "1.6": [1, 6, 6, "From Diognetus"],
-  "1.7": [1, 7, 7, "From Rusticus"],
-  "1.8": [1, 8, 8, "From Apollonius"],
-  "1.9": [1, 9, 9, "From Sextus"],
-  "1.13": [1, 13, 13, "From Catulus"],
-  "1.15": [1, 15, 15, "From Maximus"],
-  "1.16": [1, 16, 16, "In my father I observed"],
-  "1.17": [1, 17, 17, "To the gods I am indebted"],
-  // Book 2: one paragraph per section (final paragraph is the place note)
-  "2.1": [2, 1, 1, "Begin the morning"],
-  "2.4": [2, 4, 4, "Remember how long thou hast been putting off"],
-  "2.5": [2, 5, 5, "Every moment think steadily"],
-  "2.7": [2, 7, 7, "Do the things external"],
-  "2.11": [2, 11, 11, "Since it is possible"],
-  "2.15": [2, 15, 15, "Remember that all is opinion"],
-  // Book 3: one paragraph per section
-  "3.4": [3, 4, 4, "Do not waste the remainder"],
-  "3.10": [3, 10, 10, "Throwing away then all things"],
-  "3.12": [3, 12, 12, "If thou workest at that which is before thee"],
-  // Book 4: 4.3 spans paragraphs 3-4, 4.21 spans 22-23, 4.49 spans 51-52
-  "4.2": [4, 2, 2, "Let no act be done without a purpose"],
-  "4.3": [4, 3, 4, "Men seek retreats for themselves"],
-  "4.7": [4, 8, 8, "Take away thy opinion"],
-  "4.17": [4, 18, 18, "Do not act as if thou wert going to live ten thousand years"],
-  "4.18": [4, 19, 19, "How much trouble he avoids"],
-  "4.24": [4, 26, 26, "Occupy thyself with few things"],
-  "4.48": [4, 50, 50, "Think continually how many physicians are dead"],
-  "4.49": [4, 51, 52, "Be like the promontory"],
-  // Book 5: sections 1-30 are one paragraph each
-  "5.1": [5, 1, 1, "In the morning when thou risest unwillingly"],
-  "5.2": [5, 2, 2, "How easy it is to repel"],
-  "5.6": [5, 6, 6, "One man, when he has done a service"],
-  "5.16": [5, 16, 16, "Such as are thy habitual thoughts"],
-  "5.19": [5, 19, 19, "Things themselves touch not the soul"],
-  "5.20": [5, 20, 20, "In one respect man is the nearest thing to me"],
-  "5.25": [5, 25, 25, "Does another do me wrong?"],
-  // Book 8: two merged sections precede 8.34
-  "8.47": [8, 49, 49, "If thou art pained by any external thing"],
-  "8.48": [8, 50, 50, "Remember that the ruling faculty is invincible"],
-  "8.49": [8, 51, 51, "Say nothing more to thyself than what the first appearances report"],
-  "8.50": [8, 52, 52, "A cucumber is bitter"],
-  // Book 12: 12.3 spans 3-4 (verse between), 12.5 spans 6-7
-  "12.17": [12, 19, 19, "If it is not right, do not do it"],
-  "12.19": [12, 21, 21, "Perceive at last that thou hast in thee"],
-  "12.22": [12, 24, 24, "Consider that everything is opinion"],
-  "12.25": [12, 27, 27, "Cast away opinion"],
+// How Standard Ebooks paragraphs line up with the standard section numbers.
+// Paragraphs are counted as top-level <p> ordinals within each book. By
+// default each paragraph is the next section. Exceptions:
+//   group:   paragraphs that together make one section
+//   exclude: paragraphs that hold parts of two sections (they still consume a
+//            section number but are left out of the library rather than
+//            mislabelled), or place notes
+//   fix:     paragraph ordinal -> section number, to resume after a gap
+//   sections: expected number of sections in the book
+export const ALIGN = {
+  1: { exclude: [18], sections: 17, trailingNote: true },
+  2: { exclude: [18], sections: 17, trailingNote: true },
+  3: { sections: 16 },
+  4: { group: [[3, 4], [22, 23], [51, 52]], sections: 51 },
+  5: { group: [[31, 32], [34, 35]], sections: 37 },
+  6: { exclude: [44], fix: { 45: 46 }, sections: 59 },
+  7: { exclude: [36, 37, 45, 46], fix: { 38: 42, 47: 52 }, group: [[50, 51]], sections: 75 },
+  8: { group: [[21, 22], [23, 24], [53, 54]], sections: 61 },
+  9: { group: [[28, 29]], sections: 42 },
+  10: { group: [[2, 3], [14, 15], [30, 31], [37, 38]], sections: 38 },
+  11: { group: [[6, 11], [23, 33]], exclude: [44, 48], fix: { 45: 33, 49: 38 }, sections: 39 },
+  12: { group: [[3, 4], [6, 7]], sections: 36 },
 };
+
+// Passages whose numbers are well established, checked on every ingest.
+export const ANCHORS = {
+  "1.1": "From my grandfather Verus", "1.16": "In my father I observed", "1.17": "To the gods I am indebted",
+  "2.1": "Begin the morning", "2.11": "Since it is possible", "2.17": "Of human life the time is a point",
+  "3.4": "Do not waste the remainder", "3.16": "Body, soul, intelligence",
+  "4.3": "Men seek retreats for themselves", "4.17": "Do not act as if thou wert going to live ten thousand years",
+  "4.24": "Occupy thyself with few things", "4.49": "Be like the promontory", "4.51": "Always run to the short way",
+  "5.1": "In the morning when thou risest unwillingly", "5.20": "In one respect man is the nearest thing to me",
+  "5.25": "Does another do me wrong?", "5.33": "Soon, very soon, thou wilt be ashes",
+  "6.6": "The best way of avenging thyself", "6.21": "If any man is able to convince me", "6.30": "Take care that thou art not made into a Caesar",
+  "6.54": "That which is not good for the swarm", "6.59": "What kind of people are those whom men wish to please",
+  "7.22": "It is peculiar to man to love even those who do wrong", "7.59": "Look within. Within is the fountain of good",
+  "7.69": "The perfection of moral character", "7.73": "When thou hast done a good act", "7.75": "The nature of the All moved to make the universe",
+  "8.36": "Do not disturb thyself by thinking of the whole of thy life", "8.47": "If thou art pained by any external thing",
+  "8.48": "Remember that the ruling faculty is invincible", "8.50": "A cucumber is bitter", "8.59": "Men exist for the sake of one another",
+  "9.29": "The universal cause is like a winter torrent", "9.42": "When thou art offended with any man’s shameless conduct",
+  "10.15": "Short is the little which remains", "10.16": "No longer talk at all about the kind of man", "10.30": "When thou art offended at any man’s fault",
+  "10.38": "Remember that this which pulls the strings",
+  "11.8": "A branch cut off from the adjacent branch", "11.13": "Suppose any man shall despise me", "11.18": "If any have offended against thee",
+  "11.33": "To look for the fig in winter", "11.39": "Socrates used to say",
+  "12.17": "If it is not right, do not do it", "12.19": "Perceive at last", "12.36": "Man, thou hast been a citizen",
+};
+
+// Returns [{ section, first, last }] for one book.
+export function alignBook(book, paragraphCount) {
+  const spec = ALIGN[book] || {};
+  const groups = spec.group || [];
+  const exclude = new Set(spec.exclude || []);
+  const out = [];
+  let n = 0;
+  for (let p = 1; p <= paragraphCount; p++) {
+    if (spec.trailingNote && p === paragraphCount) break;
+    if (spec.fix?.[p]) n = spec.fix[p] - 1;
+    const g = groups.find(([a]) => a === p);
+    const last = g ? g[1] : p;
+    n++;
+    if (!exclude.has(p)) out.push({ section: n, first: p, last });
+    p = last;
+  }
+  if (spec.sections && n !== spec.sections) throw new Error(`Book ${book}: aligned ${n} sections, expected ${spec.sections}`);
+  return out;
+}
 
 const ENTITIES = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " " };
 
@@ -131,19 +143,26 @@ async function main() {
   for (let n = 1; n <= 12; n++) books[n] = splitBook(await loadBook(n, from));
 
   const passages = {};
-  for (const [ref, [book, first, last, opening]] of Object.entries(PASSAGES)) {
-    const text = extract(books[book], first, last);
-    if (!text.startsWith(opening)) {
-      throw new Error(`meditations.${ref}: expected "${opening}…", got "${text.slice(0, 60)}…"`);
+  for (let n = 1; n <= 12; n++) {
+    const paragraphs = books[n].filter((b) => b.kind === "p").length;
+    for (const { section, first, last } of alignBook(n, paragraphs)) {
+      const ref = `${n}.${section}`;
+      const text = extract(books[n], first, last);
+      passages[`meditations.${ref}`] = {
+        work: "Meditations",
+        author: "Marcus Aurelius",
+        translator: "George Long (1862)",
+        ref,
+        text,
+        sha256: sha256(text),
+      };
     }
-    passages[`meditations.${ref}`] = {
-      work: "Meditations",
-      author: "Marcus Aurelius",
-      translator: "George Long (1862)",
-      ref,
-      text,
-      sha256: sha256(text),
-    };
+  }
+  for (const [ref, opening] of Object.entries(ANCHORS)) {
+    const p = passages[`meditations.${ref}`];
+    if (!p?.text.startsWith(opening)) {
+      throw new Error(`meditations.${ref}: expected "${opening}…", got "${p?.text.slice(0, 60)}…"`);
+    }
   }
 
   const library = {
