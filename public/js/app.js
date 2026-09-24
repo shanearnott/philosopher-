@@ -4,7 +4,7 @@ import {
   virtueMeters, todaysDay, verifiedPassage, guardReply, journalMarkdown,
 } from "./logic.js";
 import { load, save, wipe, freshState } from "./store.js";
-import { buildRequest } from "./prompts.js";
+import { buildRequest, handoffText } from "./prompts.js";
 import { callClaude } from "./direct.js";
 
 // ---------- boot ----------
@@ -119,11 +119,9 @@ async function tutor(job, payload) {
   await statusReady;
   const body = { job, profile: state.profile, ...payload };
   if (!status.claude) {
-    if (!state.settings.apiKey) {
-      apiKeySheet();
-      throw new Error("The tutor needs a Claude API key. Add it, then try again.");
-    }
-    return callClaude(state.settings.apiKey, buildRequest(body, library, course));
+    const req = buildRequest(body, library, course);
+    // Pay-per-use key if one is saved; otherwise hand off to the Claude app
+    return state.settings.apiKey ? callClaude(state.settings.apiKey, req) : claudeHandoff(req);
   }
   const res = await fetch("api/tutor", {
     method: "POST",
@@ -138,6 +136,9 @@ async function tutor(job, payload) {
   if (!res.ok) throw new Error(data.error || `Tutor unavailable (${res.status})`);
   return data;
 }
+
+// No server and no API key: the tutor runs in the user's Claude app.
+const handoffMode = () => !status.claude && !state.settings.apiKey;
 
 // Renders Claude's words through the quote guard.
 function renderTutor(text, allowed) {
@@ -160,25 +161,48 @@ function renderTutor(text, allowed) {
 
 const thinking = () => h("div", { class: "thinking", "aria-label": "Thinking" }, h("i"), h("i"), h("i"));
 
-function apiKeySheet() {
-  if (document.querySelector(".sheet-backdrop")) return;
-  const input = h("input", { type: "password", autocomplete: "off", autocapitalize: "off", spellcheck: "false", placeholder: "sk-ant-…" });
-  const back = sheet(
-    h("h2", {}, "Turn on the tutor"),
-    h("p", { class: "muted" }, "Paste a Claude API key from ", h("a", { href: "https://console.anthropic.com/settings/keys", target: "_blank", rel: "noopener" }, "console.anthropic.com"),
-      ". It's saved on this device only and sent only to Anthropic. Daily use costs roughly $1–2 a month."),
-    h("label", { class: "field" }, input),
-    h("div", { class: "btn-row" },
-      h("button", { class: "btn primary", onclick: () => {
-        const key = input.value.trim();
-        if (!key.startsWith("sk-ant-")) return toast("That doesn't look like a Claude API key");
-        state.settings.apiKey = key;
-        persist();
-        back.remove();
-        toast("Saved. Try again.");
-      } }, "Save"),
-      h("button", { class: "btn", onclick: () => back.remove() }, "Not now")));
-  setTimeout(() => input.focus(), 100);
+// Option 2: run the tutor in the user's own Claude app (their subscription).
+// Stoa copies the prompt and opens Claude; the reply is pasted back and goes
+// through the same quote guard as any other tutor response.
+function claudeHandoff(req) {
+  const text = handoffText(req);
+  const url = encodeURIComponent(text).length < 7000
+    ? `https://claude.ai/new?q=${encodeURIComponent(text)}`
+    : "https://claude.ai/new";
+  return new Promise((resolve, reject) => {
+    const reply = h("textarea", { placeholder: "Paste Claude's reply here" });
+    const promptBox = h("textarea", { readonly: true, style: { minHeight: "120px", fontSize: "13px" } }, text);
+    const manual = h("details", {}, h("summary", { class: "muted" }, "Copy didn't work? Show the prompt"), promptBox);
+    const step2 = h("div", { hidden: true },
+      h("label", { class: "field" }, h("span", {}, "2. Paste Claude's reply"), reply),
+      h("div", { class: "btn-row" },
+        h("button", { class: "btn primary", onclick: () => {
+          if (!reply.value.trim()) return toast("Paste the reply first");
+          done = true;
+          back.remove();
+          resolve({ text: reply.value.trim(), allowed: req.allowed });
+        } }, "Save reply")));
+    let done = false;
+    const cancel = () => {
+      if (done) return;
+      done = true;
+      back.remove();
+      reject(new Error("No reply saved yet. Tap again when you're ready."));
+    };
+    const back = sheet(
+      h("h2", {}, "Ask in Claude"),
+      h("p", { class: "muted" }, "Uses your Claude subscription, so there's no extra cost. Stoa copies the tutor's instructions and today's passage; paste them into Claude, then bring the reply back here."),
+      h("div", { class: "btn-row" },
+        h("button", { class: "btn primary", onclick: () => {
+          navigator.clipboard?.writeText(text).then(() => toast("Copied. Paste it into Claude."), () => {});
+          window.open(url, "_blank", "noopener");
+          step2.hidden = false;
+        } }, "1. Copy and open Claude"),
+        h("button", { class: "btn", onclick: cancel }, "Cancel")),
+      manual,
+      step2);
+    back.addEventListener("click", (e) => e.target === back && cancel());
+  });
 }
 
 function accessCodeSheet() {
@@ -529,8 +553,8 @@ function renderToday() {
       }
     };
     const row = h("div", { class: "btn-row" },
-      h("button", { class: "btn primary", onclick: ask(false) }, "Hear from the tutor"),
-      h("button", { class: "btn", onclick: ask(true), title: "Uses a larger model; for long reflections" }, "Go deeper"));
+      h("button", { class: "btn primary", onclick: ask(false) }, handoffMode() ? "Ask the tutor in Claude" : "Hear from the tutor"),
+      !handoffMode() && h("button", { class: "btn", onclick: ask(true), title: "Uses a larger model; for long reflections" }, "Go deeper"));
     expoundOut.append(out, row);
   };
   drawExpound();
@@ -862,10 +886,10 @@ function renderYou() {
   const apiKey = h("input", { type: "password", value: state.settings.apiKey || "", placeholder: "sk-ant-…", autocomplete: "off", autocapitalize: "off", spellcheck: "false" });
   apiKey.addEventListener("change", () => { state.settings.apiKey = apiKey.value.trim(); persist(); toast(apiKey.value ? "Key saved on this device" : "Key removed"); });
   const tutorNote = status.claude
-    ? `Tutor connected through your server (${status.models?.daily}; Go deeper uses ${status.models?.deep}).`
+    ? `Tutor runs on your server (${status.models?.daily}; Go deeper uses ${status.models?.deep}).`
     : state.settings.apiKey
-      ? "Tutor connected with your own key. It's stored on this device and sent only to Anthropic."
-      : "Tutor off. The daily path works without it. Add a Claude API key to turn it on.";
+      ? "Tutor uses your API key (pay per use). Clear the key to go back to your Claude app."
+      : "Tutor runs in your Claude app, on your subscription: Stoa copies the prompt, you paste the reply back. No extra cost.";
 
   view.replaceChildren(h("div", { class: "page" },
     h("p", { class: "eyebrow", style: { color: "var(--muted)" } }, "Scoreboard"),
@@ -903,7 +927,7 @@ function renderYou() {
     h("div", { class: "panel" },
       h("label", { class: "field" }, h("span", {}, "Appearance"), themeSel),
       h("label", { class: "field", style: { display: "flex", gap: "10px", alignItems: "center" } }, hide, "Hide all numbers"),
-      !status.claude && h("label", { class: "field" }, h("span", {}, "Claude API key (this device only)"), apiKey),
+      !status.claude && h("label", { class: "field" }, h("span", {}, "Optional: Claude API key, pay per use (leave empty to use your Claude app)"), apiKey),
       status.tokenRequired && h("label", { class: "field" }, h("span", {}, "Access code"), token),
       status.tokenRequired && state.settings.token && h("div", { class: "btn-row", style: { marginTop: 0, marginBottom: "14px" } },
         h("button", { class: "btn", onclick: async () => {

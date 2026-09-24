@@ -137,3 +137,9 @@ export function requestBody(req) {
   return body;
 }
 export const FALLBACK_BETA = "server-side-fallback-2026-07-01";
+
+// The same request as one message to paste into the Claude app, so it runs on
+// the user's Claude subscription instead of the API.
+export function handoffText(req) {
+  return `${SYSTEM}\n\n${req.prompt}\n\nAnswer in plain text that I can copy back into the Stoa app. Keep any [[id]] tokens exactly as written.`;
+}
