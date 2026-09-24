@@ -1,0 +1,83 @@
+// Featured explainers: Henry David Thoreau, Walden.
+export default {
+  "walden.9": {
+    meaning: "Most people live lives of quiet desperation. What we call resignation is just despair that has settled in. We move from city to country and it follows us. Even our games and amusements hide an unconscious despair; there's no real play in them.",
+    today: "Burnout and quiet dissatisfaction are widespread, often hidden behind busyness and entertainment.",
+    you: "Notice where your downtime is really numbing rather than play. The endless scroll was one example; what else is?",
+  },
+  "walden.32": {
+    meaning: "Beware of any enterprise that needs new clothes rather than a new person to wear them. If you haven't changed, new clothes won't fit. Try your enterprise in your old clothes. What people want isn't something to do things with, but something to do, or rather something to be.",
+    today: "New gear, apps and outfits often stand in for real change. The change has to happen inside first.",
+    you: "Before buying equipment or tools for a new goal, start it with what you already have. See if the commitment is real.",
+  },
+  "walden.40": {
+    meaning: "The cost of a thing is the amount of life you exchange for it, now or later. An average house costs ten to fifteen years of a labourer's working life. Civilisation hasn't really improved things unless it gives better homes without costing more of our lives.",
+    today: "Pricing things in hours of life rather than money changes decisions dramatically.",
+    you: "Before your next big purchase, convert its price into hours or weeks of your working life. Is it still worth it?",
+  },
+  "walden.63": {
+    meaning: "Our inventions are often pretty toys that distract us from serious things: improved means to an unimproved end. We rush to build a telegraph from Maine to Texas, but Maine and Texas may have nothing important to say to each other.",
+    today: "It's the perfect critique of social media. Instant global connection, and much of it trivial.",
+    you: "As someone who builds systems, ask of each one: is this an improved means to an improved end, or just a faster toy?",
+  },
+  "walden.113": {
+    meaning: "Thoreau went to the woods to live deliberately, to face only the essential facts of life, and see whether he could learn what it had to teach, so that when he came to die he wouldn't discover he hadn't lived. He wanted to live deeply and get to the marrow of life.",
+    today: "Living deliberately means choosing your life rather than drifting through it. It's still radical.",
+    you: "Your morning Stoa session is a small act of living deliberately. Where else could you choose rather than drift?",
+  },
+  "walden.114": {
+    meaning: "Why live with such hurry and waste? We starve ourselves before we're even hungry, taking a thousand stitches today to save nine tomorrow. We can't keep still. Ring a fire bell and everyone drops what they're doing to rush over, less to help than to watch.",
+    today: "Urgency culture and rubbernecking at crises are ancient habits amplified by the news cycle.",
+    you: "Before you drop everything for the next urgent alert, ask if it's really a fire, or just a bell.",
+  },
+  "walden.115": {
+    meaning: "Thoreau could easily do without the post office; very few letters are worth reading. He never read memorable news in a newspaper. Read about one robbery or shipwreck and you don't need to read about another. Once you know the principle, why read endless examples?",
+    today: "Most news repeats the same patterns. Knowing the principle frees you from compulsive consumption.",
+    you: "Try a week of reading the news once a day, or less. See whether you miss anything that matters to your decisions.",
+  },
+  "walden.118": {
+    meaning: "Time is the stream Thoreau fishes in. He drinks from it and sees how shallow it is. Its current slides away, but eternity remains. He'd rather drink deeper, fishing in a sky full of stars.",
+    today: "Beneath the rush of passing time lies something deeper that we rarely stop to reach.",
+    you: "Take a few minutes outside at night this week, looking up. Let the shallow current of the day slide past.",
+  },
+  "walden.119": {
+    meaning: "With a little more care in choosing our pursuits, we might all become students and observers. Building wealth, families, states or fame, we're mortal; but dealing with truth, we're immortal and needn't fear change or accident.",
+    today: "Learning connects us to something that outlasts us, in a way that possessions don't.",
+    you: "Make room for learning that has nothing to do with your career. It's the part of life that's closest to timeless.",
+  },
+  "walden.155": {
+    meaning: "The possibility of truly waking up makes all times and places the same. We let trivial circumstances decide our occasions, and they're really the source of our distraction. Nearest to everything is the power that shapes our being.",
+    today: "We wait for special occasions to feel alive, while the ordinary moment is always available.",
+    you: "Don't wait for the holiday or the promotion. Wake up to where you are this morning.",
+  },
+  "walden.173": {
+    meaning: "Living in the woods, Thoreau had more meaningful visitors than ever. Distance from town filtered out people coming on trivial business. His company was winnowed by distance, leaving the ones who really wanted to see him.",
+    today: "Friction filters. A little distance from constant availability means the connections that remain are real.",
+    you: "Add a little friction to your availability, fewer notifications for instance. The important people will still reach you.",
+  },
+  "walden.249": {
+    meaning: "Our whole life is startlingly moral; there's never a truce between virtue and vice. Goodness is the only investment that never fails.",
+    today: "Every small choice carries moral weight. And goodness pays in ways that markets can't touch.",
+    you: "Treat goodness as the one investment in your portfolio that can't crash. Make a deposit today.",
+  },
+  "walden.375": {
+    meaning: "If you move confidently towards your dreams and live the life you've imagined, you'll meet with success unexpected in ordinary hours. If you've built castles in the air, your work isn't lost; that's where they belong. Now put foundations under them.",
+    today: "Big visions are fine. The work is building the foundations beneath them.",
+    you: "Pick one castle in the air, a project or life goal, and lay one foundation stone for it this week.",
+  },
+  "walden.379": {
+    meaning: "Why be in such a desperate hurry to succeed? If someone doesn't keep pace with others, maybe he hears a different drummer. Let him step to the music he hears, however slow or distant. He needn't mature as quickly as an apple tree.",
+    today: "Comparing our pace to others is a trap. People grow on different timelines.",
+    you: "Stop measuring your career or your kids against someone else's timetable. Let each step to their own drum.",
+  },
+  "walden.382": {
+    meaning: "However mean your life is, meet it and live it; don't avoid it or call it names. It's not as bad as you are. The faultfinder finds faults even in paradise. Love your life, poor as it is. The setting sun shines on the poorhouse windows as brightly as on the rich man's.",
+    today: "Gratitude for the life we actually have beats resentment about the one we don't.",
+    you: "Name three things about your current life, exactly as it is, that you'd miss if they were gone.",
+  },
+  "walden.384": {
+    meaning: "Rather than love, money or fame, give me truth. Thoreau once sat at a rich table with fine food and attentive servants, but no sincerity or truth, and he left hungry. The hospitality was as cold as the ices.",
+    today: "Luxury without honesty is empty. We hunger most for genuine connection.",
+    you: "Seek out the conversations where people speak truthfully, and offer the same. They'll nourish you more than any dinner.",
+  },
+}
