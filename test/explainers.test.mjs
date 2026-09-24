@@ -12,6 +12,12 @@ test("every day of the course has a stored explainer", () => {
   assert.deepEqual(missing, []);
 });
 
+test("every Meditations passage has a stored explainer", () => {
+  const lib = read("library.json").passages;
+  const ex = read("explainers/meditations.json");
+  assert.deepEqual(Object.keys(lib).filter((id) => !ex[id]), []);
+});
+
 test("explainers are valid and never misquote", async () => {
   const counts = await build({ write: false });
   assert.ok(counts.meditations >= 120);
