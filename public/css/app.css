@@ -329,6 +329,14 @@ body.with-player .card { padding-bottom: calc(var(--tabs-h) + var(--safe-b) + 84
 .subject b { font: 400 18px/1.2 var(--serif); }
 .subject small { color: var(--muted); font-size: 12px; line-height: 1.35; }
 .subject-glyph { font-size: 20px; color: var(--gold); }
+/* Mix's subject picker: the same tiles, multi-select */
+.subject { position: relative; }
+.subject-count { margin-top: auto; padding-top: 6px; color: var(--gold) !important; letter-spacing: 0.04em; }
+.subject-check { position: absolute; top: 10px; right: 12px; width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--line); display: grid; place-items: center; font-size: 12px; }
+.pick .subject[aria-pressed="true"] { border-color: var(--gold); background: color-mix(in srgb, var(--gold) 14%, var(--surface)); }
+.pick .subject[aria-pressed="true"] .subject-check { background: var(--gold); border-color: var(--gold); color: var(--bg); }
+.mix-go { position: sticky; bottom: calc(var(--tabs-h) + var(--safe-b) + 8px); margin-top: 18px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 18px; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: flex; flex-direction: column; gap: 8px; }
+.mix-go .btn-row { margin: 0; }
 h3.shelf { font: 600 12px/1.4 var(--sans); letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin: 22px 0 0; }
 .original { font: 400 22px/1.9 "Amiri", "Scheherazade New", "Geeza Pro", "Noto Naskh Arabic", serif; color: rgba(239,233,221,0.82); text-align: right; white-space: pre-line; margin: 10px 0 12px; }
 .compare-entry { border-top: 1px solid var(--line); padding: 12px 0 4px; }

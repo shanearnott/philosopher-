@@ -1130,21 +1130,53 @@ function startMix() {
   const subjects = mixSubjects();
   return subjects.length ? startRun("theme", { themes: [...subjects] }) : startRun("shuffle");
 }
-function subjectSheet() {
+// How many cards each subject holds, from the index counts (no downloads).
+function subjectCounts() {
+  const counts = {};
+  for (const k of Object.keys(THEMES)) {
+    counts[k] = idsOf("meditations").filter((id) => themesOf(id).includes(k)).length
+      + allVolumes().reduce((n, v) => n + (v.themes?.[k] || 0), 0);
+  }
+  counts.traditions = traditionVolumes().reduce((n, t) => n + (t.count || 0), 0);
+  return counts;
+}
+
+// Mix's subject picker: the Browse tiles, tap as many as you like, then Play.
+async function renderMixSubjects() {
+  hidePlayer();
+  document.body.classList.remove("on-cards");
+  await loadIndex();
   const chosen = new Set(mixSubjects());
+  const counts = subjectCounts();
   const keys = [...Object.keys(SUBJECTS), "traditions"];
-  const chips = h("div", { class: "filters", style: { flexWrap: "wrap" } });
-  const draw = () => chips.replaceChildren(
-    h("button", { class: "chip", "aria-pressed": String(!chosen.size), onclick: () => { chosen.clear(); draw(); } }, "Everything"),
-    ...keys.map((k) => h("button", { class: "chip", "aria-pressed": String(chosen.has(k)), onclick: () => { chosen.has(k) ? chosen.delete(k) : chosen.add(k); draw(); } },
-      `${k === "traditions" ? "❖" : SUBJECTS[k][0]} ${subjectLabel(k)}`)));
+  const grid = h("div", { class: "subject-grid pick" });
+  const play = h("button", { class: "btn primary" });
+  const summary = h("small", { class: "muted" });
+  const run = mixState().run?.date === dayKey() ? mixState().run : null;
+  const tile = (glyph, label, blurb, n, on, click) =>
+    h("button", { class: "subject", "aria-pressed": String(on), onclick: click },
+      h("span", { class: "subject-check", "aria-hidden": "true" }, on ? "✓" : ""),
+      h("span", { class: "subject-glyph", "aria-hidden": "true" }, glyph), h("b", {}, label), h("small", {}, blurb),
+      n != null && h("small", { class: "subject-count" }, `${n.toLocaleString()} cards`));
+  const draw = () => {
+    grid.replaceChildren(
+      tile("✶", "Everything", "The whole library, a new author every card", null, !chosen.size, () => { chosen.clear(); draw(); }),
+      ...keys.map((k) => {
+        const [glyph, blurb] = SUBJECTS[k] || TRADITIONS_TILE;
+        return tile(glyph, subjectLabel(k), blurb, counts[k], chosen.has(k), () => { chosen.has(k) ? chosen.delete(k) : chosen.add(k); draw(); });
+      }));
+    play.textContent = chosen.size ? `Play ${chosen.size} ${chosen.size === 1 ? "subject" : "subjects"}` : "Play everything";
+    summary.textContent = chosen.size ? [...chosen].map(subjectLabel).join(" · ") : "Nothing picked: Mix plays the whole library";
+  };
+  play.onclick = () => { mixState().subjects = [...chosen]; mixState().run = null; persist(); startMix(); };
   draw();
-  const back = sheet(h("p", { class: "eyebrow" }, "Mix"), h("h2", {}, "What should Mix play?"),
-    h("p", { class: "muted" }, "Pick one subject or several; Mix plays cards from any of them at random, across every author and tradition."),
-    chips,
-    h("div", { class: "btn-row" },
-      h("button", { class: "btn primary", onclick: () => { mixState().subjects = [...chosen]; persist(); back.remove(); mixState().run = null; startMix(); } }, "Play"),
-      h("button", { class: "btn", onclick: () => back.remove() }, "Cancel")));
+  view.replaceChildren(h("div", { class: "page mix-pick" },
+    h("p", { class: "eyebrow", style: { color: "var(--muted)" } }, "Mix"),
+    h("h1", {}, "What should Mix play?"),
+    h("p", { class: "sub" }, "Tap one subject or several. Mix plays cards from any of them at random, across every author and tradition."),
+    grid,
+    h("div", { class: "mix-go" }, summary, h("div", { class: "btn-row" },
+      run && h("button", { class: "btn", onclick: () => go("mix") }, "Back to cards"), play))));
 }
 
 async function extendRun() {
@@ -1295,7 +1327,7 @@ function showPlayer(run) {
       await extendRun();
       renderRun(r.ids.length - 2);
     } }, icon("shuffle")),
-    h("button", { "aria-label": "Subjects", title: "Subjects", onclick: subjectSheet }, icon("subjects")),
+    h("button", { "aria-label": "Subjects", title: "Subjects", onclick: () => { persist(); go("subjects"); } }, icon("subjects")),
     h("button", { "aria-label": "Skip", title: "Skip", onclick: skip }, icon("forward")));
   bar.hidden = false;
 }
@@ -1306,7 +1338,7 @@ function hidePlayer() {
   document.body.classList.remove("with-player");
 }
 
-// Ways into the library for Browse. Every one opens in Swipe.
+// Ways into the library for Browse and Mix's picker.
 const SUBJECTS = {
   leadership: ["♜", "Rulers, generals and anyone in charge"],
   war: ["⚔", "Sun Tzu, Thucydides, Machiavelli and more"],
@@ -1323,6 +1355,7 @@ const SUBJECTS = {
   stillness: ["◌", "Calm, quiet and meditation"],
   suffering: ["☁", "Pain, grief and adversity"],
 };
+const TRADITIONS_TILE = ["❖", "Judaism, Christianity, Islam, Hinduism, Buddhism"];
 const SHELVES = [
   ["The Stoics", ["meditations", "enchiridion", "discourses", "seneca"]],
   ["Greece and Rome", ["ethics", "epicurus", "onduties", "plutarch", "thucydides", "boethius"]],
@@ -1372,7 +1405,7 @@ async function renderBrowse() {
       h("button", { class: "btn primary", onclick: () => go("mix") }, "Resume")),
     h("h2", {}, "Mix"),
     h("div", { class: "modes" },
-      mode("Choose subjects", mixSubjects().length ? `Playing: ${mixSubjects().map(subjectLabel).join(", ")}` : "One or several; Mix plays them at random", subjectSheet, "◈"),
+      mode("Choose subjects", mixSubjects().length ? `Playing: ${mixSubjects().map(subjectLabel).join(", ")}` : "One or several; Mix plays them at random", () => go("subjects"), "◈"),
       mode("Shuffle", "Everything, a new author every card", () => { mixState().subjects = []; startRun("shuffle"); }, "⤮"),
       mode("Daily Mix", daily, () => startRun("daily"), "☀"),
       mode("Echo", "Each card links to the last by subject", () => startRun("echo"), "∿")),
@@ -1382,7 +1415,7 @@ async function renderBrowse() {
       h("button", { class: "subject", onclick: () => startRun("theme", { themes: [k] }) },
         h("span", { class: "subject-glyph", "aria-hidden": "true" }, glyph), h("b", {}, THEMES[k].label), h("small", {}, blurb))),
       h("button", { class: "subject", onclick: () => startRun("theme", { themes: ["traditions"] }) },
-        h("span", { class: "subject-glyph", "aria-hidden": "true" }, "❖"), h("b", {}, "World traditions"), h("small", {}, "Judaism, Christianity, Islam, Hinduism, Buddhism"))),
+        h("span", { class: "subject-glyph", "aria-hidden": "true" }, TRADITIONS_TILE[0]), h("b", {}, "World traditions"), h("small", {}, TRADITIONS_TILE[1]))),
     h("h2", {}, "By author"),
     shelves.flatMap(([name, list]) => [h("h3", { class: "shelf" }, name), h("div", {}, list.map(authorRow))]),
     traditionVolumes().length > 0 && [
@@ -1442,15 +1475,16 @@ function alongsideSheet(book) {
 const ROUTES = {
   learn: renderLearn,
   // Swipe opens straight into cards: today's run, or a fresh shuffle
-  // Mix opens straight into cards: today's run, or a fresh one from your chosen subjects
-  mix: () => (mixState().run?.date === dayKey() ? renderRun() : startMix()),
+  // Mix resumes today's run, or opens the subject picker to start one
+  mix: () => (mixState().run?.date === dayKey() ? renderRun() : renderMixSubjects()),
+  subjects: renderMixSubjects,
   browse: renderBrowse,
   saved: renderSaved,
   consult: renderConsult,
   you: renderYou,
 };
 const ALIASES = { today: "learn", swipe: "mix", journal: "saved" }; // old links
-const TAB_OF = { consult: "browse" };
+const TAB_OF = { consult: "browse", subjects: "mix" };
 function current() {
   const t = location.hash.slice(1);
   return ROUTES[t] ? t : ALIASES[t] || "learn";
