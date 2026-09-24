@@ -180,7 +180,8 @@ function explainerView(id) {
     part("In plain English", e.meaning), part("Today", e.today), part("For you", e.you));
 }
 
-function explainButton(id, out, studied, label) {
+// "Go deeper": hands a richer prompt (with the stored explainer) to Claude.
+function deeperButton(id, out, studied) {
   const deeper = h("button", { class: "btn", onclick: async () => {
     deeper.disabled = true;
     const note = h("div");
@@ -196,25 +197,111 @@ function explainButton(id, out, studied, label) {
       deeper.disabled = false;
     }
   } }, handoffMode() ? "Go deeper in Claude" : "Go deeper");
+  return deeper;
+}
+
+// Asks Claude to explain a card that has no stored explainer yet.
+async function askExplain(id, out, studied) {
+  out.replaceChildren(thinking());
+  const r = await tutor("explain", { passageId: id, studied });
+  out.replaceChildren(renderTutor(r.text, r.allowed));
+}
+
+function explainButton(id, out, studied, label) {
   const btn = h("button", { class: "btn", onclick: async () => {
     btn.disabled = true;
     await loadExplainers(id.split(".")[0]);
     if (explainers[id]) {
       out.replaceChildren(explainerView(id));
-      btn.replaceWith(deeper);
+      btn.replaceWith(deeperButton(id, out, studied));
       return;
     }
-    out.replaceChildren(thinking());
     try {
-      const r = await tutor("explain", { passageId: id, studied });
-      out.replaceChildren(renderTutor(r.text, r.allowed));
-      btn.replaceWith(deeper);
+      await askExplain(id, out, studied);
+      btn.replaceWith(deeperButton(id, out, studied));
     } catch (err) {
       out.replaceChildren(h("p", { class: "tutor-note" }, err.message));
       btn.disabled = false;
     }
   } }, label);
   return btn;
+}
+
+// Sideways swipes on a card: left calls left(), right calls right(). Vertical
+// swipes stay with the deck. Touch events, because browsers cancel pointer
+// events once they start panning; pointer events for a mouse.
+function sideSwipe(el, { left, right }) {
+  let x0 = 0, y0 = 0, t0 = 0, live = false;
+  const start = (x, y) => { x0 = x; y0 = y; t0 = Date.now(); live = true; };
+  const end = (x, y) => {
+    if (!live) return;
+    live = false;
+    const dx = x - x0, dy = y - y0;
+    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5 || Date.now() - t0 > 900) return;
+    (dx < 0 ? left : right)?.();
+  };
+  el.addEventListener("touchstart", (e) => e.touches.length === 1 ? start(e.touches[0].clientX, e.touches[0].clientY) : (live = false), { passive: true });
+  el.addEventListener("touchend", (e) => end(e.changedTouches[0].clientX, e.changedTouches[0].clientY), { passive: true });
+  el.addEventListener("touchcancel", () => { live = false; }, { passive: true });
+  el.addEventListener("pointerdown", (e) => e.pointerType === "mouse" && !e.button && start(e.clientX, e.clientY));
+  el.addEventListener("pointerup", (e) => e.pointerType === "mouse" && end(e.clientX, e.clientY));
+}
+
+// The explainer slides in over a card: swipe left (or tap Explain) to open,
+// swipe right (or tap ›) to close. Filled from the stored explainer; cards
+// without one offer to ask Claude.
+function explainPanel(card, id, studied) {
+  const body = h("div", { class: "panel-scroll" });
+  const panel = h("aside", { class: "explain-panel", "aria-hidden": "true" },
+    h("div", { class: "panel-head" },
+      h("p", { class: "eyebrow" }, "Explainer"),
+      h("button", { class: "panel-close", "aria-label": "Close explainer", onclick: () => close() }, icon("back"))),
+    body,
+    h("p", { class: "hint" }, "Swipe right to close"));
+  let filled = false;
+  const fill = async () => {
+    await loadExplainers(volOf(id));
+    if (explainers[id]) return body.replaceChildren(explainerView(id), h("div", { class: "btn-row" }, deeperButton(id, body, studied)));
+    const ask = h("button", { class: "btn primary", onclick: async () => {
+      ask.disabled = true;
+      try {
+        await askExplain(id, body, studied);
+        body.append(h("div", { class: "btn-row" }, deeperButton(id, body, studied)));
+      } catch (err) {
+        body.append(h("p", { class: "tutor-note" }, err.message));
+        ask.disabled = false;
+      }
+    } }, handoffMode() ? "Explain in Claude" : "Explain with Claude");
+    body.replaceChildren(h("p", { class: "soft" }, "This card has no stored explainer yet."), h("div", { class: "btn-row" }, ask));
+  };
+  const open = () => {
+    if (!filled) { filled = true; fill(); }
+    card.classList.add("explaining");
+    panel.setAttribute("aria-hidden", "false");
+  };
+  const close = () => {
+    card.classList.remove("explaining");
+    panel.setAttribute("aria-hidden", "true");
+  };
+  card.append(panel);
+  sideSwipe(card, { left: open, right: close });
+  // close it once the card has been swiped away
+  new IntersectionObserver((es) => es[0].intersectionRatio < 0.4 && close(), { threshold: [0, 0.4] }).observe(card);
+  card.explain = { open, close };
+  return card.explain;
+}
+
+// Thin line icons (player and tabs), drawn in currentColor.
+const ICONS = {
+  shuffle: '<path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="m4 4 5 5"/>',
+  browse: '<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/>',
+  forward: '<path d="M6 5.5v13l9-6.5z"/><path d="M18.5 5.5v13"/>',
+  back: '<path d="m9 6 6 6-6 6"/>',
+};
+function icon(name) {
+  const span = h("span", { class: "icon", "aria-hidden": "true" });
+  span.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${ICONS[name]}</svg>`;
+  return span;
 }
 
 const thinking = () => h("div", { class: "thinking", "aria-label": "Thinking" }, h("i"), h("i"), h("i"));
@@ -328,6 +415,12 @@ function showInstallBanner() {
 document.addEventListener("keydown", (e) => {
   const deck = document.querySelector(".deck");
   if (!deck || e.target.closest("textarea, input, select") || document.querySelector(".sheet-backdrop")) return;
+  const here = deck.children[Math.round(deck.scrollTop / deck.clientHeight)];
+  if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+    if (!here?.explain) return;
+    e.preventDefault();
+    return e.key === "ArrowLeft" ? here.explain.open() : here.explain.close();
+  }
   const step = { ArrowDown: 1, PageDown: 1, " ": 1, ArrowUp: -1, PageUp: -1 }[e.key];
   if (!step) return;
   e.preventDefault();
@@ -367,10 +460,11 @@ function renderToday() {
       passage && h("p", { class: "quote-ref" }, `${passage.work} ${passage.ref}`, favMark,
         h("small", {}, `Marcus Aurelius · tr. ${passage.translator}`)),
       passage && h("div", { class: "btn-row" }, cardActions(pid(day), favMark))),
-    h("p", { class: "hint" }, "Hold to save · Swipe up"));
+    h("p", { class: "hint" }, "Swipe left to explain · Hold to save · Swipe up"));
+  if (passage) explainPanel(passageCard, pid(day), studiedIds(day));
   let holdTimer;
   const startHold = (e) => {
-    if (e.target.closest("button")) return;
+    if (e.target.closest("button, .explain-panel") || passageCard.classList.contains("explaining")) return;
     passageCard.classList.add("holding");
     holdTimer = setTimeout(() => {
       passageCard.classList.remove("holding");
@@ -911,9 +1005,8 @@ function mixCard(id, index, run) {
   const vol = volOf(id);
   const bg = { "--card-bg": dusk(["wisdom", "justice", "courage", "temperance"][index % 4], 160 + (index % 3) * 20) };
   if (!p) return h("section", { class: "card", style: bg }, h("p", { class: "lede" }, "This passage failed its integrity check, so it isn't shown."));
-  const out = h("div");
-  const ask = explainButton(id, out, [id], "Explain");
   const mark = h("span", { class: "fav-mark" }, state.saved[id] ? "✦" : "");
+  const ask = h("button", { class: "btn", onclick: () => card.explain.open() }, "Explain");
   const qsize = Math.max(19, Math.min(32, 32 - (p.text.length - 120) / 40));
   const card = h("section", { class: "card", style: { ...bg, "--qsize": `${qsize}px` } },
     h("button", { class: "eyebrow author-link", title: `Play ${p.author}`, onclick: () => playFrom(id) },
@@ -923,8 +1016,9 @@ function mixCard(id, index, run) {
       h("p", { class: "quote-ref" }, p.ref, mark, h("small", {}, `tr. ${p.translator}`)),
       themesOf(id).length > 0 && h("div", { class: "card-tags" }, themesOf(id).slice(0, 3).map((t) =>
         h("button", { class: "tag-link", "aria-pressed": String(run.mode === "theme" && run.themes?.[0] === t), onclick: () => themeFrom(id, t) }, `${THEMES[t].label} ▸`))),
-      out,
-      h("div", { class: "btn-row" }, ask, cardActions(id, mark))));
+      h("div", { class: "btn-row" }, ask, cardActions(id, mark))),
+    index === 0 && h("p", { class: "hint" }, "Swipe left to explain · Swipe up for the next card"));
+  explainPanel(card, id, [id]);
   card.dataset.id = id;
   card.dataset.vol = vol;
   return card;
@@ -1026,9 +1120,9 @@ function showPlayer(run) {
       delete r.vol;
       await extendRun();
       renderRun(r.ids.length - 2);
-    } }, "⤮"),
-    h("button", { "aria-label": "Browse", title: "Browse", onclick: () => { persist(); go("browse"); } }, "▦"),
-    h("button", { "aria-label": "Skip", title: "Skip", onclick: skip }, "⏭"));
+    } }, icon("shuffle")),
+    h("button", { "aria-label": "Browse", title: "Browse", onclick: () => { persist(); go("browse"); } }, icon("browse")),
+    h("button", { "aria-label": "Skip", title: "Skip", onclick: skip }, icon("forward")));
   bar.hidden = false;
 }
 
