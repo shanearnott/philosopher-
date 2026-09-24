@@ -177,7 +177,7 @@ function explainerView(id) {
   const e = explainers[id];
   const part = (label, text) => text && h("div", { class: "explainer-part" }, h("p", { class: "explainer-label" }, label), renderTutor(text, [id]));
   return h("div", { class: "explainer" },
-    part("In plain English", e.meaning), part("Today", e.today), part("For you", e.you));
+    part("In plain English", e.meaning), part("Background", e.context), part("Today", e.today), part("For you", e.you));
 }
 
 // "Go deeper": hands a richer prompt (with the stored explainer) to Claude.
@@ -189,7 +189,7 @@ function deeperButton(id, out, studied) {
     note.replaceChildren(thinking());
     try {
       const e = explainers[id];
-      const r = await tutor("deeper", { passageId: id, studied, explainer: e ? `${e.meaning}\n${e.today}\n${e.you}` : "" });
+      const r = await tutor("deeper", { passageId: id, studied, explainer: e ? [e.meaning, e.context, e.today, e.you].filter(Boolean).join("\n") : "" });
       note.replaceChildren(h("p", { class: "explainer-label" }, "Deeper"), renderTutor(r.text, r.allowed));
       deeper.remove();
     } catch (err) {

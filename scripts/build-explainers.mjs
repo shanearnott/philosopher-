@@ -15,12 +15,16 @@ const OUT = path.join(here, "..", "public", "data", "explainers");
 const DATA = path.join(here, "..", "public", "data");
 
 export const FIELDS = ["meaning", "today", "you"];
+// Background (history, how branches read it, key original-language terms):
+// required for the Traditions wing, optional elsewhere.
+export const OPTIONAL = ["context"];
+const TRADITIONS = new Set(["judaism", "christianity", "islam", "hinduism", "buddhism"]);
 
 // Quoted multi-word spans must be verbatim from the passage (or not quoted at all).
 export function quoteProblems(explainer, passageText) {
   const problems = [];
   const norm = (s) => s.toLowerCase().replace(/[‘’]/g, "'").replace(/\s+/g, " ");
-  for (const f of FIELDS) {
+  for (const f of [...FIELDS, ...OPTIONAL]) {
     for (const m of (explainer[f] || "").matchAll(/[“"]([^”"]+)[”"]/g)) {
       if (m[1].trim().includes(" ") && !norm(passageText).includes(norm(m[1]))) problems.push(`${f}: "${m[1]}"`);
     }
@@ -51,7 +55,8 @@ export async function build({ write = true } = {}) {
     const passages = await passagesFor(vol);
     for (const [id, e] of Object.entries(entries)) {
       if (!passages[id]) throw new Error(`${id}: no such passage`);
-      for (const k of FIELDS) if (!e[k] || e[k].split(/\s+/).length < 8) throw new Error(`${id}: missing or too short "${k}"`);
+      const need = TRADITIONS.has(vol) ? [...FIELDS, ...OPTIONAL] : FIELDS;
+      for (const k of need) if (!e[k] || e[k].split(/\s+/).length < 8) throw new Error(`${id}: missing or too short "${k}"`);
       const bad = quoteProblems(e, passages[id].text);
       if (bad.length) throw new Error(`${id}: quoted words not in the passage: ${bad.join("; ")}`);
     }
