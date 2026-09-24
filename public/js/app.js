@@ -1,5 +1,5 @@
 import {
-  POINTS, RANKS, VIRTUES, WEEKLY_TARGET, GRACE_DAYS_PER_MONTH, MIX_RUN_LENGTH,
+  POINTS, RANKS, VIRTUES, WEEKLY_TARGET, GRACE_DAYS_PER_MONTH, MIX_RUN_LENGTH, sha256,
   dayKey, totalPoints, rankFor, pointsFor, streak, weekCount,
   virtueMeters, todaysDay, verifiedPassage, guardReply, citeRef, fullRef, savedMarkdown,
 } from "./logic.js";
@@ -639,6 +639,12 @@ function download(name, text, type) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
+// The original-language text (the Quran's Arabic), shown only when it matches its checksum.
+function originalText(p) {
+  if (!p.original || sha256(p.original) !== p.originalSha256) return null;
+  return h("p", { class: "original", lang: p.originalLang, dir: "rtl" }, p.original);
+}
+
 // ---------- Saved: cards you liked, with your comments ----------
 
 const snippet = (t, n = 170) => (t.length > n ? `${t.slice(0, n).replace(/\s+\S*$/, "")}…` : t);
@@ -894,10 +900,17 @@ const ALONGSIDE = [
 ];
 
 async function loadIndex() {
-  volIndex ??= await fetch("data/volumes/index.json").then((r) => r.json());
+  if (!volIndex) {
+    const [lib, trad] = await Promise.all([
+      fetch("data/volumes/index.json").then((r) => r.json()),
+      fetch("data/traditions.json").then((r) => (r.ok ? r.json() : null)).catch(() => null),
+    ]);
+    volIndex = { ...lib, traditions: trad };
+  }
   return volIndex;
 }
-const allVolumes = () => [{ ...MED, count: idsOf("meditations").length }, ...(volIndex?.volumes || [])];
+const traditionVolumes = () => volIndex?.traditions?.traditions || [];
+const allVolumes = () => [{ ...MED, count: idsOf("meditations").length }, ...(volIndex?.volumes || []), ...traditionVolumes()];
 const volOf = (id) => id.split(".")[0];
 const metaOf = (vol) => allVolumes().find((v) => v.id === vol);
 function idsOf(vol) {
@@ -1013,6 +1026,7 @@ function mixCard(id, index, run) {
       `${p.author} · ${p.work}`, run.mode !== "play" && h("span", { class: "play-hint" }, " ▸ Play")),
     h("div", { class: "card-scroll" },
       h("blockquote", { class: "quote" }, p.text),
+      originalText(p),
       h("p", { class: "quote-ref" }, p.ref, mark, h("small", {}, `tr. ${p.translator}`)),
       themesOf(id).length > 0 && h("div", { class: "card-tags" }, themesOf(id).slice(0, 3).map((t) =>
         h("button", { class: "tag-link", "aria-pressed": String(run.mode === "theme" && run.themes?.[0] === t), onclick: () => themeFrom(id, t) }, `${THEMES[t].label} ▸`))),
@@ -1150,6 +1164,7 @@ const SHELVES = [
   ["The East", ["taoteching", "analects", "dhammapada"]],
   ["Essayists and moralists", ["montaigne", "bacon", "pascal", "rochefoucauld", "moralsentiments", "schopenhauer"]],
   ["Americans", ["franklin", "walden", "emerson"]],
+  ["World traditions", ["judaism", "christianity", "islam", "hinduism", "buddhism"]],
 ];
 
 async function renderBrowse() {

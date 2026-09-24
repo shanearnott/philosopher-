@@ -185,7 +185,8 @@ export function sha256(str) {
 }
 
 // "Meditations 5.20"; other volumes' refs already name the work ("Tao Te Ching 40").
-export const citeRef = (p) => (/^\d/.test(p.ref) ? `${p.work} ${p.ref}` : p.ref);
+// Bare section numbers ("4.7") get the work's name; full references ("1 Corinthians 13:4–7") stand alone.
+export const citeRef = (p) => (/^[\d.–-]+$/.test(p.ref) ? `${p.work} ${p.ref}` : p.ref);
 // Author and reference, naming the author once (prose refs already carry a surname).
 export const fullRef = (p) => {
   const ref = citeRef(p);

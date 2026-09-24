@@ -121,3 +121,9 @@ test("full references name the author exactly once", async () => {
   assert.equal(fullRef({ author: "Laozi", work: "Tao Te Ching", ref: "Tao Te Ching 8" }), "Laozi, Tao Te Ching 8");
   assert.equal(fullRef({ author: "Arthur Schopenhauer", work: "x", ref: "Schopenhauer, Wisdom of Life ch. 4" }), "Schopenhauer, Wisdom of Life ch. 4");
 });
+
+test("bare section numbers get the work's name; full references stand alone", async () => {
+  const { citeRef } = await import("../public/js/logic.js");
+  assert.equal(citeRef({ work: "Meditations", ref: "4.7" }), "Meditations 4.7");
+  assert.equal(citeRef({ work: "New Testament", ref: "1 Corinthians 13:4–7" }), "1 Corinthians 13:4–7");
+});

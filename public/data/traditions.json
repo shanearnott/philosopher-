@@ -1,0 +1,844 @@
+{
+  "weeks": [
+    {
+      "n": 1,
+      "theme": "Foundations",
+      "covers": "Origins, key figures, scripture, core beliefs, how it's practised today"
+    },
+    {
+      "n": 2,
+      "theme": "Ethics",
+      "covers": "How to treat others: justice, mercy, charity, forgiveness"
+    },
+    {
+      "n": 3,
+      "theme": "The self",
+      "covers": "Pride and humility, desire, suffering, death"
+    },
+    {
+      "n": 4,
+      "theme": "Purpose and practice",
+      "covers": "Duty and work, prayer or meditation, community, the goal of life"
+    }
+  ],
+  "traditions": [
+    {
+      "id": "judaism",
+      "author": "Judaism",
+      "work": "Tanakh and Pirkei Avot",
+      "translator": "Jewish Publication Society (1917); Charles Taylor (1897)",
+      "year": "c. 1000–200 BC",
+      "why": "Covenant, justice and study; the root of the Abrahamic traditions",
+      "tradition": true,
+      "blurb": "The Hebrew Bible in the 1917 Jewish Publication Society translation, and the sayings of the rabbis in Pirkei Avot.",
+      "count": 36,
+      "days": [
+        {
+          "id": "judaism.1",
+          "week": 1
+        },
+        {
+          "id": "judaism.2",
+          "week": 1
+        },
+        {
+          "id": "judaism.3",
+          "week": 1
+        },
+        {
+          "id": "judaism.4",
+          "week": 1
+        },
+        {
+          "id": "judaism.5",
+          "week": 1
+        },
+        {
+          "id": "judaism.6",
+          "week": 1
+        },
+        {
+          "id": "judaism.7",
+          "week": 1
+        },
+        {
+          "id": "judaism.8",
+          "week": 1
+        },
+        {
+          "id": "judaism.9",
+          "week": 1
+        },
+        {
+          "id": "judaism.10",
+          "week": 2
+        },
+        {
+          "id": "judaism.11",
+          "week": 2
+        },
+        {
+          "id": "judaism.12",
+          "week": 2
+        },
+        {
+          "id": "judaism.13",
+          "week": 2
+        },
+        {
+          "id": "judaism.14",
+          "week": 2
+        },
+        {
+          "id": "judaism.15",
+          "week": 2
+        },
+        {
+          "id": "judaism.16",
+          "week": 2
+        },
+        {
+          "id": "judaism.17",
+          "week": 2
+        },
+        {
+          "id": "judaism.18",
+          "week": 2
+        },
+        {
+          "id": "judaism.19",
+          "week": 2
+        },
+        {
+          "id": "judaism.20",
+          "week": 3
+        },
+        {
+          "id": "judaism.21",
+          "week": 3
+        },
+        {
+          "id": "judaism.22",
+          "week": 3
+        },
+        {
+          "id": "judaism.23",
+          "week": 3
+        },
+        {
+          "id": "judaism.24",
+          "week": 3
+        },
+        {
+          "id": "judaism.25",
+          "week": 3
+        },
+        {
+          "id": "judaism.26",
+          "week": 3
+        },
+        {
+          "id": "judaism.27",
+          "week": 3
+        },
+        {
+          "id": "judaism.28",
+          "week": 3
+        },
+        {
+          "id": "judaism.29",
+          "week": 4
+        },
+        {
+          "id": "judaism.30",
+          "week": 4
+        },
+        {
+          "id": "judaism.31",
+          "week": 4
+        },
+        {
+          "id": "judaism.32",
+          "week": 4
+        },
+        {
+          "id": "judaism.33",
+          "week": 4
+        },
+        {
+          "id": "judaism.34",
+          "week": 4
+        },
+        {
+          "id": "judaism.35",
+          "week": 4
+        },
+        {
+          "id": "judaism.36",
+          "week": 4
+        }
+      ],
+      "sources": [
+        {
+          "work": "Tanakh",
+          "translator": "Jewish Publication Society (1917)",
+          "licence": "Public domain",
+          "url": "https://www.sefaria.org (Sefaria export; JPS 1917 via Open Siddur)"
+        },
+        {
+          "work": "Pirkei Avot",
+          "translator": "Charles Taylor (1897)",
+          "licence": "Public domain",
+          "url": "https://www.sefaria.org (Sefaria export)"
+        }
+      ]
+    },
+    {
+      "id": "christianity",
+      "author": "Christianity",
+      "work": "New Testament and The Imitation of Christ",
+      "translator": "World English Bible; William Benham (1874)",
+      "year": "c. AD 30–100",
+      "why": "Love of God and neighbour; grace and service",
+      "tradition": true,
+      "blurb": "The teaching of Jesus and the early church in the World English Bible, with Thomas à Kempis's Imitation of Christ.",
+      "count": 38,
+      "days": [
+        {
+          "id": "christianity.1",
+          "week": 1
+        },
+        {
+          "id": "christianity.2",
+          "week": 1
+        },
+        {
+          "id": "christianity.3",
+          "week": 1
+        },
+        {
+          "id": "christianity.4",
+          "week": 1
+        },
+        {
+          "id": "christianity.5",
+          "week": 1
+        },
+        {
+          "id": "christianity.6",
+          "week": 1
+        },
+        {
+          "id": "christianity.7",
+          "week": 1
+        },
+        {
+          "id": "christianity.8",
+          "week": 1
+        },
+        {
+          "id": "christianity.9",
+          "week": 1
+        },
+        {
+          "id": "christianity.10",
+          "week": 2
+        },
+        {
+          "id": "christianity.11",
+          "week": 2
+        },
+        {
+          "id": "christianity.12",
+          "week": 2
+        },
+        {
+          "id": "christianity.13",
+          "week": 2
+        },
+        {
+          "id": "christianity.14",
+          "week": 2
+        },
+        {
+          "id": "christianity.15",
+          "week": 2
+        },
+        {
+          "id": "christianity.16",
+          "week": 2
+        },
+        {
+          "id": "christianity.17",
+          "week": 2
+        },
+        {
+          "id": "christianity.18",
+          "week": 2
+        },
+        {
+          "id": "christianity.19",
+          "week": 2
+        },
+        {
+          "id": "christianity.20",
+          "week": 3
+        },
+        {
+          "id": "christianity.21",
+          "week": 3
+        },
+        {
+          "id": "christianity.22",
+          "week": 3
+        },
+        {
+          "id": "christianity.23",
+          "week": 3
+        },
+        {
+          "id": "christianity.24",
+          "week": 3
+        },
+        {
+          "id": "christianity.25",
+          "week": 3
+        },
+        {
+          "id": "christianity.26",
+          "week": 3
+        },
+        {
+          "id": "christianity.27",
+          "week": 3
+        },
+        {
+          "id": "christianity.28",
+          "week": 3
+        },
+        {
+          "id": "christianity.29",
+          "week": 3
+        },
+        {
+          "id": "christianity.30",
+          "week": 4
+        },
+        {
+          "id": "christianity.31",
+          "week": 4
+        },
+        {
+          "id": "christianity.32",
+          "week": 4
+        },
+        {
+          "id": "christianity.33",
+          "week": 4
+        },
+        {
+          "id": "christianity.34",
+          "week": 4
+        },
+        {
+          "id": "christianity.35",
+          "week": 4
+        },
+        {
+          "id": "christianity.36",
+          "week": 4
+        },
+        {
+          "id": "christianity.37",
+          "week": 4
+        },
+        {
+          "id": "christianity.38",
+          "week": 4
+        }
+      ],
+      "sources": [
+        {
+          "work": "Bible",
+          "translator": "World English Bible",
+          "licence": "Public domain",
+          "url": "https://ebible.org/web/ (via github.com/TehShrike/world-english-bible)"
+        },
+        {
+          "work": "The Imitation of Christ",
+          "translator": "William Benham (1874)",
+          "licence": "Public domain",
+          "url": "https://www.gutenberg.org/ebooks/1653 (via GITenberg)"
+        }
+      ]
+    },
+    {
+      "id": "islam",
+      "author": "Islam",
+      "work": "Quran",
+      "translator": "Marmaduke Pickthall (1930)",
+      "year": "AD 610–632",
+      "why": "Submission to one God; justice, mercy and charity",
+      "tradition": true,
+      "blurb": "The Quran in Marmaduke Pickthall's 1930 translation, with the Arabic text alongside.",
+      "count": 37,
+      "days": [
+        {
+          "id": "islam.1",
+          "week": 1
+        },
+        {
+          "id": "islam.2",
+          "week": 1
+        },
+        {
+          "id": "islam.3",
+          "week": 1
+        },
+        {
+          "id": "islam.4",
+          "week": 1
+        },
+        {
+          "id": "islam.5",
+          "week": 1
+        },
+        {
+          "id": "islam.6",
+          "week": 1
+        },
+        {
+          "id": "islam.7",
+          "week": 1
+        },
+        {
+          "id": "islam.8",
+          "week": 1
+        },
+        {
+          "id": "islam.9",
+          "week": 1
+        },
+        {
+          "id": "islam.10",
+          "week": 2
+        },
+        {
+          "id": "islam.11",
+          "week": 2
+        },
+        {
+          "id": "islam.12",
+          "week": 2
+        },
+        {
+          "id": "islam.13",
+          "week": 2
+        },
+        {
+          "id": "islam.14",
+          "week": 2
+        },
+        {
+          "id": "islam.15",
+          "week": 2
+        },
+        {
+          "id": "islam.16",
+          "week": 2
+        },
+        {
+          "id": "islam.17",
+          "week": 2
+        },
+        {
+          "id": "islam.18",
+          "week": 2
+        },
+        {
+          "id": "islam.19",
+          "week": 2
+        },
+        {
+          "id": "islam.20",
+          "week": 3
+        },
+        {
+          "id": "islam.21",
+          "week": 3
+        },
+        {
+          "id": "islam.22",
+          "week": 3
+        },
+        {
+          "id": "islam.23",
+          "week": 3
+        },
+        {
+          "id": "islam.24",
+          "week": 3
+        },
+        {
+          "id": "islam.25",
+          "week": 3
+        },
+        {
+          "id": "islam.26",
+          "week": 3
+        },
+        {
+          "id": "islam.27",
+          "week": 3
+        },
+        {
+          "id": "islam.28",
+          "week": 3
+        },
+        {
+          "id": "islam.29",
+          "week": 3
+        },
+        {
+          "id": "islam.30",
+          "week": 4
+        },
+        {
+          "id": "islam.31",
+          "week": 4
+        },
+        {
+          "id": "islam.32",
+          "week": 4
+        },
+        {
+          "id": "islam.33",
+          "week": 4
+        },
+        {
+          "id": "islam.34",
+          "week": 4
+        },
+        {
+          "id": "islam.35",
+          "week": 4
+        },
+        {
+          "id": "islam.36",
+          "week": 4
+        },
+        {
+          "id": "islam.37",
+          "week": 4
+        }
+      ],
+      "sources": [
+        {
+          "work": "Quran",
+          "translator": "Marmaduke Pickthall (1930)",
+          "licence": "Public domain (translation); Arabic: Tanzil Quran Text (Simple), tanzil.net, copied verbatim with attribution",
+          "url": "https://tanzil.net (via github.com/fawazahmed0/quran-api)"
+        }
+      ]
+    },
+    {
+      "id": "hinduism",
+      "author": "Hinduism",
+      "work": "Bhagavad Gita and Upanishads",
+      "translator": "Kisari Mohan Ganguli (1883–1896); Swami Paramananda (1919)",
+      "year": "c. 800–200 BC",
+      "why": "Duty without attachment; the Self behind all things",
+      "tradition": true,
+      "blurb": "The Bhagavad Gita in Kisari Mohan Ganguli's translation of the Mahabharata, and the Isha, Katha and Kena Upanishads translated by Swami Paramananda.",
+      "count": 30,
+      "days": [
+        {
+          "id": "hinduism.1",
+          "week": 1
+        },
+        {
+          "id": "hinduism.2",
+          "week": 1
+        },
+        {
+          "id": "hinduism.3",
+          "week": 1
+        },
+        {
+          "id": "hinduism.4",
+          "week": 1
+        },
+        {
+          "id": "hinduism.5",
+          "week": 1
+        },
+        {
+          "id": "hinduism.6",
+          "week": 1
+        },
+        {
+          "id": "hinduism.7",
+          "week": 1
+        },
+        {
+          "id": "hinduism.8",
+          "week": 1
+        },
+        {
+          "id": "hinduism.9",
+          "week": 2
+        },
+        {
+          "id": "hinduism.10",
+          "week": 2
+        },
+        {
+          "id": "hinduism.11",
+          "week": 2
+        },
+        {
+          "id": "hinduism.12",
+          "week": 2
+        },
+        {
+          "id": "hinduism.13",
+          "week": 2
+        },
+        {
+          "id": "hinduism.14",
+          "week": 2
+        },
+        {
+          "id": "hinduism.15",
+          "week": 3
+        },
+        {
+          "id": "hinduism.16",
+          "week": 3
+        },
+        {
+          "id": "hinduism.17",
+          "week": 3
+        },
+        {
+          "id": "hinduism.18",
+          "week": 3
+        },
+        {
+          "id": "hinduism.19",
+          "week": 3
+        },
+        {
+          "id": "hinduism.20",
+          "week": 3
+        },
+        {
+          "id": "hinduism.21",
+          "week": 3
+        },
+        {
+          "id": "hinduism.22",
+          "week": 3
+        },
+        {
+          "id": "hinduism.23",
+          "week": 4
+        },
+        {
+          "id": "hinduism.24",
+          "week": 4
+        },
+        {
+          "id": "hinduism.25",
+          "week": 4
+        },
+        {
+          "id": "hinduism.26",
+          "week": 4
+        },
+        {
+          "id": "hinduism.27",
+          "week": 4
+        },
+        {
+          "id": "hinduism.28",
+          "week": 4
+        },
+        {
+          "id": "hinduism.29",
+          "week": 4
+        },
+        {
+          "id": "hinduism.30",
+          "week": 4
+        }
+      ],
+      "sources": [
+        {
+          "work": "Bhagavad Gita",
+          "translator": "Kisari Mohan Ganguli (1883–1896)",
+          "licence": "Public domain",
+          "url": "https://www.sacred-texts.com/hin/m06/ (Mahabharata, Bhishma Parva 25–42; via github.com/itz-rajkeshav/sacred-texts)"
+        },
+        {
+          "work": "Upanishads",
+          "translator": "Swami Paramananda (1919)",
+          "licence": "Public domain",
+          "url": "https://www.gutenberg.org/ebooks/3283 (via GITenberg)"
+        }
+      ]
+    },
+    {
+      "id": "buddhism",
+      "author": "Buddhism",
+      "work": "Suttas and the Dhammapada",
+      "translator": "Bhikkhu Sujato",
+      "year": "c. 500 BC",
+      "why": "Suffering, its cause and its end; the middle way",
+      "tradition": true,
+      "blurb": "Discourses of the Buddha from the Pali canon in Bhikkhu Sujato's translation, with the Dhammapada in Max Müller's.",
+      "count": 19,
+      "days": [
+        {
+          "id": "buddhism.1",
+          "week": 1
+        },
+        {
+          "id": "buddhism.2",
+          "week": 1
+        },
+        {
+          "id": "dhammapada.1",
+          "week": 1
+        },
+        {
+          "id": "buddhism.3",
+          "week": 1
+        },
+        {
+          "id": "buddhism.4",
+          "week": 1
+        },
+        {
+          "id": "buddhism.5",
+          "week": 1
+        },
+        {
+          "id": "dhammapada.89",
+          "week": 1
+        },
+        {
+          "id": "buddhism.6",
+          "week": 2
+        },
+        {
+          "id": "buddhism.7",
+          "week": 2
+        },
+        {
+          "id": "dhammapada.2",
+          "week": 2
+        },
+        {
+          "id": "buddhism.8",
+          "week": 2
+        },
+        {
+          "id": "buddhism.9",
+          "week": 2
+        },
+        {
+          "id": "dhammapada.74",
+          "week": 2
+        },
+        {
+          "id": "buddhism.10",
+          "week": 2
+        },
+        {
+          "id": "dhammapada.63",
+          "week": 2
+        },
+        {
+          "id": "buddhism.11",
+          "week": 3
+        },
+        {
+          "id": "buddhism.12",
+          "week": 3
+        },
+        {
+          "id": "buddhism.13",
+          "week": 3
+        },
+        {
+          "id": "buddhism.14",
+          "week": 3
+        },
+        {
+          "id": "dhammapada.36",
+          "week": 3
+        },
+        {
+          "id": "dhammapada.91",
+          "week": 3
+        },
+        {
+          "id": "buddhism.15",
+          "week": 3
+        },
+        {
+          "id": "dhammapada.21",
+          "week": 3
+        },
+        {
+          "id": "buddhism.16",
+          "week": 4
+        },
+        {
+          "id": "buddhism.17",
+          "week": 4
+        },
+        {
+          "id": "buddhism.18",
+          "week": 4
+        },
+        {
+          "id": "dhammapada.62",
+          "week": 4
+        },
+        {
+          "id": "dhammapada.90",
+          "week": 4
+        },
+        {
+          "id": "dhammapada.28",
+          "week": 4
+        },
+        {
+          "id": "buddhism.19",
+          "week": 4
+        }
+      ],
+      "sources": [
+        {
+          "work": "Suttas",
+          "translator": "Bhikkhu Sujato",
+          "licence": "CC0 (public domain dedication)",
+          "url": "https://suttacentral.net (via github.com/suttacentral/bilara-data)"
+        }
+      ]
+    }
+  ],
+  "principles": {
+    "questions": [],
+    "rows": []
+  },
+  "compare": [],
+  "pending": [
+    {
+      "name": "Sikhism",
+      "reason": "No public-domain English translation is reachable from the build (Macauliffe 1909 isn't available here); the modern translations in open Gurbani databases are in copyright."
+    }
+  ]
+}
