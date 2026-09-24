@@ -270,6 +270,41 @@ textarea.reflect:focus { border-color: var(--gold); }
 }
 #toast.show { opacity: 1; transform: translate(-50%, 0); }
 
+/* add-to-home-screen banner */
+.install {
+  position: fixed; z-index: 30; left: 12px; right: 12px; top: calc(12px + var(--safe-t));
+  max-width: 560px; margin: 0 auto;
+  display: flex; gap: 12px; align-items: center;
+  padding: 14px 14px 14px 16px; border-radius: 16px;
+  background: rgba(27, 26, 23, 0.92); color: #efe9dd; border: 1px solid rgba(216,195,156,0.3);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  font-size: 14px; line-height: 1.4; animation: rise 0.5s ease;
+}
+.install strong { display: block; font: 400 18px/1.2 var(--serif); color: var(--gold-soft); margin-bottom: 2px; }
+.install-actions { display: flex; align-items: center; gap: 6px; flex: none; }
+.install-close { width: 36px; height: 36px; border: 0; background: none; color: inherit; font-size: 22px; opacity: 0.7; }
+.share-glyph { display: inline-block; vertical-align: -2px; color: var(--gold-soft); }
+
+/* iPad and wider: a centred reading column, larger type */
+@media (min-width: 700px) {
+  .card { padding-left: max(48px, calc((100vw - 640px) / 2)); padding-right: max(48px, calc((100vw - 640px) / 2)); }
+  .quote { font-size: calc(var(--qsize, 30px) * 1.25); }
+  .card .lede { font-size: 24px; }
+  .card h2 { font-size: 38px; }
+  .tutor, textarea.reflect { font-size: 21px; }
+  .tabs { grid-template-columns: repeat(4, 110px); justify-content: center; gap: 24px; }
+  .page { max-width: 720px; padding-left: 32px; padding-right: 32px; }
+  .sheet { border-radius: 22px; margin-bottom: 24px; }
+  .sheet-backdrop { align-items: center; }
+}
+
+/* phones in landscape: keep cards readable */
+@media (max-height: 500px) and (orientation: landscape) {
+  .card { padding-top: 20px; padding-bottom: calc(var(--tabs-h) + 12px); }
+  .quote { font-size: 20px; }
+  .swipe-hint, .hint { display: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .card > * { opacity: 1; transform: none; }

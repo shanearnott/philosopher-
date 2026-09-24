@@ -1,0 +1,17 @@
+# One-click hosting on Render: gives Stoa an always-on HTTPS address for
+# your phone and iPad. Render asks for the two secret values on deploy.
+services:
+  - type: web
+    name: stoa
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/status
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: STOA_ACCESS_TOKEN
+        sync: false

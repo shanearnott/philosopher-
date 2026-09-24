@@ -12,6 +12,17 @@ const [library, course] = await Promise.all([
   fetch("data/course-meditations.json").then((r) => r.json()),
 ]);
 let state = load();
+{
+  const url = new URL(location.href);
+  const code = url.searchParams.get("code");
+  if (code) {
+    state.settings.token = code.trim();
+    save(state);
+    url.searchParams.delete("code");
+    history.replaceState(null, "", url.pathname + url.search + url.hash);
+    setTimeout(() => toast("Access code saved on this device"), 600);
+  }
+}
 let status = { claude: false, tokenRequired: false };
 fetch("api/status")
   .then((r) => (r.ok ? r.json() : null))
@@ -107,6 +118,10 @@ async function tutor(job, payload) {
     body: JSON.stringify({ job, profile: state.profile, ...payload }),
   });
   const data = await res.json().catch(() => ({}));
+  if (res.status === 401) {
+    accessCodeSheet();
+    throw new Error("The tutor needs your access code. Enter it, then try again.");
+  }
   if (!res.ok) throw new Error(data.error || `Tutor unavailable (${res.status})`);
   return data;
 }
@@ -131,6 +146,78 @@ function renderTutor(text, allowed) {
 }
 
 const thinking = () => h("div", { class: "thinking", "aria-label": "Thinking" }, h("i"), h("i"), h("i"));
+
+function accessCodeSheet() {
+  if (document.querySelector(".sheet-backdrop")) return;
+  const input = h("input", { type: "password", autocomplete: "off", autocapitalize: "off", placeholder: "Access code" });
+  const back = sheet(
+    h("h2", {}, "Access code"),
+    h("p", { class: "muted" }, "Your Stoa server is protected. Enter the access code you chose when you set it up. It's saved on this device only."),
+    h("label", { class: "field" }, input),
+    h("div", { class: "btn-row" },
+      h("button", { class: "btn primary", onclick: () => {
+        if (!input.value.trim()) return;
+        state.settings.token = input.value.trim();
+        persist();
+        back.remove();
+        toast("Saved. Try again.");
+      } }, "Save"),
+      h("button", { class: "btn", onclick: () => back.remove() }, "Cancel")));
+  setTimeout(() => input.focus(), 100);
+}
+
+// ---------- add to home screen ----------
+
+const standalone = () => matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+// iPadOS reports itself as a Mac; touch support gives it away
+const isIOS = () => /iPhone|iPad|iPod/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+let installEvent = null;
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  installEvent = e;
+  if (current() === "today") showInstallBanner();
+});
+
+function installDismissed() {
+  try { return localStorage.getItem("stoa.installDismissed") === "1"; } catch { return false; }
+}
+
+function showInstallBanner() {
+  if (standalone() || installDismissed() || document.querySelector(".install")) return;
+  if (!installEvent && !isIOS()) return;
+  const close = () => {
+    banner.remove();
+    try { localStorage.setItem("stoa.installDismissed", "1"); } catch {}
+  };
+  const device = /iPad/.test(navigator.userAgent) || navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent) ? "iPad" : "iPhone";
+  const banner = h("div", { class: "install", role: "note" },
+    h("div", {},
+      h("strong", {}, "Put Stoa on your home screen"),
+      installEvent
+        ? h("span", {}, "It opens full screen, like an app, and works offline.")
+        : h("span", {}, `In Safari, tap `, h("b", {}, "Share"), " ", h("span", { class: "share-glyph", "aria-hidden": "true", html: '<svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v11M6.5 5.5 10 2l3.5 3.5M6 8.5H4.5v9h11v-9H14"/></svg>' }), ` then `, h("b", {}, "Add to Home Screen"), `. Then move it to where Instagram was on your ${device}.`)),
+    h("div", { class: "install-actions" },
+      installEvent && h("button", { class: "btn gold", onclick: async () => {
+        installEvent.prompt();
+        await installEvent.userChoice.catch(() => {});
+        installEvent = null;
+        close();
+      } }, "Install"),
+      h("button", { class: "install-close", "aria-label": "Dismiss", onclick: close }, "×")));
+  document.body.append(banner);
+}
+
+// ---------- keyboard (iPad keyboards, desktop) ----------
+
+document.addEventListener("keydown", (e) => {
+  const deck = document.querySelector(".deck");
+  if (!deck || e.target.closest("textarea, input, select") || document.querySelector(".sheet-backdrop")) return;
+  const step = { ArrowDown: 1, PageDown: 1, " ": 1, ArrowUp: -1, PageUp: -1 }[e.key];
+  if (!step) return;
+  e.preventDefault();
+  const i = Math.round(deck.scrollTop / deck.clientHeight) + step;
+  deck.scrollTo({ top: i * deck.clientHeight, behavior: "smooth" });
+});
 
 // ---------- journal helpers ----------
 
@@ -457,6 +544,7 @@ function renderToday() {
     cards.forEach((c, i) => c.style.setProperty("--shift", String(Math.max(-1, Math.min(1, i - y)))));
   }, { passive: true });
   view.replaceChildren(deck);
+  setTimeout(showInstallBanner, 1500);
   if (done && !finished) toast("Done for today. Revisiting.");
 }
 
@@ -735,7 +823,7 @@ function renderYou() {
   themeSel.addEventListener("change", () => { state.settings.theme = themeSel.value; persist(); applyTheme(); });
   const hide = h("input", { type: "checkbox", checked: state.settings.hideNumbers, style: { width: "auto" } });
   hide.addEventListener("change", () => { state.settings.hideNumbers = hide.checked; persist(); applyTheme(); });
-  const token = h("input", { type: "password", value: state.settings.token, placeholder: "Only if your server sets one", autocomplete: "off" });
+  const token = h("input", { type: "password", value: state.settings.token, placeholder: "Only if your server has one", autocomplete: "off", autocapitalize: "off" });
   token.addEventListener("change", () => { state.settings.token = token.value.trim(); persist(); toast("Saved"); });
 
   view.replaceChildren(h("div", { class: "page" },
@@ -774,7 +862,15 @@ function renderYou() {
     h("div", { class: "panel" },
       h("label", { class: "field" }, h("span", {}, "Appearance"), themeSel),
       h("label", { class: "field", style: { display: "flex", gap: "10px", alignItems: "center" } }, hide, "Hide all numbers"),
-      h("label", { class: "field" }, h("span", {}, "Server access token"), token),
+      h("label", { class: "field" }, h("span", {}, "Access code"), token),
+      state.settings.token && h("div", { class: "btn-row", style: { marginTop: 0, marginBottom: "14px" } },
+        h("button", { class: "btn", onclick: async () => {
+          const link = `${location.origin}${location.pathname}?code=${encodeURIComponent(state.settings.token)}`;
+          try {
+            if (navigator.share) await navigator.share({ title: "Stoa setup link", url: link });
+            else { await navigator.clipboard.writeText(link); toast("Setup link copied"); }
+          } catch {}
+        } }, "Share setup link to another device")),
       h("p", { class: "muted" }, status.claude ? `Tutor connected (${status.models?.daily}; Go deeper uses ${status.models?.deep}).` : "Tutor not connected. The daily path works without it; set ANTHROPIC_API_KEY on the server to enable responses."),
       h("div", { class: "btn-row" },
         h("button", { class: "btn", onclick: exportMarkdown }, "Export journal"),
@@ -803,6 +899,7 @@ function go(tab) {
 function route() {
   const t = current();
   tabs.forEach((b) => (b.dataset.tab === t ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current")));
+  if (t !== "today") document.querySelector(".install")?.remove();
   ROUTES[t]();
   window.scrollTo(0, 0);
 }
