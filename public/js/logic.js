@@ -186,6 +186,11 @@ export function sha256(str) {
 
 // "Meditations 5.20"; other volumes' refs already name the work ("Tao Te Ching 40").
 export const citeRef = (p) => (/^\d/.test(p.ref) ? `${p.work} ${p.ref}` : p.ref);
+// Author and reference, naming the author once (prose refs already carry a surname).
+export const fullRef = (p) => {
+  const ref = citeRef(p);
+  return ref.includes(p.author.split(" ").pop()) ? ref : `${p.author}, ${ref}`;
+};
 
 // A passage is shown as a quote only if its text still matches its checksum.
 export function verifiedPassage(library, id) {
@@ -265,4 +270,16 @@ function splitQuotes(text, sources) {
   }
   if (last < text.length) parts.push({ t: "text", text: text.slice(last) });
   return parts;
+}
+
+// ---------- export ----------
+
+// items: [{ id, date, comment, p: verified passage }], newest first.
+export function savedMarkdown(items) {
+  const lines = ["# Saved from Stoa", ""];
+  for (const { date, comment, p } of items) {
+    lines.push(`## ${fullRef(p)}`, "", ...p.text.split("\n").map((l) => `> ${l}`), "", `> — tr. ${p.translator} · saved ${date}`, "");
+    if (comment) lines.push(`**My comment:** ${comment}`, "");
+  }
+  return lines.join("\n");
 }

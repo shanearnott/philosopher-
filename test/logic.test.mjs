@@ -94,3 +94,30 @@ test("quote guard: a tampered passage is not shown", () => {
 test("virtue meters count completed days by their passage's virtue", () => {
   assert.deepEqual(virtueMeters(["temperance", "justice", "justice", "nonsense"]), { wisdom: 0, justice: 2, courage: 0, temperance: 1 });
 });
+
+test("saved cards export with their comments", async () => {
+  const { savedMarkdown } = await import("../public/js/logic.js");
+  const p = verifiedPassage(library, "meditations.4.7");
+  const md = savedMarkdown([{ id: "meditations.4.7", date: "2026-09-24", comment: "For the next hard meeting.", p }]);
+  assert.match(md, /## Marcus Aurelius, Meditations 4\.7/);
+  assert.ok(md.includes(`> ${p.text.split("\n")[0]}`));
+  assert.match(md, /\*\*My comment:\*\* For the next hard meeting\./);
+});
+
+test("old favourites become saved cards with an empty comment", async () => {
+  const store = {};
+  globalThis.localStorage = { getItem: (k) => store[k] ?? null, setItem: (k, v) => { store[k] = v; }, removeItem: (k) => delete store[k] };
+  store["stoa.v1"] = JSON.stringify({ favourites: { "meditations.4.7": "2026-09-01" } });
+  const { load } = await import("../public/js/store.js");
+  const s = load();
+  assert.deepEqual(s.saved, { "meditations.4.7": { date: "2026-09-01", comment: "" } });
+  assert.equal(s.favourites, undefined);
+  delete globalThis.localStorage;
+});
+
+test("full references name the author exactly once", async () => {
+  const { fullRef } = await import("../public/js/logic.js");
+  assert.equal(fullRef({ author: "Marcus Aurelius", work: "Meditations", ref: "4.7" }), "Marcus Aurelius, Meditations 4.7");
+  assert.equal(fullRef({ author: "Laozi", work: "Tao Te Ching", ref: "Tao Te Ching 8" }), "Laozi, Tao Te Ching 8");
+  assert.equal(fullRef({ author: "Arthur Schopenhauer", work: "x", ref: "Schopenhauer, Wisdom of Life ch. 4" }), "Schopenhauer, Wisdom of Life ch. 4");
+});

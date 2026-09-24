@@ -1,7 +1,7 @@
 import {
   POINTS, RANKS, VIRTUES, WEEKLY_TARGET, GRACE_DAYS_PER_MONTH, MIX_RUN_LENGTH,
   dayKey, totalPoints, rankFor, pointsFor, streak, weekCount,
-  virtueMeters, todaysDay, verifiedPassage, guardReply, citeRef,
+  virtueMeters, todaysDay, verifiedPassage, guardReply, citeRef, fullRef, savedMarkdown,
 } from "./logic.js";
 import { load, save, wipe, freshState } from "./store.js";
 import { buildRequest, handoffText } from "./prompts.js";
@@ -356,8 +356,7 @@ function renderToday() {
   };
 
   // 1. Passage
-  const fav = () => !!state.favourites[pid(day)];
-  const favMark = h("span", { class: "fav-mark" }, fav() ? "✦" : "");
+  const favMark = h("span", { class: "fav-mark" }, state.saved[pid(day)] ? "✦" : "");
   const qsize = passage ? Math.max(19, Math.min(34, 34 - (passage.text.length - 120) / 40)) : 24;
   const passageCard = h("section", { class: "card", style: { ...bg(180), "--qsize": `${qsize}px` } },
     h("p", { class: "eyebrow" }, `Day ${day.day} of ${course.days.length} · ${unitOf(day).title}`),
@@ -366,7 +365,8 @@ function renderToday() {
         ? h("blockquote", { class: "quote" }, passage.text)
         : h("p", { class: "lede" }, "This passage failed its integrity check, so it isn't shown. Re-run the ingest script."),
       passage && h("p", { class: "quote-ref" }, `${passage.work} ${passage.ref}`, favMark,
-        h("small", {}, `Marcus Aurelius · tr. ${passage.translator}`))),
+        h("small", {}, `Marcus Aurelius · tr. ${passage.translator}`)),
+      passage && h("div", { class: "btn-row" }, cardActions(pid(day), favMark))),
     h("p", { class: "hint" }, "Hold to save · Swipe up"));
   let holdTimer;
   const startHold = (e) => {
@@ -374,18 +374,11 @@ function renderToday() {
     passageCard.classList.add("holding");
     holdTimer = setTimeout(() => {
       passageCard.classList.remove("holding");
-      if (fav()) {
-        delete state.favourites[pid(day)];
-        favMark.textContent = "";
-        toast("Removed from favourites");
-      } else {
-        state.favourites[pid(day)] = today;
-        favMark.textContent = "✦";
-        const pts = award("favourite", pid(day));
-        toast(pts ? `Saved to favourites · +${pts}` : "Saved to favourites");
-      }
-      persist();
       navigator.vibrate?.(12);
+      saveSheet(pid(day), () => {
+        favMark.textContent = state.saved[pid(day)] ? "✦" : "";
+        passageCard.querySelectorAll(".save-btn").forEach((b) => (b.textContent = state.saved[pid(day)] ? "Saved ✦" : "Save"));
+      });
     }, 650);
   };
   const endHold = () => { clearTimeout(holdTimer); passageCard.classList.remove("holding"); };
@@ -477,8 +470,9 @@ function renderReview() {
   document.body.classList.add("on-cards");
   const deck = h("div", { class: "deck" });
   const bg = { "--card-bg": "radial-gradient(90% 60% at 50% 0%, #6b5a33 0%, transparent 70%), linear-gradient(180deg, #221d19, #0e0d0c)" };
-  const favs = Object.entries(state.favourites).sort((a, b) => a[1].localeCompare(b[1])).slice(0, 10)
-    .map(([id]) => verifiedPassage(library, id)).filter(Boolean);
+  const favs = Object.entries(state.saved).filter(([id]) => id.startsWith("meditations."))
+    .sort((a, b) => a[1].date.localeCompare(b[1].date)).slice(0, 10)
+    .map(([id, sv]) => ({ ...verifiedPassage(library, id), comment: sv.comment })).filter((p) => p.text);
   const cards = [
     h("section", { class: "card", style: bg },
       h("p", { class: "eyebrow" }, "Review week"),
@@ -487,7 +481,8 @@ function renderReview() {
     ...favs.map((p, i) => h("section", { class: "card", style: bg },
       h("p", { class: "eyebrow" }, `Saved passage ${i + 1} of ${favs.length}`),
       h("div", { class: "card-scroll" }, h("blockquote", { class: "quote", style: { "--qsize": `${Math.max(19, Math.min(30, 30 - (p.text.length - 120) / 40))}px` } }, p.text),
-        h("p", { class: "quote-ref" }, citeRef(p))))),
+        h("p", { class: "quote-ref" }, citeRef(p)),
+        p.comment && h("p", { class: "soft saved-comment" }, p.comment)))),
     h("section", { class: "card end", style: bg },
       h("p", { class: "eyebrow" }, "What next"),
       h("h2", {}, "Begin again, or wander."),
@@ -547,6 +542,116 @@ function download(name, text, type) {
   a.click();
   a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+// ---------- Saved: cards you liked, with your comments ----------
+
+const snippet = (t, n = 170) => (t.length > n ? `${t.slice(0, n).replace(/\s+\S*$/, "")}…` : t);
+
+// Save and Share buttons for any card; mark is the ✦ next to its reference.
+function cardActions(id, mark) {
+  const label = () => (state.saved[id] ? "Saved ✦" : "Save");
+  const save = h("button", { class: "btn save-btn", onclick: () => saveSheet(id, () => {
+    save.textContent = label();
+    if (mark) mark.textContent = state.saved[id] ? "✦" : "";
+  }) }, label());
+  const share = h("button", { class: "btn", onclick: () => shareCard(id) }, "Share");
+  return [save, share];
+}
+
+// Share sheet (Messages, Mail, …) where the device has one, else copy.
+async function shareCard(id) {
+  const p = verifiedPassage(library, id);
+  if (!p) return;
+  const text = `${p.text}\n\n${fullRef(p)} (tr. ${p.translator})`;
+  try {
+    if (navigator.share) await navigator.share({ text });
+    else { await navigator.clipboard.writeText(text); toast("Copied, ready to paste into a message"); }
+  } catch {}
+}
+
+function saveSheet(id, onChange) {
+  const p = verifiedPassage(library, id);
+  if (!p) return;
+  const was = state.saved[id];
+  const note = h("textarea", { placeholder: "Why this one? What does it remind you of? (optional)" }, was?.comment || "");
+  const done = (msg) => { persist(); back.remove(); onChange?.(); if (current() === "saved") renderSaved(); toast(msg); };
+  const back = sheet(
+    h("h2", {}, was ? "Saved card" : "Save this card"),
+    h("p", { class: "muted" }, fullRef(p)),
+    h("blockquote", { class: "book-quote" }, snippet(p.text, 260)),
+    h("label", { class: "field" }, h("span", {}, "Your comment"), note),
+    h("div", { class: "btn-row" },
+      h("button", { class: "btn primary", onclick: () => {
+        state.saved[id] = { date: was?.date || dayKey(), comment: note.value.trim() };
+        const pts = was ? 0 : award("favourite", id);
+        done(was ? "Comment saved" : pts ? `Saved · +${pts}` : "Saved");
+      } }, was ? "Save comment" : "Save"),
+      was && h("button", { class: "btn", onclick: () => { delete state.saved[id]; done("Removed from Saved"); } }, "Remove"),
+      h("button", { class: "btn", onclick: () => back.remove() }, "Cancel")));
+  setTimeout(() => note.focus(), 100);
+}
+
+let savedFilter = "all";
+
+async function renderSaved() {
+  document.body.classList.remove("on-cards");
+  const vols = [...new Set(Object.keys(state.saved).map(volOf))];
+  await Promise.all(vols.map((v) => loadVolume(v).catch(() => {})));
+  const items = Object.entries(state.saved)
+    .map(([id, sv]) => ({ id, ...sv, p: verifiedPassage(library, id) }))
+    .filter((x) => x.p)
+    .sort((a, b) => b.date.localeCompare(a.date));
+  const authors = [...new Set(items.map((x) => x.p.author))];
+  const themes = [...new Set(items.flatMap((x) => themesOf(x.id)))];
+  const filters = [["all", "All"], ["notes", "With comments"], ...authors.map((a) => [`a:${a}`, a]), ...themes.map((t) => [`t:${t}`, THEMES[t].label])];
+  if (!filters.some(([k]) => k === savedFilter)) savedFilter = "all";
+  const shown = items.filter((x) =>
+    savedFilter === "all" ? true
+    : savedFilter === "notes" ? !!x.comment
+    : savedFilter.startsWith("a:") ? x.p.author === savedFilter.slice(2)
+    : themesOf(x.id).includes(savedFilter.slice(2)));
+  view.replaceChildren(h("div", { class: "page" },
+    h("p", { class: "eyebrow", style: { color: "var(--muted)" } }, "Saved"),
+    h("h1", {}, "Cards you liked"),
+    h("p", { class: "sub" }, items.length
+      ? `${items.length} saved, stored only on this device. Tap one to read it, change your comment, share it or explain it.`
+      : "Nothing saved yet. Tap Save on any card, or hold the day's passage, and add a comment if you like."),
+    items.length > 0 && h("div", { class: "btn-row no-print", style: { marginTop: 0, marginBottom: "18px" } },
+      h("button", { class: "btn", onclick: () => download(`stoa-saved-${dayKey()}.md`, savedMarkdown(items), "text/markdown") }, "Export Markdown")),
+    items.length > 0 && h("div", { class: "filters" }, filters.map(([k, label]) =>
+      h("button", { class: "chip", "aria-pressed": String(k === savedFilter), onclick: () => { savedFilter = k; renderSaved(); } }, label))),
+    h("div", {}, shown.map((x) => h("button", { class: "entry", onclick: () => savedSheet(x.id) },
+      h("div", { class: "when" }, fullRef(x.p)),
+      h("div", { class: "snip quote-snip" }, snippet(x.p.text)),
+      x.comment ? h("div", { class: "saved-comment" }, x.comment) : h("div", { class: "muted", style: { fontSize: "13px" } }, "No comment yet")))),
+    items.length > 0 && !shown.length && h("p", { class: "muted" }, "Nothing under this filter.")));
+}
+
+function savedSheet(id) {
+  const p = verifiedPassage(library, id);
+  const sv = state.saved[id];
+  if (!p || !sv) return;
+  const note = h("textarea", { placeholder: "Your comment" }, sv.comment || "");
+  note.addEventListener("change", () => { sv.comment = note.value.trim(); persist(); toast("Comment saved"); });
+  const out = h("div");
+  const back = sheet(
+    h("p", { class: "muted" }, `Saved ${fmtDate(sv.date)}`),
+    h("blockquote", { class: "book-quote" }, p.text, h("cite", {}, `${fullRef(p)} · tr. ${p.translator}`)),
+    h("label", { class: "field" }, h("span", {}, "Your comment"), note),
+    out,
+    h("div", { class: "btn-row" },
+      explainButton(id, out, [id], "Explain"),
+      h("button", { class: "btn", onclick: () => shareCard(id) }, "Share"),
+      h("button", { class: "btn", onclick: () => { back.remove(); playFrom(id).then(() => go("mix")); } }, `Read on in ${p.author.split(" ").pop()}`),
+      h("button", { class: "btn", onclick: () => {
+        if (!confirm("Remove this card and its comment from Saved?")) return;
+        delete state.saved[id];
+        persist();
+        back.remove();
+        renderSaved();
+      } }, "Remove"),
+      h("button", { class: "btn", onclick: () => { sv.comment = note.value.trim(); persist(); back.remove(); renderSaved(); } }, "Done")));
 }
 
 // ---------- Consult ----------
@@ -725,10 +830,10 @@ function mixState() {
 // Themes from the cards you've saved most recently, for the Daily Mix.
 function dailyThemes() {
   const counts = {};
-  const recent = Object.entries(state.favourites).sort((a, b) => String(a[1]).localeCompare(String(b[1]))).slice(-10);
-  for (const [id] of recent) {
+  const recent = Object.entries(state.saved).sort((a, b) => a[1].date.localeCompare(b[1].date)).slice(-10);
+  for (const [id, sv] of recent) {
     const p = library.passages[id];
-    if (p) for (const t of tagThemes(p.text)) counts[t] = (counts[t] || 0) + 1;
+    if (p) for (const t of tagThemes(`${p.text} ${sv.comment || ""}`)) counts[t] = (counts[t] || 0) + 1;
   }
   const top = Object.entries(counts).sort((a, b) => b[1] - a[1]).map(([t]) => t).slice(0, 2);
   return top.length ? top : ["control", "others"];
@@ -806,22 +911,16 @@ function mixCard(id, index, run) {
   if (!p) return h("section", { class: "card", style: bg }, h("p", { class: "lede" }, "This passage failed its integrity check, so it isn't shown."));
   const out = h("div");
   const ask = explainButton(id, out, [id], "Explain");
+  const mark = h("span", { class: "fav-mark" }, state.saved[id] ? "✦" : "");
   const qsize = Math.max(19, Math.min(32, 32 - (p.text.length - 120) / 40));
   const card = h("section", { class: "card", style: { ...bg, "--qsize": `${qsize}px` } },
     h("button", { class: "eyebrow author-link", title: `Play ${p.author}`, onclick: () => playFrom(id) },
       `${p.author} · ${p.work}`, run.mode !== "play" && h("span", { class: "play-hint" }, " ▸ Play")),
     h("div", { class: "card-scroll" },
       h("blockquote", { class: "quote" }, p.text),
-      h("p", { class: "quote-ref" }, p.ref, state.favourites[id] ? h("span", { class: "fav-mark" }, "✦") : null, h("small", {}, `tr. ${p.translator}`)),
+      h("p", { class: "quote-ref" }, p.ref, mark, h("small", {}, `tr. ${p.translator}`)),
       out,
-      h("div", { class: "btn-row" },
-        ask,
-        h("button", { class: "btn", onclick: (ev) => {
-          if (state.favourites[id]) delete state.favourites[id];
-          else state.favourites[id] = dayKey();
-          persist();
-          ev.target.textContent = state.favourites[id] ? "Saved ✦" : "Save";
-        } }, state.favourites[id] ? "Saved ✦" : "Save"))));
+      h("div", { class: "btn-row" }, ask, cardActions(id, mark))));
   card.dataset.id = id;
   card.dataset.vol = vol;
   return card;
@@ -974,7 +1073,7 @@ function alongsideSheet(book) {
 
 // ---------- routing ----------
 
-const ROUTES = { today: renderToday, mix: () => (mixState().run && mixState().run.date === dayKey() ? renderRun() : renderMix()), consult: renderConsult, you: renderYou };
+const ROUTES = { today: renderToday, saved: renderSaved, mix: () => (mixState().run && mixState().run.date === dayKey() ? renderRun() : renderMix()), consult: renderConsult, you: renderYou };
 function current() {
   const t = location.hash.slice(1);
   return ROUTES[t] ? t : "today";

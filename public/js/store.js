@@ -12,8 +12,7 @@ export function freshState() {
     sessions: {},
     ledger: [],
     journal: [],
-    favourites: {},
-    evenings: {},
+    saved: {}, // passage id -> { date, comment }
   };
 }
 
@@ -23,7 +22,13 @@ export function load() {
     if (!raw) return freshState();
     const s = JSON.parse(raw);
     const base = freshState();
-    return { ...base, ...s, profile: { ...base.profile, ...s.profile }, settings: { ...base.settings, ...s.settings } };
+    const out = { ...base, ...s, profile: { ...base.profile, ...s.profile }, settings: { ...base.settings, ...s.settings } };
+    // favourites (id -> date) became saved cards with a comment
+    if (s.favourites && !s.saved) {
+      out.saved = Object.fromEntries(Object.entries(s.favourites).map(([id, date]) => [id, { date, comment: "" }]));
+    }
+    delete out.favourites;
+    return out;
   } catch {
     return freshState();
   }
