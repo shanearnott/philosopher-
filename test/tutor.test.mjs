@@ -34,3 +34,14 @@ test("bad requests are rejected", () => {
   assert.throws(() => buildRequest({ job: "poem" }, library, course), /Unknown job/);
   assert.throws(() => buildRequest({ job: "consult", situation: "x", studied: [] }, library, course), /No studied/);
 });
+
+test("browser requests use the plan's models and Opus refusal fallback", async () => {
+  const { buildRequest: build, requestBody } = await import("../public/js/prompts.js");
+  const daily = requestBody(build({ job: "explain", passageId: "meditations.4.7" }, library, course));
+  assert.equal(daily.model, "claude-sonnet-5");
+  assert.equal(daily.fallbacks, undefined);
+  const deep = requestBody(build({ job: "expound", passageId: "meditations.4.7", deeper: true, reflection: "x" }, library, course));
+  assert.equal(deep.model, "claude-opus-5");
+  assert.equal(deep.fallbacks, "default");
+  assert.equal(deep.output_config.effort, "high");
+});

@@ -16,18 +16,31 @@ This is **Phase 1** of the plan (*Stoa — A Philosophy Feed to Replace Instagra
 - **Look.** Designed as a museum at dusk: EB Garamond and Inter, marble, ink, terracotta and gold, slow cross-fades and a slight parallax. Dark mode turns on automatically after 8pm. Nothing flashes and nothing makes a sound.
 - Hold the passage card to save it as a favourite. Voice dictation works where the browser supports it. The app also works offline apart from the tutor.
 
-## Put it on your phone or iPad (no terminal needed)
+## Put it on your phone or iPad
 
-1. **Host it.** Tap [**Deploy to Render**](https://render.com/deploy?repo=https://github.com/shanearnott/philosopher-/tree/claude/instagram-replacement-app-pv9lkx) and sign in with GitHub. Render reads `render.yaml` and asks for two values:
+### Easiest: GitHub Pages (free, nothing to run)
+
+GitHub hosts the app at **https://shanearnott.github.io/philosopher-/**. There's no server, so the tutor calls Claude directly from your device with your own API key.
+
+1. **Turn on Pages, once.** In the repo on GitHub, go to **Settings → Pages**, and under **Build and deployment → Source** choose **GitHub Actions**.
+2. **Publish.** Every push to `main` runs the tests and publishes `public/` (see `.github/workflows/pages.yml`). You can also run it from the **Actions** tab (**Deploy to GitHub Pages → Run workflow**).
+3. **On your phone or iPad**, open the address in Safari. Stoa shows a banner: tap **Share**, then **Add to Home Screen**, and move it to where Instagram was.
+4. **Turn on the tutor.** The first time you use it, Stoa asks for a Claude API key from [console.anthropic.com](https://console.anthropic.com/settings/keys). You can also add it later under **You → Settings**. Do this *inside the home-screen app*, because iOS keeps its storage separate from Safari.
+
+About the key: it stays in that device's storage and is sent only to `api.anthropic.com`. It is never in the repo or on the website. Anyone else who opens the site sees the app but has no tutor unless they add their own key. To stop spending a lot, set a monthly spend limit in the Anthropic console.
+
+### With a server: Render (keeps the key off your devices)
+
+This is the plan's original design: a small server holds the key, and devices only need an access code.
+
+1. Tap [**Deploy to Render**](https://render.com/deploy?repo=https://github.com/shanearnott/philosopher-) and sign in with GitHub. Render reads `render.yaml` and asks for two values:
    - `ANTHROPIC_API_KEY`: your key from [console.anthropic.com](https://console.anthropic.com) (API Keys).
    - `STOA_ACCESS_TOKEN`: an access code you make up, such as `olive-grove-1862`. It stops strangers using your API credit.
 
-   After a few minutes you get an address like `https://stoa-xxxx.onrender.com`. The free plan sleeps when idle, so the first open of the day takes about 30 seconds.
-2. **Open your setup link** on the phone or iPad, in Safari: `https://stoa-xxxx.onrender.com/?code=olive-grove-1862`. The code is saved on that device, and you never type it again.
-3. **Add to Home Screen.** Stoa shows a banner telling you how: tap **Share**, then **Add to Home Screen**. From then on it opens full screen like an app and works offline apart from the tutor.
-4. **Put it where Instagram was.** Move Instagram off your first page.
+   You get an address like `https://stoa-xxxx.onrender.com`. The free plan sleeps when idle, so the first open of the day takes about 30 seconds.
+2. Open `https://stoa-xxxx.onrender.com/?code=olive-grove-1862` on each device to save the code, then add Stoa to your home screen as above.
 
-Already set up on one device? Go to **You → Settings → Share setup link to another device** and AirDrop or message the link to yourself. If you ever open the app without the code, it asks for it the first time the tutor is needed.
+With a server, once one device is set up, go to **You → Settings → Share setup link to another device** and AirDrop or message the link to yourself. If you ever open the app without the code, it asks for it the first time the tutor is needed.
 
 Each device keeps its own journal, since everything is stored on the device.
 
@@ -61,14 +74,18 @@ Any other Node host with HTTPS (Fly, Railway, a VPS) works the same way as Rende
 
 ```
 server.js                 static server + /api/tutor (holds the API key)
-lib/tutor.js              Claude prompts for Explain / Ask / Expound / Reply / Consult
+lib/tutor.js              runs tutor requests on the server with the Anthropic SDK
 scripts/ingest.mjs        text pipeline: download, split, map, checksum
 public/                   the app (no build step)
   data/library.json       locked passage library (generated)
   data/course-meditations.json   the 30-day path: context, key word, paraphrase, questions
+  js/prompts.js           Claude prompts for Explain / Ask / Expound / Reply / Consult (shared)
+  js/direct.js            calls Claude from the browser with your own key (GitHub Pages)
   js/logic.js             points, streaks, ranks, quote guard, checksum (pure, tested)
   js/app.js               UI
 test/                     node --test
+.github/workflows/pages.yml   test + publish to GitHub Pages on push to main
+render.yaml               one-click Render hosting (server mode)
 ```
 
 `npm test` runs checksum integrity, a check that course text never misquotes a passage, the points, streak and rank rules, the quote guard, and prompt building.

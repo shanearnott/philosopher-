@@ -4,6 +4,8 @@ import {
   virtueMeters, todaysDay, verifiedPassage, guardReply, journalMarkdown,
 } from "./logic.js";
 import { load, save, wipe, freshState } from "./store.js";
+import { buildRequest } from "./prompts.js";
+import { callClaude } from "./direct.js";
 
 // ---------- boot ----------
 
@@ -24,9 +26,11 @@ let state = load();
   }
 }
 let status = { claude: false, tokenRequired: false };
-fetch("api/status")
-  .then((r) => (r.ok ? r.json() : null))
-  .then((s) => s && (status = s))
+// No server answers on a static host (GitHub Pages); the tutor then uses the
+// user's own API key from this device, if one is saved.
+const statusReady = fetch("api/status")
+  .then((r) => (r.ok && (r.headers.get("content-type") || "").includes("json") ? r.json() : null))
+  .then((s) => { if (s) status = { ...s, server: true }; })
   .catch(() => {});
 
 const view = document.getElementById("view");
@@ -112,10 +116,19 @@ function recentReflections(excludeId) {
 }
 
 async function tutor(job, payload) {
+  await statusReady;
+  const body = { job, profile: state.profile, ...payload };
+  if (!status.claude) {
+    if (!state.settings.apiKey) {
+      apiKeySheet();
+      throw new Error("The tutor needs a Claude API key. Add it, then try again.");
+    }
+    return callClaude(state.settings.apiKey, buildRequest(body, library, course));
+  }
   const res = await fetch("api/tutor", {
     method: "POST",
     headers: { "content-type": "application/json", ...(state.settings.token ? { "x-stoa-token": state.settings.token } : {}) },
-    body: JSON.stringify({ job, profile: state.profile, ...payload }),
+    body: JSON.stringify(body),
   });
   const data = await res.json().catch(() => ({}));
   if (res.status === 401) {
@@ -146,6 +159,27 @@ function renderTutor(text, allowed) {
 }
 
 const thinking = () => h("div", { class: "thinking", "aria-label": "Thinking" }, h("i"), h("i"), h("i"));
+
+function apiKeySheet() {
+  if (document.querySelector(".sheet-backdrop")) return;
+  const input = h("input", { type: "password", autocomplete: "off", autocapitalize: "off", spellcheck: "false", placeholder: "sk-ant-…" });
+  const back = sheet(
+    h("h2", {}, "Turn on the tutor"),
+    h("p", { class: "muted" }, "Paste a Claude API key from ", h("a", { href: "https://console.anthropic.com/settings/keys", target: "_blank", rel: "noopener" }, "console.anthropic.com"),
+      ". It's saved on this device only and sent only to Anthropic. Daily use costs roughly $1–2 a month."),
+    h("label", { class: "field" }, input),
+    h("div", { class: "btn-row" },
+      h("button", { class: "btn primary", onclick: () => {
+        const key = input.value.trim();
+        if (!key.startsWith("sk-ant-")) return toast("That doesn't look like a Claude API key");
+        state.settings.apiKey = key;
+        persist();
+        back.remove();
+        toast("Saved. Try again.");
+      } }, "Save"),
+      h("button", { class: "btn", onclick: () => back.remove() }, "Not now")));
+  setTimeout(() => input.focus(), 100);
+}
 
 function accessCodeSheet() {
   if (document.querySelector(".sheet-backdrop")) return;
@@ -825,6 +859,13 @@ function renderYou() {
   hide.addEventListener("change", () => { state.settings.hideNumbers = hide.checked; persist(); applyTheme(); });
   const token = h("input", { type: "password", value: state.settings.token, placeholder: "Only if your server has one", autocomplete: "off", autocapitalize: "off" });
   token.addEventListener("change", () => { state.settings.token = token.value.trim(); persist(); toast("Saved"); });
+  const apiKey = h("input", { type: "password", value: state.settings.apiKey || "", placeholder: "sk-ant-…", autocomplete: "off", autocapitalize: "off", spellcheck: "false" });
+  apiKey.addEventListener("change", () => { state.settings.apiKey = apiKey.value.trim(); persist(); toast(apiKey.value ? "Key saved on this device" : "Key removed"); });
+  const tutorNote = status.claude
+    ? `Tutor connected through your server (${status.models?.daily}; Go deeper uses ${status.models?.deep}).`
+    : state.settings.apiKey
+      ? "Tutor connected with your own key. It's stored on this device and sent only to Anthropic."
+      : "Tutor off. The daily path works without it. Add a Claude API key to turn it on.";
 
   view.replaceChildren(h("div", { class: "page" },
     h("p", { class: "eyebrow", style: { color: "var(--muted)" } }, "Scoreboard"),
@@ -862,8 +903,9 @@ function renderYou() {
     h("div", { class: "panel" },
       h("label", { class: "field" }, h("span", {}, "Appearance"), themeSel),
       h("label", { class: "field", style: { display: "flex", gap: "10px", alignItems: "center" } }, hide, "Hide all numbers"),
-      h("label", { class: "field" }, h("span", {}, "Access code"), token),
-      state.settings.token && h("div", { class: "btn-row", style: { marginTop: 0, marginBottom: "14px" } },
+      !status.claude && h("label", { class: "field" }, h("span", {}, "Claude API key (this device only)"), apiKey),
+      status.tokenRequired && h("label", { class: "field" }, h("span", {}, "Access code"), token),
+      status.tokenRequired && state.settings.token && h("div", { class: "btn-row", style: { marginTop: 0, marginBottom: "14px" } },
         h("button", { class: "btn", onclick: async () => {
           const link = `${location.origin}${location.pathname}?code=${encodeURIComponent(state.settings.token)}`;
           try {
@@ -871,7 +913,7 @@ function renderYou() {
             else { await navigator.clipboard.writeText(link); toast("Setup link copied"); }
           } catch {}
         } }, "Share setup link to another device")),
-      h("p", { class: "muted" }, status.claude ? `Tutor connected (${status.models?.daily}; Go deeper uses ${status.models?.deep}).` : "Tutor not connected. The daily path works without it; set ANTHROPIC_API_KEY on the server to enable responses."),
+      h("p", { class: "muted" }, tutorNote),
       h("div", { class: "btn-row" },
         h("button", { class: "btn", onclick: exportMarkdown }, "Export journal"),
         h("button", { class: "btn", onclick: () => {
@@ -914,5 +956,6 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 route();
+statusReady.then(() => current() === "you" && renderYou());
 
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});

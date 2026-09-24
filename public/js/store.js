@@ -7,7 +7,7 @@ export function freshState() {
   return {
     v: 1,
     profile: { role: "", challenges: "", goals: "" },
-    settings: { theme: "auto", hideNumbers: false, token: "" },
+    settings: { theme: "auto", hideNumbers: false, token: "", apiKey: "" },
     progress: { completedDay: 0 },
     sessions: {},
     ledger: [],

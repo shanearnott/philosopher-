@@ -1,8 +1,8 @@
 // Offline shell: the texts and course are bundled, so the daily path works
 // without a connection. The tutor needs the network.
-const CACHE = "stoa-v1";
+const CACHE = "stoa-v2";
 const SHELL = [
-  "./", "index.html", "css/app.css", "js/app.js", "js/logic.js", "js/store.js",
+  "./", "index.html", "css/app.css", "js/app.js", "js/logic.js", "js/store.js", "js/prompts.js", "js/direct.js",
   "data/library.json", "data/course-meditations.json", "manifest.webmanifest", "icon.svg",
 ];
 
