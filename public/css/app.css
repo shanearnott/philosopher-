@@ -341,7 +341,7 @@ h3.shelf { font: 600 12px/1.4 var(--sans); letter-spacing: 0.1em; text-transform
 .principle dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; margin: 0; }
 .principle dt { font-weight: 600; font-size: 14px; }
 .principle dd { margin: 0; font-size: 14px; color: var(--text-soft); }
-/* illuminated initial on the day's first card */
+/* illuminated initial on every passage card (not on explainers) */
 .quote .initial { float: left; display: flex; align-items: flex-start; height: 2.8em; margin: 0.14em 0.24em 0 0; }
 .quote .initial svg { width: 2.8em; height: 2.8em; display: block; flex: none; opacity: 0.94; }
 .quote .initial-lead { order: -1; margin-right: 0.08em; line-height: 1; }

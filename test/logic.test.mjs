@@ -140,5 +140,6 @@ test("the illuminated initial never changes a passage's words", async () => {
     if (s) assert.equal(s.lead + s.letter + s.rest, t);
   }
   assert.deepEqual(splitInitial("“Blessed are"), { lead: "“", letter: "B", rest: "lessed are" });
-  assert.equal(splitInitial("1. All that we are"), null);
+  assert.deepEqual(splitInitial("1. All that we are"), { lead: "1. ", letter: "A", rest: "ll that we are" });
+  assert.equal(splitInitial("1234567890123 no"), null);
 });

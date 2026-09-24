@@ -543,7 +543,6 @@ async function renderLearn() {
   const cardFor = (i) => {
     const it = items[i];
     const p = verifiedPassage(library, it.id);
-    const opensChapter = i === start || items[i - 1]?.chapter !== it.chapter;
     const bg = { "--card-bg": dusk(it.day?.virtue || tones[i % 4], 160 + (i % 3) * 20) };
     const mark = h("span", { class: "fav-mark" }, state.saved[it.id] ? "✦" : "");
     const qsize = p ? Math.max(19, Math.min(32, 32 - (p.text.length - 120) / 40)) : 24;
@@ -552,7 +551,7 @@ async function renderLearn() {
     const card = h("section", { class: "card", style: { ...bg, "--qsize": `${qsize}px` } },
       h("p", { class: "eyebrow" }, i === start && i > 0 ? `Resume · ${it.label}` : it.label),
       h("div", { class: "card-scroll" },
-        p ? (opensChapter ? illuminatedQuote(p.text, it.id) : h("blockquote", { class: "quote" }, p.text))
+        p ? illuminatedQuote(p.text, it.id)
           : h("p", { class: "lede" }, library.passages[it.id] ? "This passage failed its integrity check, so it isn't shown." : "This passage couldn't be loaded. Check your connection."),
         p && originalText(p),
         p && h("p", { class: "quote-ref" }, citeRef(p), mark, h("small", {}, `${p.author} · tr. ${p.translator}`)),
@@ -619,7 +618,7 @@ function renderReview() {
   const bg = { "--card-bg": "radial-gradient(90% 60% at 50% 0%, #6b5a33 0%, transparent 70%), linear-gradient(180deg, #221d19, #0e0d0c)" };
   const favs = Object.entries(state.saved).filter(([id]) => id.startsWith("meditations."))
     .sort((a, b) => a[1].date.localeCompare(b[1].date)).slice(0, 10)
-    .map(([id, sv]) => ({ ...verifiedPassage(library, id), comment: sv.comment })).filter((p) => p.text);
+    .map(([id, sv]) => ({ id, ...verifiedPassage(library, id), comment: sv.comment })).filter((p) => p.text);
   const cards = [
     h("section", { class: "card", style: bg },
       h("p", { class: "eyebrow" }, "Review week"),
@@ -627,7 +626,7 @@ function renderReview() {
       h("p", { class: "lede" }, `${course.days.length} days, ${Object.keys(state.sessions).length} ${Object.keys(state.sessions).length === 1 ? "session" : "sessions"}. Swipe through the passages you saved.`)),
     ...favs.map((p, i) => h("section", { class: "card", style: bg },
       h("p", { class: "eyebrow" }, `Saved passage ${i + 1} of ${favs.length}`),
-      h("div", { class: "card-scroll" }, h("blockquote", { class: "quote", style: { "--qsize": `${Math.max(19, Math.min(30, 30 - (p.text.length - 120) / 40))}px` } }, p.text),
+      h("div", { class: "card-scroll", style: { "--qsize": `${Math.max(19, Math.min(30, 30 - (p.text.length - 120) / 40))}px` } }, illuminatedQuote(p.text, p.id),
         h("p", { class: "quote-ref" }, citeRef(p)),
         p.comment && h("p", { class: "soft saved-comment" }, p.comment)))),
     h("section", { class: "card end", style: bg },
@@ -1180,7 +1179,7 @@ function mixCard(id, index, run) {
     h("button", { class: "eyebrow author-link", title: `Play ${p.author}`, onclick: () => playFrom(id) },
       `${p.author} · ${p.work}`, run.mode !== "play" && h("span", { class: "play-hint" }, " ▸ Play")),
     h("div", { class: "card-scroll" },
-      h("blockquote", { class: "quote" }, p.text),
+      illuminatedQuote(p.text, id),
       originalText(p),
       h("p", { class: "quote-ref" }, p.ref, mark, h("small", {}, `tr. ${p.translator}`)),
       themesOf(id).length > 0 && h("div", { class: "card-tags" }, [...themesOf(id)].sort((a, b) => (run.themes?.includes(b) ?? 0) - (run.themes?.includes(a) ?? 0)).slice(0, 3).map((t) =>
