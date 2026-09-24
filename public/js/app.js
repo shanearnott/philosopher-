@@ -450,6 +450,8 @@ function renderToday() {
 
   // 1. Passage
   const favMark = h("span", { class: "fav-mark" }, state.saved[pid(day)] ? "✦" : "");
+  const passageActions = h("div", { class: "btn-row" }, cardActions(pid(day), favMark));
+  loadIndex().then(() => { const b = compareButton(pid(day)); if (b) passageActions.prepend(b); }).catch(() => {});
   const qsize = passage ? Math.max(19, Math.min(34, 34 - (passage.text.length - 120) / 40)) : 24;
   const passageCard = h("section", { class: "card", style: { ...bg(180), "--qsize": `${qsize}px` } },
     h("p", { class: "eyebrow" }, `Day ${day.day} of ${course.days.length} · ${unitOf(day).title}`),
@@ -459,7 +461,7 @@ function renderToday() {
         : h("p", { class: "lede" }, "This passage failed its integrity check, so it isn't shown. Re-run the ingest script."),
       passage && h("p", { class: "quote-ref" }, `${passage.work} ${passage.ref}`, favMark,
         h("small", {}, `Marcus Aurelius · tr. ${passage.translator}`)),
-      passage && h("div", { class: "btn-row" }, cardActions(pid(day), favMark))),
+      passage && passageActions),
     h("p", { class: "hint" }, "Swipe left to explain · Hold to save · Swipe up"));
   if (passage) explainPanel(passageCard, pid(day), studiedIds(day));
   let holdTimer;
@@ -637,6 +639,53 @@ function download(name, text, type) {
   a.click();
   a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+// ---------- Compare: the same theme across traditions ----------
+// Compare, don't rank: similarities and differences as each tradition understands itself.
+
+const compareThemes = () => volIndex?.compare?.compare || [];
+const compareFor = (id) => compareThemes().filter((c) => c.entries.some((e) => e.id === id));
+
+function compareButton(id) {
+  const themes = compareFor(id);
+  if (!themes.length) return null;
+  return h("button", { class: "btn", onclick: () => compareSheet(themes[0], id) }, "Compare");
+}
+
+async function compareSheet(theme, fromId) {
+  await Promise.all([...new Set(theme.entries.map((e) => volOf(e.id)))].map((v) => loadVolume(v).catch(() => {})));
+  const entry = (e) => {
+    const p = verifiedPassage(library, e.id);
+    return h("div", { class: "compare-entry" + (e.id === fromId ? " here" : "") },
+      h("p", { class: "compare-trad" }, e.tradition, p && h("span", { class: "muted" }, ` · ${citeRef(p)}`)),
+      h("p", {}, e.teaching),
+      h("p", { class: "compare-diff" }, e.similar),
+      p && h("details", {}, h("summary", {}, "Read the passage"),
+        h("blockquote", { class: "book-quote" }, p.text, h("cite", {}, `tr. ${p.translator}`)),
+        h("button", { class: "btn", onclick: () => { back.remove(); playFrom(e.id); } }, `Read on in ${p.author === "Marcus Aurelius" ? "the Meditations" : p.author}`)));
+  };
+  const back = sheet(
+    h("p", { class: "eyebrow", style: { color: "var(--muted)", margin: 0 } }, "Compare"),
+    h("h2", {}, theme.theme),
+    h("p", {}, h("strong", {}, "Shared: "), theme.shared),
+    h("p", {}, h("strong", {}, "Differs: "), theme.differs),
+    theme.entries.map(entry),
+    h("p", { class: "muted" }, "Compare, don't rank: each tradition is described as it understands itself, and each contains wide internal variety."),
+    h("div", { class: "btn-row" }, h("button", { class: "btn", onclick: () => back.remove() }, "Close")));
+}
+
+function principlesSheet() {
+  const m = volIndex?.compare?.principles;
+  if (!m) return;
+  const back = sheet(
+    h("p", { class: "eyebrow", style: { color: "var(--muted)", margin: 0 } }, "Reference"),
+    h("h2", {}, "Core principles compared"),
+    h("p", { class: "muted" }, m.note),
+    m.rows.map((r) => h("div", { class: "principle" },
+      h("h3", {}, r.question),
+      h("dl", {}, m.traditions.flatMap((t, i) => [h("dt", {}, t), h("dd", {}, r.answers[i])])))),
+    h("div", { class: "btn-row" }, h("button", { class: "btn", onclick: () => back.remove() }, "Close")));
 }
 
 // The original-language text (the Quran's Arabic), shown only when it matches its checksum.
@@ -901,11 +950,13 @@ const ALONGSIDE = [
 
 async function loadIndex() {
   if (!volIndex) {
-    const [lib, trad] = await Promise.all([
+    const optional = (url) => fetch(url).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+    const [lib, trad, cmp] = await Promise.all([
       fetch("data/volumes/index.json").then((r) => r.json()),
-      fetch("data/traditions.json").then((r) => (r.ok ? r.json() : null)).catch(() => null),
+      optional("data/traditions.json"),
+      optional("data/compare.json"),
     ]);
-    volIndex = { ...lib, traditions: trad };
+    volIndex = { ...lib, traditions: trad, compare: cmp };
   }
   return volIndex;
 }
@@ -966,6 +1017,16 @@ async function nextPassage(run) {
   const others = vols.filter((v) => metaOf(v)?.author !== lastAuthor);
   const started = others.filter((v) => mix.positions[v] || mix.read[v]);
   const fresh = others.filter((v) => !started.includes(v));
+  // Echo follows a compare link when the last card has one (e.g. Matthew 6:1–4 to Meditations 5.6)
+  if (run.mode === "echo" && last && Math.random() < 0.7) {
+    const linked = compareFor(last).flatMap((c) => c.entries.map((e) => e.id))
+      .filter((id) => id !== last && !run.ids.includes(id) && volOf(id) !== lastVol);
+    if (linked.length) {
+      const id = pick(linked);
+      await loadVolume(volOf(id));
+      return id;
+    }
+  }
   const want = run.mode === "echo" && last ? themesOf(last) : run.themes || [];
   for (let tries = 0; tries < 8; tries++) {
     // Shuffle weighting: mostly volumes you've started, some discovery
@@ -1030,7 +1091,7 @@ function mixCard(id, index, run) {
       h("p", { class: "quote-ref" }, p.ref, mark, h("small", {}, `tr. ${p.translator}`)),
       themesOf(id).length > 0 && h("div", { class: "card-tags" }, themesOf(id).slice(0, 3).map((t) =>
         h("button", { class: "tag-link", "aria-pressed": String(run.mode === "theme" && run.themes?.[0] === t), onclick: () => themeFrom(id, t) }, `${THEMES[t].label} ▸`))),
-      h("div", { class: "btn-row" }, ask, cardActions(id, mark))),
+      h("div", { class: "btn-row" }, ask, compareButton(id), cardActions(id, mark))),
     index === 0 && h("p", { class: "hint" }, "Swipe left to explain · Swipe up for the next card"));
   explainPanel(card, id, [id]);
   card.dataset.id = id;
@@ -1206,6 +1267,14 @@ async function renderBrowse() {
         h("span", { class: "subject-glyph", "aria-hidden": "true" }, glyph), h("b", {}, THEMES[k].label), h("small", {}, blurb)))),
     h("h2", {}, "By author"),
     shelves.flatMap(([name, list]) => [h("h3", { class: "shelf" }, name), h("div", {}, list.map(authorRow))]),
+    traditionVolumes().length > 0 && [
+      h("h2", {}, "World traditions"),
+      h("p", { class: "muted" }, `Core passages from ${traditionVolumes().map((t) => t.author).join(", ")}, in four weekly themes: ${(volIndex.traditions.weeks || []).map((w) => w.theme).join(", ")}. Compare, don't rank.`),
+      h("div", { class: "filters", style: { flexWrap: "wrap" } },
+        compareThemes().map((c) => h("button", { class: "chip", onclick: () => compareSheet(c) }, c.theme)),
+        volIndex.compare?.principles && h("button", { class: "chip", onclick: principlesSheet }, "Core principles compared")),
+      (volIndex.traditions.pending || []).map((p) => h("p", { class: "muted", style: { fontSize: "13px" } }, `${p.name}: coming. ${p.reason}`)),
+    ],
     h("h2", {}, "By situation"),
     h("div", {}, mode("Consult", "Describe what's happening; the tutor picks passages you've studied", () => go("consult"), "⚖")),
     h("h2", {}, "Read alongside"),

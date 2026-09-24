@@ -9,8 +9,9 @@
     "ingest": "node scripts/ingest.mjs",
     "ingest:volumes": "node scripts/ingest-volumes.mjs",
     "explainers": "node scripts/build-explainers.mjs",
-    "test": "node scripts/build-explainers.mjs && node --test test/*.test.mjs",
-    "ingest:traditions": "node scripts/ingest-traditions.mjs"
+    "test": "node scripts/build-explainers.mjs && node scripts/traditions/build-compare.mjs && node --test test/*.test.mjs",
+    "ingest:traditions": "node scripts/ingest-traditions.mjs",
+    "compare": "node scripts/traditions/build-compare.mjs"
   },
   "engines": {
     "node": ">=20"

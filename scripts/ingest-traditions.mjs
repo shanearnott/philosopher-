@@ -8,13 +8,13 @@
 //
 // Writes public/data/volumes/<tradition>.json (same shape as other volumes,
 // plus week, original text, licence and source) and public/data/traditions.json.
+// Compare cards and the principles matrix are built separately (traditions/build-compare.mjs).
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { sha256 } from "./ingest.mjs";
 import { tagThemes } from "../public/js/themes.js";
 import { TRADITIONS, WEEKS } from "./traditions/selections.mjs";
-import { COMPARE, PRINCIPLES } from "./traditions/compare.mjs";
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = path.join(ROOT, "public", "data");
@@ -211,7 +211,7 @@ async function main() {
     console.log(`${t.id}: ${Object.keys(passages).length} passages, ${days.length} days`);
   }
   if (show) return;
-  await writeFile(path.join(OUT, "traditions.json"), JSON.stringify({ weeks: WEEKS, traditions: index, principles: PRINCIPLES, compare: COMPARE, pending: TRADITIONS_PENDING }, null, 2) + "\n");
+  await writeFile(path.join(OUT, "traditions.json"), JSON.stringify({ weeks: WEEKS, traditions: index, pending: TRADITIONS_PENDING }, null, 2) + "\n");
 }
 
 // In the plan but not built yet, and why.

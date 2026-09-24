@@ -331,6 +331,16 @@ body.with-player .card { padding-bottom: calc(var(--tabs-h) + var(--safe-b) + 84
 .subject-glyph { font-size: 20px; color: var(--gold); }
 h3.shelf { font: 600 12px/1.4 var(--sans); letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin: 22px 0 0; }
 .original { font: 400 22px/1.9 "Amiri", "Scheherazade New", "Geeza Pro", "Noto Naskh Arabic", serif; color: rgba(239,233,221,0.82); text-align: right; white-space: pre-line; margin: 10px 0 12px; }
+.compare-entry { border-top: 1px solid var(--line); padding: 12px 0 4px; }
+.compare-entry.here { border-left: 2px solid var(--gold); padding-left: 10px; }
+.compare-entry p { margin: 0 0 6px; }
+.compare-trad { font: 600 12px/1.4 var(--sans); letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold); }
+.compare-trad .muted { text-transform: none; letter-spacing: 0; font-weight: 400; }
+.compare-diff { color: var(--muted); font-size: 14px; }
+.principle h3 { margin: 18px 0 6px; }
+.principle dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; margin: 0; }
+.principle dt { font-weight: 600; font-size: 14px; }
+.principle dd { margin: 0; font-size: 14px; color: var(--text-soft); }
 .card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 4px; }
 .tag-link { border: 1px solid rgba(255, 255, 255, 0.22); background: none; color: inherit; opacity: 0.8; border-radius: 999px; padding: 5px 11px; font-size: 12px; }
 .tag-link[aria-pressed="true"] { border-color: var(--gold); color: var(--gold); opacity: 1; }
