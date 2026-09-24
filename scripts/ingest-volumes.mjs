@@ -306,7 +306,8 @@ export const GUTENBERG = [
       let book = 0, last = 99, key = null;
       const out = [];
       for (const it of items) {
-        if (it.tag === "h2") {
+        // chapter headings are h2, except the Apology for Raimond Sebond (2.12), which is h1
+        if (it.tag === "h2" || (it.tag === "h1" && /^CHAPTER/.test(it.text))) {
           const m = it.text.match(/^CHAPTER\s+([IVXL]+)\.?\s*[—–-]*\s*(.+?)\.?$/);
           if (!m) { key = null; continue; }
           const n = roman(m[1]);
