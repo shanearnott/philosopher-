@@ -17,6 +17,11 @@ const PORT = Number(process.env.PORT) || 8787;
 const TOKEN = process.env.STOA_ACCESS_TOKEN || "";
 
 const library = JSON.parse(await readFile(path.join(root, "data/library.json"), "utf8"));
+// the wider library (Mix and Play) is citable by the tutor too
+const volumes = JSON.parse(await readFile(path.join(root, "data/volumes/index.json"), "utf8")).volumes;
+for (const v of volumes) {
+  Object.assign(library.passages, JSON.parse(await readFile(path.join(root, `data/volumes/${v.id}.json`), "utf8")).passages);
+}
 const course = JSON.parse(await readFile(path.join(root, "data/course-meditations.json"), "utf8"));
 
 const TYPES = {

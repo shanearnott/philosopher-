@@ -9,7 +9,10 @@ export const POINTS = {
   favourite: 2,
   unit: 50,
   course: 250,
+  mixReflection: 10,
 };
+export const MIX_REFLECTION_DAILY_CAP = 3;
+export const MIX_RUN_LENGTH = 20;
 export const FAVOURITE_DAILY_CAP = 5;
 export const REFLECTION_MIN_WORDS = 50;
 export const GRACE_DAYS_PER_MONTH = 2;
@@ -72,6 +75,11 @@ export function pointsFor(kind, ledger, date, key) {
       return today.some((e) => e.kind === "quick") ? POINTS.session - POINTS.quick : POINTS.session;
     case "quick":
       return today.some((e) => e.kind === "session" || e.kind === "quick") ? 0 : POINTS.quick;
+    case "mixReflection":
+      // reading in Mix or Play scores nothing; reflecting scores, up to 3 a day
+      return today.filter((e) => e.kind === "mixReflection").length < MIX_REFLECTION_DAILY_CAP
+        ? POINTS.mixReflection
+        : 0;
     case "evening":
       return today.some((e) => e.kind === "evening") ? 0 : POINTS.evening;
     case "reflection":
@@ -192,6 +200,9 @@ export function sha256(str) {
   return [...h].map((x) => x.toString(16).padStart(8, "0")).join("");
 }
 
+// "Meditations 5.20"; other volumes' refs already name the work ("Tao Te Ching 40").
+export const citeRef = (p) => (/^\d/.test(p.ref) ? `${p.work} ${p.ref}` : p.ref);
+
 // A passage is shown as a quote only if its text still matches its checksum.
 export function verifiedPassage(library, id) {
   const p = Object.hasOwn(library.passages, id) ? library.passages[id] : null;
@@ -227,7 +238,7 @@ export function guardReply(text, library, allowedIds) {
     .replace(/\*\*(.+?)\*\*/g, "$1");
   for (const para of cleaned.split(/\n\s*\n/)) {
     // tokens may sit inline; split them out as their own blocks
-    const pieces = para.split(/(\[\[[a-z]+\.\d+\.\d+\]\])/);
+    const pieces = para.split(/(\[\[[a-z]+(?:\.\d+)+\]\])/);
     let inline = [];
     const flush = () => {
       const joined = inline.join("").trim();
@@ -235,7 +246,7 @@ export function guardReply(text, library, allowedIds) {
       inline = [];
     };
     for (const piece of pieces) {
-      const m = piece.match(/^\[\[([a-z]+\.\d+\.\d+)\]\]$/);
+      const m = piece.match(/^\[\[([a-z]+(?:\.\d+)+)\]\]$/);
       if (!m) {
         inline.push(piece);
         continue;
@@ -245,7 +256,7 @@ export function guardReply(text, library, allowedIds) {
         flush();
         blocks.push({ type: "passage", id });
       } else {
-        inline.push(`(${id.split(".").slice(1).join(".")})`);
+        inline.push(`(${library.passages[id]?.ref || id.split(".").slice(1).join(".")})`);
       }
     }
     flush();
@@ -277,16 +288,16 @@ function splitQuotes(text, sources) {
 export function journalMarkdown(journal, library) {
   const lines = ["# My Meditations", "", "_A journal kept with Stoa._", ""];
   for (const e of [...journal].sort((a, b) => a.date.localeCompare(b.date))) {
-    const p = library.passages[e.passageId];
-    lines.push(`## ${e.date} · ${p ? `${p.work} ${p.ref}` : e.title || "Entry"}`, "");
+    const p = e.passage && sha256(e.passage.text) === e.passage.sha256 ? e.passage : library.passages[e.passageId];
+    lines.push(`## ${e.date} · ${p ? citeRef(p) : e.title || "Entry"}`, "");
     if (p) {
-      lines.push(...p.text.split("\n").map((l) => `> ${l}`), "", `> — ${p.author}, ${p.work} ${p.ref} (tr. ${p.translator})`, "");
+      lines.push(...p.text.split("\n").map((l) => `> ${l}`), "", `> — ${p.author}, ${citeRef(p)} (tr. ${p.translator})`, "");
     }
     if (e.question) lines.push(`**Question:** ${e.question}`, "");
     if (e.reflection) lines.push("**My reflection**", "", e.reflection, "");
-    if (e.response) lines.push("**Tutor's response**", "", e.response.replace(/\[\[([a-z]+)\.(\d+\.\d+)\]\]/g, "(see $2)"), "");
+    if (e.response) lines.push("**Tutor's response**", "", e.response.replace(/\[\[[a-z]+\.([\d.]+)\]\]/g, "(see $1)"), "");
     if (e.reply) lines.push("**My reply**", "", e.reply, "");
-    if (e.replyResponse) lines.push("**Tutor**", "", e.replyResponse.replace(/\[\[([a-z]+)\.(\d+\.\d+)\]\]/g, "(see $2)"), "");
+    if (e.replyResponse) lines.push("**Tutor**", "", e.replyResponse.replace(/\[\[[a-z]+\.([\d.]+)\]\]/g, "(see $1)"), "");
     if (e.applied) lines.push(`**Applied it?** ${e.applied.yes ? "Yes" : "Not yet"}${e.applied.example ? `: ${e.applied.example}` : ""}`, "");
     if (e.evening) {
       lines.push("**Evening review**", "", `- Done well: ${e.evening.well}`, `- Done badly: ${e.evening.badly}`, `- Left undone: ${e.evening.undone}`, "");

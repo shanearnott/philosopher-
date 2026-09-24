@@ -1,0 +1,159 @@
+{
+  "volumes": [
+    {
+      "id": "enchiridion",
+      "author": "Epictetus",
+      "work": "Enchiridion",
+      "translator": "George Long (1877)",
+      "year": "c. 125",
+      "why": "Marcus's main influence; blunt and practical",
+      "course": 2,
+      "count": 58
+    },
+    {
+      "id": "discourses",
+      "author": "Epictetus",
+      "work": "Discourses",
+      "translator": "George Long (1877)",
+      "year": "c. 108",
+      "why": "Marcus's main influence; blunt and practical",
+      "course": 2,
+      "count": 393
+    },
+    {
+      "id": "seneca",
+      "author": "Seneca",
+      "work": "Dialogues",
+      "translator": "Aubrey Stewart (1900)",
+      "year": "c. 49",
+      "why": "Time, wealth, busyness; letters to a senior official",
+      "course": 3,
+      "count": 74
+    },
+    {
+      "id": "boethius",
+      "author": "Boethius",
+      "work": "The Consolation of Philosophy",
+      "translator": "H. R. James (1897)",
+      "year": "524",
+      "why": "Fortune, reputation and loss after falling from power",
+      "course": 5,
+      "count": 199
+    },
+    {
+      "id": "taoteching",
+      "author": "Laozi",
+      "work": "Tao Te Ching",
+      "translator": "James Legge (1891)",
+      "year": "c. 400 BC",
+      "why": "Similar ideas on control and attachment from another tradition",
+      "course": 8,
+      "count": 84
+    },
+    {
+      "id": "moralsentiments",
+      "author": "Adam Smith",
+      "work": "The Theory of Moral Sentiments",
+      "translator": "Original English (1759)",
+      "year": "1759",
+      "why": "Love of praise versus being praiseworthy",
+      "volume": 9,
+      "count": 592
+    },
+    {
+      "id": "franklin",
+      "author": "Benjamin Franklin",
+      "work": "Autobiography",
+      "translator": "Original English",
+      "year": "1791",
+      "why": "The 13-virtue tracking chart, the model for the scoreboard",
+      "volume": 12,
+      "count": 349
+    },
+    {
+      "id": "artofwar",
+      "author": "Sun Tzu",
+      "work": "The Art of War",
+      "translator": "Lionel Giles (1910)",
+      "year": "c. 500 BC",
+      "why": "Short, strategic, defence-relevant",
+      "volume": 15,
+      "verses": true,
+      "count": 113
+    },
+    {
+      "id": "prince",
+      "author": "Niccolò Machiavelli",
+      "work": "The Prince",
+      "translator": "W. K. Marriott (1908)",
+      "year": "1532",
+      "why": "The realist counterweight",
+      "volume": 16,
+      "flagged": "Translator's death date unknown; may be in copyright outside the US",
+      "count": 178
+    },
+    {
+      "id": "analects",
+      "author": "Confucius",
+      "work": "Analects",
+      "translator": "James Legge (1861)",
+      "year": "c. 475 BC",
+      "why": "Duty, leadership, relationships",
+      "volume": 17,
+      "count": 511
+    },
+    {
+      "id": "ethics",
+      "author": "Aristotle",
+      "work": "Nicomachean Ethics",
+      "translator": "F. H. Peters (1881)",
+      "year": "c. 340 BC",
+      "why": "Practical wisdom and habit; source of the Stoic virtues",
+      "volume": 18,
+      "count": 761
+    },
+    {
+      "id": "walden",
+      "author": "Henry David Thoreau",
+      "work": "Walden",
+      "translator": "Original English (1854)",
+      "year": "1854",
+      "why": "Deliberate, simple living",
+      "volume": 21,
+      "count": 388
+    },
+    {
+      "id": "emerson",
+      "author": "Ralph Waldo Emerson",
+      "work": "Essays",
+      "translator": "Original English (1841–44)",
+      "year": "1841",
+      "why": "Independence of judgement",
+      "volume": 22,
+      "count": 271
+    },
+    {
+      "id": "thucydides",
+      "author": "Thucydides",
+      "work": "History of the Peloponnesian War",
+      "translator": "Richard Crawley (1874)",
+      "year": "c. 400 BC",
+      "why": "Strategy, power and war decisions; the Melian Dialogue",
+      "volume": 11,
+      "count": 137
+    }
+  ],
+  "coming": [
+    "Seneca, Letters (Gummere)",
+    "Cicero, On Duties",
+    "Montaigne, Essays",
+    "Francis Bacon, Essays",
+    "The Dhammapada",
+    "Bhagavad Gita",
+    "Pascal, Pensées",
+    "Plutarch, Lives",
+    "La Rochefoucauld, Maxims",
+    "Epicurus, Letters and Principal Doctrines",
+    "Schopenhauer, The Wisdom of Life"
+  ]
+}

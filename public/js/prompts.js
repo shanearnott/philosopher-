@@ -4,13 +4,20 @@
 // told to cite passages only as [[id]] tokens. The app swaps tokens for
 // verbatim text.
 
+// In-copyright books on the Read alongside shelf: summaries only, never quotes.
+export const ALONGSIDE_BOOKS = {
+  "Man's Search for Meaning": "Viktor Frankl",
+  "Thoughts of a Philosophical Fighter Pilot": "James Stockdale",
+  "The Book of Five Rings": "Miyamoto Musashi",
+};
+
 export const DEFAULT_MODELS = { daily: "claude-sonnet-5", deep: "claude-opus-5" };
 
-export const SYSTEM = `You are the tutor in Stoa, a private daily philosophy app that replaces a social feed. You have read the day's passage from Marcus Aurelius's Meditations (George Long's translation) alongside the user.
+export const SYSTEM = `You are the tutor in Stoa, a private daily philosophy app that replaces a social feed. You have read the passage alongside the user: usually from Marcus Aurelius's Meditations (George Long's translation), sometimes from another classic in the user's library.
 
 How you speak:
-- You speak as yourself about Marcus. Never speak as Marcus or roleplay him.
-- Never write out a quotation from any philosopher, and never put words in quotation marks as if Marcus said them. Paraphrase in your own words.
+- You speak as yourself about the author. Never speak as Marcus or any other author, or roleplay them.
+- Never write out a quotation from any philosopher, and never put words in quotation marks as if the author said them. Paraphrase in your own words.
 - To point to a passage, write its ID in double brackets on its own line, for example [[meditations.5.20]]. The app replaces the token with the verbatim text. Use only IDs you are given in this request.
 - Be honest rather than flattering. Praise only what is actually good, and be specific.
 - Plain prose in short paragraphs. No headings, lists or bold unless asked. Address the user as "you".
@@ -22,7 +29,7 @@ const clip = (s, n) => (typeof s === "string" ? s.slice(0, n) : "");
 
 function passageBlock(library, id) {
   const p = library.passages[id];
-  return `<passage id="${id}" ref="${p.work} ${p.ref}">\n${p.text}\n</passage>`;
+  return `<passage id="${id}" ref="${/^\d/.test(p.ref) ? `${p.work} ${p.ref}` : p.ref}" author="${p.author}">\n${p.text}\n</passage>`;
 }
 
 function profileBlock(profile) {
@@ -111,11 +118,20 @@ export function buildRequest(body, library, course, models = DEFAULT_MODELS) {
         `The user is consulting their library about the situation above. Choose the 2 or 3 passages above that bear on it most (fewer if fewer fit). For each, put its [[id]] token on its own line, then 2 or 3 sentences on how it applies to this situation. Finish with one practical next step. Use only passages given above.`,
       );
       break;
+    case "alongside": {
+      const author = Object.hasOwn(ALONGSIDE_BOOKS, body.book) ? ALONGSIDE_BOOKS[body.book] : null;
+      if (!author) throw badRequest("Unknown book");
+      parts.push(
+        `<book>${body.book}, by ${author}</book>`,
+        `This book is still in copyright. In 150 to 200 words, summarise its central ideas in your own words and say how they connect to Stoic practice, especially Marcus Aurelius and Epictetus. Do not quote the book at all, not even a phrase. Don't use [[id]] tokens.`,
+      );
+      break;
+    }
     default:
       throw badRequest("Unknown job");
   }
 
-  const allowed = job === "consult" ? studied : [passageId, ...others];
+  const allowed = job === "consult" ? studied : job === "alongside" ? [] : [passageId, ...others];
   return { model, effort, prompt: parts.filter(Boolean).join("\n\n"), allowed };
 }
 

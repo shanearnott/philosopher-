@@ -55,7 +55,7 @@ a { color: var(--accent); }
   position: fixed; inset: auto 0 0 0; z-index: 20;
   height: calc(var(--tabs-h) + var(--safe-b));
   padding-bottom: var(--safe-b);
-  display: grid; grid-template-columns: repeat(4, 1fr);
+  display: grid; grid-template-columns: repeat(5, 1fr);
   background: color-mix(in srgb, var(--bg) 82%, transparent);
   backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
   border-top: 1px solid var(--line);
@@ -277,6 +277,29 @@ textarea.reflect:focus { border-color: var(--gold); }
 }
 #toast.show { opacity: 1; transform: translate(-50%, 0); }
 
+/* Mix: mini-player, modes */
+.player {
+  position: fixed; z-index: 21; left: 0; right: 0; bottom: calc(var(--tabs-h) + var(--safe-b));
+  height: 56px; display: flex; align-items: center; gap: 4px; padding: 0 10px 0 18px;
+  background: rgba(27, 26, 23, 0.9); color: #efe9dd; border-top: 1px solid rgba(216,195,156,0.18);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+}
+.player[hidden] { display: none; }
+.player-text { flex: 1; min-width: 0; line-height: 1.2; }
+.player-text small { display: block; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.player-text span { display: block; font: 400 16px/1.3 var(--serif); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.player button { width: 44px; height: 44px; border: 0; background: none; color: inherit; font-size: 20px; border-radius: 50%; }
+.player button.on { color: var(--gold); }
+body.with-player .card { padding-bottom: calc(var(--tabs-h) + var(--safe-b) + 84px); }
+.author-link { border: 0; background: none; padding: 0; text-align: left; cursor: pointer; }
+.author-link .play-hint { opacity: 0.6; }
+.modes { display: grid; gap: 10px; }
+.mode { display: flex; gap: 14px; align-items: center; text-align: left; padding: 16px; border-radius: 16px; border: 1px solid var(--line); background: var(--surface); }
+.mode b { display: block; font: 400 21px/1.2 var(--serif); }
+.mode small { display: block; color: var(--muted); font-size: 13px; margin-top: 2px; }
+.mode-glyph { width: 44px; height: 44px; flex: none; display: grid; place-items: center; border-radius: 50%; background: var(--text); color: var(--bg); font-size: 20px; }
+.resume { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+
 /* add-to-home-screen banner */
 .install {
   position: fixed; z-index: 30; left: 12px; right: 12px; top: calc(12px + var(--safe-t));
@@ -299,7 +322,7 @@ textarea.reflect:focus { border-color: var(--gold); }
   .card .lede { font-size: 24px; }
   .card h2 { font-size: 38px; }
   .tutor, textarea.reflect { font-size: 21px; }
-  .tabs { grid-template-columns: repeat(4, 110px); justify-content: center; gap: 24px; }
+  .tabs { grid-template-columns: repeat(5, 100px); justify-content: center; gap: 16px; }
   .page { max-width: 720px; padding-left: 32px; padding-right: 32px; }
   .sheet { border-radius: 22px; margin-bottom: 24px; }
   .sheet-backdrop { align-items: center; }

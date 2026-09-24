@@ -1,11 +1,12 @@
 import {
-  POINTS, RANKS, VIRTUES, WEEKLY_TARGET, GRACE_DAYS_PER_MONTH, REFLECTION_MIN_WORDS,
+  POINTS, RANKS, VIRTUES, WEEKLY_TARGET, GRACE_DAYS_PER_MONTH, REFLECTION_MIN_WORDS, MIX_RUN_LENGTH, MIX_REFLECTION_DAILY_CAP, sha256,
   dayKey, addDays, wordCount, totalPoints, rankFor, pointsFor, streak, weekCount,
-  virtueMeters, todaysDay, verifiedPassage, guardReply, journalMarkdown,
+  virtueMeters, todaysDay, verifiedPassage, guardReply, journalMarkdown, citeRef,
 } from "./logic.js";
 import { load, save, wipe, freshState } from "./store.js";
 import { buildRequest, handoffText } from "./prompts.js";
 import { callClaude } from "./direct.js";
+import { THEMES, tagThemes } from "./themes.js";
 
 // ---------- boot ----------
 
@@ -59,7 +60,10 @@ function h(tag, attrs = {}, ...kids) {
   for (const [k, v] of Object.entries(attrs || {})) {
     if (v == null || v === false) continue;
     if (k === "class") el.className = v;
-    else if (k === "style" && typeof v === "object") Object.assign(el.style, v);
+    else if (k === "style" && typeof v === "object") {
+      // custom properties (--card-bg, --qsize) need setProperty
+      for (const [prop, val] of Object.entries(v)) prop.startsWith("--") ? el.style.setProperty(prop, val) : (el.style[prop] = val);
+    }
     else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
     else if (k === "html") el.innerHTML = v;
     else el.setAttribute(k, v === true ? "" : v);
@@ -146,7 +150,7 @@ function renderTutor(text, allowed) {
   for (const block of guardReply(text, library, allowed)) {
     if (block.type === "passage") {
       const p = verifiedPassage(library, block.id);
-      wrap.append(h("blockquote", { class: "cited" }, p.text, h("cite", {}, `${p.work} ${p.ref}`)));
+      wrap.append(h("blockquote", { class: "cited" }, p.text, h("cite", {}, citeRef(p))));
     } else {
       wrap.append(
         h("p", {}, block.parts.map((part) =>
@@ -632,7 +636,7 @@ function renderReview() {
     ...favs.map((p, i) => h("section", { class: "card", style: bg },
       h("p", { class: "eyebrow" }, `Saved passage ${i + 1} of ${favs.length}`),
       h("div", { class: "card-scroll" }, h("blockquote", { class: "quote", style: { "--qsize": `${Math.max(19, Math.min(30, 30 - (p.text.length - 120) / 40))}px` } }, p.text),
-        h("p", { class: "quote-ref" }, `${p.work} ${p.ref}`)))),
+        h("p", { class: "quote-ref" }, citeRef(p))))),
     ...best.map((e) => h("section", { class: "card", style: bg },
       h("p", { class: "eyebrow" }, `You wrote · ${fmtDate(e.date)} · on ${e.ref}`),
       h("div", { class: "card-scroll" }, h("p", { class: "lede", style: { whiteSpace: "pre-wrap" } }, e.reflection)))),
@@ -772,10 +776,10 @@ function renderJournal() {
   const list = h("div");
   if (!shown.length) list.append(h("p", { class: "muted" }, entries.length ? "Nothing under this filter yet." : "Your journal fills one entry per session. Over time it becomes your own Meditations."));
   for (const e of shown) {
-    const p = e.passageId && library.passages[e.passageId];
+    const p = e.passage || (e.passageId && library.passages[e.passageId]);
     list.append(h("button", { class: "entry", onclick: () => entrySheet(e) },
       h("div", { class: "when" }, fmtDate(e.date)),
-      h("div", { class: "what" }, p ? `${p.work} ${p.ref}` : e.title || "Entry", state.favourites[e.passageId] ? h("span", { class: "fav-mark" }, "✦") : null),
+      h("div", { class: "what" }, p ? citeRef(p) : e.title || "Entry", state.favourites[e.passageId] ? h("span", { class: "fav-mark" }, "✦") : null),
       h("div", { class: "snip" }, e.reflection || e.situation || (e.evening && e.evening.well) || "Read, no reflection written."),
       h("div", {}, e.virtue && h("span", { class: "tag" }, e.virtue), e.theme && h("span", { class: "tag" }, e.theme),
         e.applied?.yes && h("span", { class: "tag" }, "applied"))));
@@ -804,9 +808,10 @@ function fmtDate(key) {
   return new Date(y, m - 1, d).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short", year: "numeric" });
 }
 
-function passageQuote(id) {
-  const p = verifiedPassage(library, id);
-  return p ? h("blockquote", { class: "book-quote" }, p.text, h("cite", {}, `${p.work} ${p.ref} · tr. ${p.translator}`)) : null;
+function passageQuote(id, entry) {
+  const snap = entry?.passage;
+  const p = snap && sha256(snap.text) === snap.sha256 ? snap : verifiedPassage(library, id);
+  return p ? h("blockquote", { class: "book-quote" }, p.text, h("cite", {}, `${citeRef(p)} · tr. ${p.translator}`)) : null;
 }
 
 function entrySheet(e) {
@@ -814,7 +819,7 @@ function entrySheet(e) {
   const real = state.journal.find((j) => j.id === e.id);
   const back = sheet(
     h("p", { class: "muted" }, fmtDate(e.date)),
-    e.passageId ? passageQuote(e.passageId) : h("h2", {}, e.title || "Entry"),
+    e.passageId ? passageQuote(e.passageId, e) : h("h2", {}, e.title || "Entry"),
     e.situation && [h("h3", {}, "The situation"), h("p", { class: "prose" }, e.situation)],
     e.question && h("p", { class: "muted" }, e.question),
     e.reflection && [h("h3", {}, "My reflection"), h("p", { class: "prose" }, e.reflection)],
@@ -864,7 +869,7 @@ function printBook() {
     h("h1", {}, "My Meditations"), h("p", { class: "sub" }, "A journal kept with Stoa"),
     entries.map((e) => h("div", { class: "entry-print" },
       h("h2", {}, fmtDate(e.date)),
-      e.passageId && passageQuote(e.passageId),
+      e.passageId && passageQuote(e.passageId, e),
       e.reflection && h("p", { class: "prose" }, e.reflection),
       e.response && renderTutor(e.response, [e.passageId, ...studiedIds()]),
       e.evening && h("p", { class: "prose" }, `Done well: ${e.evening.well}\nDone badly: ${e.evening.badly}\nLeft undone: ${e.evening.undone}`))));
@@ -933,6 +938,9 @@ function renderYou() {
   themeSel.addEventListener("change", () => { state.settings.theme = themeSel.value; persist(); applyTheme(); });
   const hide = h("input", { type: "checkbox", checked: state.settings.hideNumbers, style: { width: "auto" } });
   hide.addEventListener("change", () => { state.settings.hideNumbers = hide.checked; persist(); applyTheme(); });
+  const mixW = h("input", { type: "range", min: 0, max: 100, step: 10, value: mixState().weight, style: { width: "100%" } });
+  const mixWLabel = h("span", {}, `Shuffle: ${mixState().weight}% from volumes you've started, ${100 - mixState().weight}% discovery`);
+  mixW.addEventListener("input", () => { mixState().weight = Number(mixW.value); mixWLabel.textContent = `Shuffle: ${mixW.value}% from volumes you've started, ${100 - mixW.value}% discovery`; persist(); });
   const token = h("input", { type: "password", value: state.settings.token, placeholder: "Only if your server has one", autocomplete: "off", autocapitalize: "off" });
   token.addEventListener("change", () => { state.settings.token = token.value.trim(); persist(); toast("Saved"); });
   const apiKey = h("input", { type: "password", value: state.settings.apiKey || "", placeholder: "sk-ant-…", autocomplete: "off", autocapitalize: "off", spellcheck: "false" });
@@ -979,6 +987,7 @@ function renderYou() {
     h("div", { class: "panel" },
       h("label", { class: "field" }, h("span", {}, "Appearance"), themeSel),
       h("label", { class: "field", style: { display: "flex", gap: "10px", alignItems: "center" } }, hide, "Hide all numbers"),
+      h("label", { class: "field" }, mixWLabel, mixW),
       !status.claude && h("label", { class: "field" }, h("span", {}, "Optional: Claude API key, pay per use (leave empty to use your Claude app)"), apiKey),
       status.tokenRequired && h("label", { class: "field" }, h("span", {}, "Access code"), token),
       status.tokenRequired && state.settings.token && h("div", { class: "btn-row", style: { marginTop: 0, marginBottom: "14px" } },
@@ -1003,9 +1012,339 @@ function renderYou() {
     h("p", { class: "muted" }, `Texts: ${library.source}. `, h("a", { href: library.sourceUrl, target: "_blank", rel: "noopener" }, "Source"), ".")));
 }
 
+
+// ---------- Library: Mix and Play ----------
+// Outside the daily path, the library works like a music app. Reading here
+// scores nothing; reflecting on a card scores 10, up to 3 a day. A run ends
+// after 20 cards.
+
+const MED = { id: "meditations", author: "Marcus Aurelius", work: "Meditations", translator: "George Long (1862)", why: "The foundation", course: 1 };
+let volIndex = null;
+const loadedVols = new Set(["meditations"]);
+const volIds = {};
+const ALONGSIDE = [
+  { title: "Man's Search for Meaning", author: "Viktor Frankl" },
+  { title: "Thoughts of a Philosophical Fighter Pilot", author: "James Stockdale" },
+  { title: "The Book of Five Rings", author: "Miyamoto Musashi" },
+];
+
+async function loadIndex() {
+  volIndex ??= await fetch("data/volumes/index.json").then((r) => r.json());
+  return volIndex;
+}
+const allVolumes = () => [{ ...MED, count: idsOf("meditations").length }, ...(volIndex?.volumes || [])];
+const volOf = (id) => id.split(".")[0];
+const metaOf = (vol) => allVolumes().find((v) => v.id === vol);
+function idsOf(vol) {
+  volIds[vol] ??= Object.keys(library.passages).filter((k) => k.startsWith(vol + "."));
+  return volIds[vol];
+}
+async function loadVolume(vol) {
+  if (loadedVols.has(vol)) return;
+  const d = await fetch(`data/volumes/${vol}.json`).then((r) => r.json());
+  Object.assign(library.passages, d.passages);
+  loadedVols.add(vol);
+  delete volIds[vol];
+}
+function themesOf(id) {
+  const p = library.passages[id];
+  p.themes ??= tagThemes(p.text);
+  return p.themes;
+}
+const pick = (arr, rnd = Math.random) => arr[Math.floor(rnd() * arr.length)];
+
+function mixState() {
+  state.mix ??= { positions: {}, read: {}, weight: 70, run: null };
+  return state.mix;
+}
+
+// Themes from recent reflections, for the Daily Mix.
+function dailyThemes() {
+  const counts = {};
+  for (const e of state.journal.filter((j) => j.reflection).slice(-10)) {
+    const p = e.passage || library.passages[e.passageId];
+    for (const t of tagThemes(`${e.reflection} ${p?.text || ""}`)) counts[t] = (counts[t] || 0) + 1;
+  }
+  const top = Object.entries(counts).sort((a, b) => b[1] - a[1]).map(([t]) => t).slice(0, 2);
+  return top.length ? top : ["control", "others"];
+}
+
+// Picks the next passage for a run.
+async function nextPassage(run) {
+  const mix = mixState();
+  const last = run.ids.at(-1);
+  const lastVol = last && volOf(last);
+  await loadIndex();
+  const vols = allVolumes().map((v) => v.id);
+  if (run.mode === "play") {
+    await loadVolume(run.vol);
+    const ids = idsOf(run.vol);
+    const pos = mix.positions[run.vol] || 0;
+    mix.positions[run.vol] = pos + 1;
+    return ids[pos % ids.length];
+  }
+  const lastAuthor = lastVol && metaOf(lastVol)?.author;
+  const others = vols.filter((v) => metaOf(v)?.author !== lastAuthor);
+  const started = others.filter((v) => mix.positions[v] || mix.read[v]);
+  const fresh = others.filter((v) => !started.includes(v));
+  const want = run.mode === "echo" && last ? themesOf(last) : run.themes || [];
+  for (let tries = 0; tries < 8; tries++) {
+    // Shuffle weighting: mostly volumes you've started, some discovery
+    const pool = started.length && (!fresh.length || Math.random() * 100 < mix.weight) ? started : fresh.length ? fresh : others;
+    const vol = pick(pool);
+    await loadVolume(vol);
+    let ids = idsOf(vol).filter((id) => !run.ids.includes(id));
+    if (want.length) ids = ids.filter((id) => themesOf(id).some((t) => want.includes(t)));
+    else if (Math.random() < 0.8) {
+      const themed = ids.filter((id) => themesOf(id).length);
+      if (themed.length) ids = themed;
+    }
+    if (ids.length) return pick(ids);
+  }
+  return pick(idsOf("meditations"));
+}
+
+async function startRun(mode, opts = {}) {
+  const mix = mixState();
+  mix.run = { mode, ids: [], i: 0, date: dayKey(), ...opts };
+  if (mode === "daily") mix.run.themes = dailyThemes();
+  await extendRun();
+  await extendRun();
+  persist();
+  renderRun();
+}
+
+async function extendRun() {
+  const run = mixState().run;
+  if (!run || run.ids.length >= MIX_RUN_LENGTH) return null;
+  const id = await nextPassage(run);
+  run.ids.push(id);
+  persist();
+  return id;
+}
+
+function runLabel(run) {
+  if (run.mode === "play") return `Play · ${metaOf(run.vol)?.author}`;
+  if (run.mode === "shuffle") return "Shuffle";
+  if (run.mode === "echo") return "Echo";
+  if (run.mode === "daily") return `Daily Mix · ${run.themes.map((t) => THEMES[t].label).join(" + ")}`;
+  return THEMES[run.themes?.[0]]?.label || "Mix";
+}
+
+function mixReflectSheet(id) {
+  const p = library.passages[id];
+  const ta = h("textarea", { placeholder: "What does this say to you today?" });
+  const back = sheet(
+    h("h2", {}, "Reflect"),
+    h("p", { class: "muted" }, `${p.author}, ${p.ref}. Reflecting here scores ${POINTS.mixReflection}, up to ${MIX_REFLECTION_DAILY_CAP} a day.`),
+    h("label", { class: "field" }, ta),
+    h("div", { class: "btn-row" },
+      h("button", { class: "btn primary", onclick: () => {
+        if (!ta.value.trim()) return toast("Write something first");
+        const e = {
+          id: `mix-${Date.now()}`, date: dayKey(), kind: "mix", title: "Mix", passageId: id, ref: p.ref,
+          passage: { work: p.work, author: p.author, translator: p.translator, ref: p.ref, text: p.text, sha256: p.sha256 },
+          theme: themesOf(id)[0], reflection: ta.value.trim(),
+        };
+        state.journal.push(e);
+        const pts = award("mixReflection", e.id);
+        persist();
+        back.remove();
+        toast(pts ? `Saved to your journal · +${pts}` : "Saved to your journal");
+      } }, "Save"),
+      h("button", { class: "btn", onclick: () => back.remove() }, "Cancel")));
+  setTimeout(() => ta.focus(), 100);
+}
+
+function mixCard(id, index, run) {
+  const p = verifiedPassage(library, id);
+  const vol = volOf(id);
+  const bg = { "--card-bg": dusk(["wisdom", "justice", "courage", "temperance"][index % 4], 160 + (index % 3) * 20) };
+  if (!p) return h("section", { class: "card", style: bg }, h("p", { class: "lede" }, "This passage failed its integrity check, so it isn't shown."));
+  const out = h("div");
+  const ask = h("button", { class: "btn", onclick: async () => {
+    ask.disabled = true;
+    out.replaceChildren(thinking());
+    try {
+      const r = await tutor("explain", { passageId: id, studied: [id] });
+      out.replaceChildren(renderTutor(r.text, r.allowed));
+      ask.remove();
+    } catch (err) {
+      out.replaceChildren(h("p", { class: "tutor-note" }, err.message));
+      ask.disabled = false;
+    }
+  } }, "Explain");
+  const qsize = Math.max(19, Math.min(32, 32 - (p.text.length - 120) / 40));
+  const card = h("section", { class: "card", style: { ...bg, "--qsize": `${qsize}px` } },
+    h("button", { class: "eyebrow author-link", title: `Play ${p.author}`, onclick: () => playFrom(id) },
+      `${p.author} · ${p.work}`, run.mode !== "play" && h("span", { class: "play-hint" }, " ▸ Play")),
+    h("div", { class: "card-scroll" },
+      h("blockquote", { class: "quote" }, p.text),
+      h("p", { class: "quote-ref" }, p.ref, state.favourites[id] ? h("span", { class: "fav-mark" }, "✦") : null, h("small", {}, `tr. ${p.translator}`)),
+      out,
+      h("div", { class: "btn-row" },
+        h("button", { class: "btn", onclick: () => mixReflectSheet(id) }, "Reflect"),
+        ask,
+        h("button", { class: "btn", onclick: (ev) => {
+          if (state.favourites[id]) delete state.favourites[id];
+          else state.favourites[id] = dayKey();
+          persist();
+          ev.target.textContent = state.favourites[id] ? "Saved ✦" : "Save";
+        } }, state.favourites[id] ? "Saved ✦" : "Save"))));
+  card.dataset.id = id;
+  card.dataset.vol = vol;
+  return card;
+}
+
+// Tap an author on any card: switch into Play for that volume from there.
+async function playFrom(id) {
+  const vol = volOf(id);
+  await loadVolume(vol);
+  const mix = mixState();
+  mix.positions[vol] = idsOf(vol).indexOf(id) + 1;
+  const run = mix.run;
+  const keep = run ? run.ids.slice(0, run.ids.indexOf(id) + 1) : [id];
+  mix.run = { mode: "play", vol, ids: keep, i: keep.length - 1, date: dayKey() };
+  await extendRun();
+  persist();
+  renderRun(keep.length - 1);
+  toast(`Playing ${metaOf(vol).author}`);
+}
+
+function renderRun(startAt) {
+  const mix = mixState();
+  const run = mix.run;
+  if (!run) return renderMix();
+  document.body.classList.add("on-cards", "with-player");
+  const deck = h("div", { class: "deck" });
+  const io = new IntersectionObserver((es) => es.forEach((en) => en.isIntersecting && en.target.classList.add("in")), { threshold: 0.35 });
+  let appending = false;
+  const endCard = () => h("section", { class: "card end", style: { "--card-bg": "radial-gradient(90% 60% at 50% 100%, #6b4a33 0%, transparent 70%), linear-gradient(180deg, #221d19, #0e0d0c)" } },
+    h("p", { class: "eyebrow" }, `${MIX_RUN_LENGTH} cards`),
+    h("h2", {}, "Enough for now."),
+    h("p", { class: "soft" }, "That's the end of this run. Reflect on one of them in your journal, or come back tomorrow."),
+    h("div", { class: "btn-row", style: { justifyContent: "center" } },
+      h("button", { class: "btn", onclick: () => { mix.run = null; persist(); renderMix(); } }, "Back to the library"),
+      h("button", { class: "btn", onclick: () => go("journal") }, "Journal")));
+  const add = (id, i) => {
+    const c = mixCard(id, i, run);
+    deck.append(c);
+    io.observe(c);
+    watch.observe(c);
+  };
+  const watch = new IntersectionObserver(async (es) => {
+    for (const en of es) {
+      if (!en.isIntersecting) continue;
+      const i = [...deck.children].indexOf(en.target);
+      run.i = i;
+      const vol = en.target.dataset.vol;
+      if (vol && !en.target.dataset.counted) {
+        en.target.dataset.counted = "1";
+        mix.read[vol] = (mix.read[vol] || 0) + 1;
+      }
+      const title = document.getElementById("player-title");
+      if (title && vol) title.textContent = `${metaOf(vol)?.author} · ${metaOf(vol)?.work}`;
+      persist();
+      // keep one card ahead; stop at the run length
+      if (i >= deck.children.length - 2 && !appending) {
+        appending = true;
+        const id = await extendRun();
+        if (id) add(id, run.ids.length - 1);
+        else if (!deck.querySelector(".end")) { const e = endCard(); deck.append(e); io.observe(e); }
+        appending = false;
+      }
+    }
+  }, { threshold: 0.6 });
+  run.ids.forEach((id, i) => add(id, i));
+  if (run.ids.length >= MIX_RUN_LENGTH) { const e = endCard(); deck.append(e); io.observe(e); }
+  view.replaceChildren(deck);
+  showPlayer(run);
+  const at = startAt ?? run.i ?? 0;
+  if (at) requestAnimationFrame(() => deck.children[at]?.scrollIntoView());
+}
+
+function showPlayer(run) {
+  let bar = document.getElementById("player");
+  if (!bar) {
+    bar = h("div", { id: "player", class: "player", role: "toolbar", "aria-label": "Player" });
+    document.body.append(bar);
+  }
+  const deck = () => document.querySelector(".deck");
+  const skip = () => { const d = deck(); d?.scrollTo({ top: (Math.round(d.scrollTop / d.clientHeight) + 1) * d.clientHeight, behavior: "smooth" }); };
+  bar.replaceChildren(
+    h("div", { class: "player-text" }, h("small", {}, runLabel(run)), h("span", { id: "player-title" }, "")),
+    h("button", { "aria-label": "Shuffle", title: "Shuffle", class: run.mode === "shuffle" ? "on" : "", onclick: async () => {
+      const r = mixState().run;
+      r.ids = r.ids.slice(0, (r.i ?? 0) + 1);
+      r.mode = "shuffle";
+      delete r.vol;
+      await extendRun();
+      renderRun(r.ids.length - 2);
+    } }, "⤮"),
+    h("button", { "aria-label": "Pause", title: "Pause", onclick: () => { persist(); renderMix(); } }, "❚❚"),
+    h("button", { "aria-label": "Skip", title: "Skip", onclick: skip }, "⏭"));
+  bar.hidden = false;
+}
+
+function hidePlayer() {
+  const bar = document.getElementById("player");
+  if (bar) bar.hidden = true;
+  document.body.classList.remove("with-player");
+}
+
+async function renderMix() {
+  hidePlayer();
+  document.body.classList.remove("on-cards");
+  const mix = mixState();
+  view.replaceChildren(h("div", { class: "page" }, h("p", { class: "muted" }, "Opening the library…")));
+  await loadIndex();
+  const run = mix.run && mix.run.date === dayKey() && mix.run.ids.length < MIX_RUN_LENGTH + 1 ? mix.run : null;
+  const mode = (label, sub, fn, glyph) => h("button", { class: "mode", onclick: fn }, h("span", { class: "mode-glyph", "aria-hidden": "true" }, glyph), h("span", {}, h("b", {}, label), h("small", {}, sub)));
+  const daily = dailyThemes().map((t) => THEMES[t].label).join(" + ");
+  view.replaceChildren(h("div", { class: "page" },
+    h("p", { class: "eyebrow", style: { color: "var(--muted)" } }, "Library"),
+    h("h1", {}, "Mix"),
+    h("p", { class: "sub" }, `Outside the daily path. Reading here scores nothing; reflecting on a card scores ${POINTS.mixReflection}, up to ${MIX_REFLECTION_DAILY_CAP} a day. A run ends after ${MIX_RUN_LENGTH} cards.`),
+    run && h("div", { class: "panel resume" },
+      h("div", {}, h("b", {}, runLabel(run)), h("div", { class: "muted" }, `Card ${Math.min((run.i ?? 0) + 1, run.ids.length)} of ${MIX_RUN_LENGTH}`)),
+      h("button", { class: "btn primary", onclick: () => renderRun() }, "Resume")),
+    h("div", { class: "modes" },
+      mode("Shuffle", "A new author every card", () => startRun("shuffle"), "⤮"),
+      mode("Daily Mix", daily, () => startRun("daily"), "☀"),
+      mode("Echo", "Each card links to the last by theme", () => startRun("echo"), "∿")),
+    h("h2", {}, "Themed mix"),
+    h("div", { class: "filters", style: { flexWrap: "wrap" } },
+      Object.entries(THEMES).map(([k, t]) => h("button", { class: "chip", onclick: () => startRun("theme", { themes: [k] }) }, t.label))),
+    h("h2", {}, "Play one author"),
+    h("div", {}, allVolumes().map((v) => {
+      const pos = mix.positions[v.id] || 0;
+      return h("button", { class: "entry", onclick: () => startRun("play", { vol: v.id }) },
+        h("div", { class: "when" }, `${v.author}${v.year ? ` · ${v.year}` : ""}`),
+        h("div", { class: "what" }, v.work),
+        h("div", { class: "snip" }, `${v.why}. ${v.translator}. ${pos ? `Resume at ${pos + 1} of ${v.count}` : `${v.count} passages`}.`),
+        v.flagged && h("div", { class: "muted", style: { fontSize: "12px" } }, `Licence note: ${v.flagged}`));
+    })),
+    h("h2", {}, "Coming to the library"),
+    h("p", { class: "muted" }, volIndex.coming.join(" · ")),
+    h("h2", {}, "Read alongside"),
+    h("p", { class: "muted" }, "Still in copyright, so no quotes: the tutor gives you a summary instead."),
+    h("div", {}, ALONGSIDE.map((b) => h("button", { class: "entry", onclick: () => alongsideSheet(b) },
+      h("div", { class: "what" }, b.title), h("div", { class: "snip" }, b.author))))));
+}
+
+function alongsideSheet(book) {
+  const out = h("div");
+  const back = sheet(h("h2", {}, book.title), h("p", { class: "muted" }, `${book.author}. Summarised by the tutor, never quoted.`), out,
+    h("div", { class: "btn-row" }, h("button", { class: "btn", onclick: () => back.remove() }, "Close")));
+  out.replaceChildren(thinking());
+  tutor("alongside", { book: book.title })
+    .then((r) => out.replaceChildren(renderTutor(r.text, [])))
+    .catch((err) => out.replaceChildren(h("p", { class: "muted" }, err.message)));
+}
+
 // ---------- routing ----------
 
-const ROUTES = { today: renderToday, journal: renderJournal, consult: renderConsult, you: renderYou };
+const ROUTES = { today: renderToday, mix: () => (mixState().run && mixState().run.date === dayKey() ? renderRun() : renderMix()), journal: renderJournal, consult: renderConsult, you: renderYou };
 function current() {
   const t = location.hash.slice(1);
   return ROUTES[t] ? t : "today";
@@ -1018,6 +1357,7 @@ function route() {
   const t = current();
   tabs.forEach((b) => (b.dataset.tab === t ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current")));
   if (t !== "today") document.querySelector(".install")?.remove();
+  if (t !== "mix") hidePlayer();
   ROUTES[t]();
   window.scrollTo(0, 0);
 }

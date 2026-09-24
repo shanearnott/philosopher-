@@ -9,6 +9,7 @@ This is **Phase 1** of the plan (*Stoa — A Philosophy Feed to Replace Instagra
 - **The daily swipe.** Six full-screen cards, swiped vertically: Passage → Context → Explainer → Apply → Reflect → Tutor, then an end card that says *Done for today.* The path is locked to one passage a day. When you've finished, you can revisit past cards or your journal, but the path doesn't move until tomorrow.
 - **Original words only.** Each passage is verbatim George Long (1862), pulled from the Standard Ebooks edition by `scripts/ingest.mjs` and stored with a SHA-256 checksum. The app won't show a passage whose text doesn't match its checksum.
 - **The tutor (Claude).** It does the four jobs from the plan: *Explain* (a longer explanation), *Ask* (tailors the Apply question to your profile), *Expound* (responds to your reflection and always names one place you could go further, with one follow-up reply) and *Consult* (picks 2–3 passages you've already studied that bear on a situation you describe). Claude cites passages only as IDs, and the app inserts the verbatim text. Any quoted phrase that isn't in the library loses its quote marks and is marked `≈` as a paraphrase.
+- **Mix and Play (the library).** Outside the daily path, 14 more volumes work like a music app: *Shuffle* (a new author every card, never the same one twice in a row), *Play* (one author in order, resuming where you left off), *Themed mix* (fame, leadership, death and time, simplicity, war and strategy, other people, control, duty), *Echo* (each card shares a theme with the last, from a different author) and *Daily Mix* (built from the themes of your recent reflections). A mini-player shows the author, with Shuffle, Pause and Skip; tap the author on any card to switch into Play. Shuffle leans 70/30 towards volumes you've started (adjustable). A run ends after 20 cards with *Enough for now*. Reading scores nothing; reflecting on a card scores 10, up to 3 a day. Volumes: Epictetus (Enchiridion, Discourses), Seneca (Dialogues), Boethius, the Tao Te Ching, Adam Smith, Franklin, Sun Tzu, Machiavelli, Confucius, Aristotle, Thoreau, Emerson and Thucydides, all from Standard Ebooks. Numbered works keep their standard numbers; prose works are cited by chapter and paragraph (¶) in that edition. A *Read alongside* shelf (Frankl, Stockdale, Musashi) gives tutor summaries only, never quotes, since those books are in copyright.
 - **Quick mode.** Stop after card 3 on busy days. The streak is kept, and you get fewer points.
 - **Scoreboard.** Points come from practice only: session 10, quick 4, reflection of 50+ words 20, next-day "did you apply it?" check-in 25, evening review (Seneca's three questions) 15, favourite 2 (up to 5 a day), unit 50. Also: ranks from Novice to Mentor (deliberately no Sage), four virtue meters, a daily streak with 2 grace days a month, a weekly target of 5, and an option to hide all numbers.
 - **Journal.** One entry per session. You can filter by virtue, theme or favourites, delete any entry, and export to Markdown or print to PDF as a book.
@@ -70,18 +71,22 @@ Any other Node host with HTTPS (Fly, Railway, a VPS) works the same way as Rende
 
 `npm run ingest` re-downloads the text and rebuilds `public/data/library.json`. Standard Ebooks paragraphs don't carry section numbers, and a few paragraphs split or merge the standard sections (for example, 4.3 spans two paragraphs). So every passage is mapped to its paragraph explicitly in `scripts/ingest.mjs` and checked against its opening words. Each book is aligned in `ALIGN` (which paragraphs merge, which hold two sections and are left out) and checked against well-known passages in `ANCHORS`; every book must come out at its standard section count. The library holds 471 of the ~488 sections; the 17 left out sit in verse clusters (e.g. 7.36–7.41) where the edition doesn't separate sections cleanly.
 
+`npm run ingest:volumes` rebuilds the wider library in `public/data/volumes/` (one file per volume, loaded only when Mix needs it). Still to come, because clean public-domain editions weren't available to the ingest: Seneca's Letters, Cicero, Montaigne, Bacon, the Dhammapada, the Gita, Pascal, Plutarch, La Rochefoucauld, Epicurus and Schopenhauer.
+
 ## Layout
 
 ```
 server.js                 static server + /api/tutor (holds the API key)
 lib/tutor.js              runs tutor requests on the server with the Anthropic SDK
-scripts/ingest.mjs        text pipeline: download, split, map, checksum
+scripts/ingest.mjs        Meditations pipeline: download, align, checksum
+scripts/ingest-volumes.mjs   the wider library for Mix and Play
 public/                   the app (no build step)
   data/library.json       locked passage library (generated)
   data/course-meditations.json   the 30-day path: context, key word, paraphrase, questions
   js/prompts.js           Claude prompts for Explain / Ask / Expound / Reply / Consult (shared)
   js/direct.js            calls Claude from the browser with your own key (GitHub Pages)
   js/logic.js             points, streaks, ranks, quote guard, checksum (pure, tested)
+  js/themes.js            theme tagging for Themed mix, Echo and Daily Mix
   js/app.js               UI
 test/                     node --test
 .github/workflows/pages.yml   test + publish to GitHub Pages on push to main
