@@ -127,3 +127,18 @@ test("bare section numbers get the work's name; full references stand alone", as
   assert.equal(citeRef({ work: "Meditations", ref: "4.7" }), "Meditations 4.7");
   assert.equal(citeRef({ work: "New Testament", ref: "1 Corinthians 13:4–7" }), "1 Corinthians 13:4–7");
 });
+
+test("the illuminated initial never changes a passage's words", async () => {
+  const { splitInitial } = await import("../public/js/logic.js");
+  const texts = [
+    ...Object.values(library.passages).map((p) => p.text),
+    "“Blessed are the poor in spirit, for theirs is the Kingdom of Heaven.",
+    "HEAR, O ISRAEL: THE LORD OUR GOD, THE LORD IS ONE.",
+  ];
+  for (const t of texts) {
+    const s = splitInitial(t);
+    if (s) assert.equal(s.lead + s.letter + s.rest, t);
+  }
+  assert.deepEqual(splitInitial("“Blessed are"), { lead: "“", letter: "B", rest: "lessed are" });
+  assert.equal(splitInitial("1. All that we are"), null);
+});

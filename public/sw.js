@@ -2,7 +2,7 @@
 // without a connection. The tutor needs the network.
 const CACHE = "stoa-v15";
 const SHELL = [
-  "./", "index.html", "css/app.css", "js/app.js", "js/logic.js", "js/store.js", "js/prompts.js", "js/direct.js", "js/themes.js", "data/volumes/index.json", "data/explainers/meditations.json",
+  "./", "index.html", "css/app.css", "js/app.js", "js/logic.js", "js/store.js", "js/prompts.js", "js/direct.js", "js/themes.js", "js/illumination.js", "data/volumes/index.json", "data/explainers/meditations.json",
   "data/library.json", "data/course-meditations.json", "manifest.webmanifest", "icon.svg",
 ];
 

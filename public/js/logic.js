@@ -284,3 +284,11 @@ export function savedMarkdown(items) {
   }
   return lines.join("\n");
 }
+
+// Splits a passage for an illuminated initial: leading quote marks, the first
+// letter, and the rest. Null when it doesn't start with a letter (e.g. "1. ...").
+// lead + letter + rest is always the original text.
+export function splitInitial(text) {
+  const m = text.match(/^([“‘"'(\[]*)(\p{L})/u);
+  return m ? { lead: m[1], letter: m[2], rest: text.slice(m[0].length) } : null;
+}

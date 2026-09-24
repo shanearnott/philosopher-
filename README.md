@@ -16,6 +16,7 @@ This is **Phase 1** of the plan (*Stoa — A Philosophy Feed to Replace Instagra
 - **Quick mode.** Stop after card 3 on busy days. The streak is kept, and you get fewer points.
 - **Scoreboard.** Points come from practice only: session 10, quick 4, saving a card 2 (up to 5 a day), unit 50, course 250. Also: ranks from Novice to Mentor (deliberately no Sage), four virtue meters (one tick per completed day, by its passage's virtue), a daily streak with 2 grace days a month, a weekly target of 5, and an option to hide all numbers.
 - **Private.** Everything is stored on your phone (browser storage). The only data that leaves it is what the tutor needs: the passage ID, your short profile, and the situation you describe when you consult.
+- **Illuminated initial.** The day's first card opens with an initial in the manner of the Book of Kells: a gilt letter on a knotwork panel with spiral corners, or a geometric star frame on Quran cards (no figurative art). It's drawn as SVG (`public/js/illumination.js`); only the first letter is drawn, the text is unchanged, and screen readers read it whole.
 - **Look.** Designed as a museum at dusk: EB Garamond and Inter, marble, ink, terracotta and gold, slow cross-fades and a slight parallax. Dark mode turns on automatically after 8pm. Nothing flashes and nothing makes a sound.
 - Hold the passage card to save it as a favourite. Voice dictation works where the browser supports it. The app also works offline apart from the tutor.
 

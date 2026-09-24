@@ -1,12 +1,13 @@
 import {
   POINTS, RANKS, VIRTUES, WEEKLY_TARGET, GRACE_DAYS_PER_MONTH, MIX_RUN_LENGTH, sha256,
   dayKey, totalPoints, rankFor, pointsFor, streak, weekCount,
-  virtueMeters, todaysDay, verifiedPassage, guardReply, citeRef, fullRef, savedMarkdown,
+  virtueMeters, todaysDay, verifiedPassage, guardReply, citeRef, fullRef, savedMarkdown, splitInitial,
 } from "./logic.js";
 import { load, save, wipe, freshState } from "./store.js";
 import { buildRequest, handoffText } from "./prompts.js";
 import { callClaude } from "./direct.js";
 import { THEMES, tagThemes } from "./themes.js";
+import { initialSVG } from "./illumination.js";
 
 // ---------- boot ----------
 
@@ -463,7 +464,7 @@ function renderToday() {
     h("p", { class: "eyebrow" }, `Day ${day.day} of ${course.days.length} · ${unitOf(day).title}`),
     h("div", { class: "card-scroll" },
       passage
-        ? h("blockquote", { class: "quote" }, passage.text)
+        ? illuminatedQuote(passage.text, pid(day))
         : h("p", { class: "lede" }, "This passage failed its integrity check, so it isn't shown. Re-run the ingest script."),
       passage && h("p", { class: "quote-ref" }, `${passage.work} ${passage.ref}`, favMark,
         h("small", {}, `Marcus Aurelius · tr. ${passage.translator}`)),
@@ -619,7 +620,7 @@ async function renderTraditionToday(tid) {
   const passageCard = h("section", { class: "card", style: { ...bg(180), "--qsize": `${qsize}px` } },
     h("p", { class: "eyebrow" }, `${t.author} · Day ${n} of ${t.days.length} · ${week ? `Week ${week.n}: ${week.theme}` : ""}`),
     h("div", { class: "card-scroll" },
-      p ? h("blockquote", { class: "quote" }, p.text) : h("p", { class: "lede" }, "This passage failed its integrity check, so it isn't shown."),
+      p ? illuminatedQuote(p.text, entry.id) : h("p", { class: "lede" }, "This passage failed its integrity check, so it isn't shown."),
       p && originalText(p),
       p && h("p", { class: "quote-ref" }, citeRef(p), mark, h("small", {}, `${p.author} · tr. ${p.translator}`)),
       p && h("div", { class: "btn-row" }, compareButton(entry.id), cardActions(entry.id, mark))),
@@ -822,6 +823,19 @@ function principlesSheet() {
       h("h3", {}, r.question),
       h("dl", {}, m.traditions.flatMap((t, i) => [h("dt", {}, t), h("dd", {}, r.answers[i])])))),
     h("div", { class: "btn-row" }, h("button", { class: "btn", onclick: () => back.remove() }, "Close")));
+}
+
+// The day's first card opens with an illuminated initial in the Insular manner
+// (knotwork panel), or a geometric star frame on Quran cards. Only the first
+// letter is drawn; the text itself is unchanged, and screen readers read it whole.
+function illuminatedQuote(text, id) {
+  const parts = splitInitial(text);
+  if (!parts) return h("blockquote", { class: "quote" }, text); // starts with a number, etc.
+  const { lead, letter, rest } = parts;
+  const art = h("span", { class: "initial", "aria-hidden": "true" });
+  art.innerHTML = initialSVG(letter, { style: volOf(id) === "islam" ? "geometric" : "knot" });
+  if (lead) art.append(h("span", { class: "initial-lead" }, lead));
+  return h("blockquote", { class: "quote illuminated" }, art, h("span", { class: "sr-only" }, lead + letter), rest);
 }
 
 // The original-language text (the Quran's Arabic), shown only when it matches its checksum.
