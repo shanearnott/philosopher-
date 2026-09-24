@@ -59,7 +59,7 @@ function studiedIds(library, studied, extra = []) {
 // Returns { model, effort, prompt, allowed } or throws a 400-style error.
 export function buildRequest(body, library, course, models = DEFAULT_MODELS) {
   const { job, passageId, deeper } = body || {};
-  const needsPassage = ["explain", "ask", "expound", "reply"].includes(job);
+  const needsPassage = ["explain", "deeper", "ask", "expound", "reply"].includes(job);
   if (needsPassage && !has(library, passageId)) throw badRequest("Unknown passage");
   const day = course.days.find((d) => `meditations.${d.ref}` === passageId);
   const context = day ? `<context>${day.context}</context>` : "";
@@ -75,6 +75,16 @@ export function buildRequest(body, library, course, models = DEFAULT_MODELS) {
         passageBlock(library, passageId),
         context,
         `Explain this passage in 80 to 120 words: what it means, the key idea in plain English, and one concrete modern example. Don't repeat the passage.`,
+      );
+      break;
+    case "deeper":
+      effort = "medium";
+      parts.push(
+        passageBlock(library, passageId),
+        context,
+        profileBlock(body.profile),
+        body.explainer ? `<explainer_already_read>\n${clip(body.explainer, 2000)}\n</explainer_already_read>` : "",
+        `The user has read a short explainer of this passage (above) and wants to go deeper. In 250 to 350 words: the historical and personal context in which the author wrote it; how it connects to the author's other ideas and to one other thinker; the strongest objection to it and how the author might answer; and two concrete practices to try this week, fitted to the user's profile if one is given. Don't repeat the explainer.`,
       );
       break;
     case "ask": {

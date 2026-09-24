@@ -15,6 +15,21 @@ const [library, course] = await Promise.all([
   fetch("data/course-meditations.json").then((r) => r.json()),
 ]);
 let state = load();
+
+// Stored explainers (written into the app, no Claude call needed): per volume,
+// passage id -> { meaning, today, you }.
+const explainers = {};
+const explainerFiles = new Map();
+function loadExplainers(vol) {
+  if (!explainerFiles.has(vol)) {
+    explainerFiles.set(vol, fetch(`data/explainers/${vol}.json`)
+      .then((r) => (r.ok ? r.json() : {}))
+      .catch(() => ({}))
+      .then((d) => Object.assign(explainers, d)));
+  }
+  return explainerFiles.get(vol);
+}
+loadExplainers("meditations");
 {
   const url = new URL(location.href);
   const code = url.searchParams.get("code");
@@ -161,6 +176,53 @@ function renderTutor(text, allowed) {
     }
   }
   return wrap;
+}
+
+// Explain: the stored explainer, shown instantly; then an optional deeper dive
+// that hands a prompt to Claude. Falls back to asking Claude when a passage has
+// no stored explainer yet.
+function explainerView(id) {
+  const e = explainers[id];
+  const part = (label, text) => text && h("div", { class: "explainer-part" }, h("p", { class: "explainer-label" }, label), renderTutor(text, [id]));
+  return h("div", { class: "explainer" },
+    part("In plain English", e.meaning), part("Today", e.today), part("For you", e.you));
+}
+
+function explainButton(id, out, studied, label) {
+  const deeper = h("button", { class: "btn", onclick: async () => {
+    deeper.disabled = true;
+    const note = h("div");
+    out.append(note);
+    note.replaceChildren(thinking());
+    try {
+      const e = explainers[id];
+      const r = await tutor("deeper", { passageId: id, studied, explainer: e ? `${e.meaning}\n${e.today}\n${e.you}` : "" });
+      note.replaceChildren(h("p", { class: "explainer-label" }, "Deeper"), renderTutor(r.text, r.allowed));
+      deeper.remove();
+    } catch (err) {
+      note.replaceChildren(h("p", { class: "tutor-note" }, err.message));
+      deeper.disabled = false;
+    }
+  } }, handoffMode() ? "Go deeper in Claude" : "Go deeper");
+  const btn = h("button", { class: "btn", onclick: async () => {
+    btn.disabled = true;
+    await loadExplainers(id.split(".")[0]);
+    if (explainers[id]) {
+      out.replaceChildren(explainerView(id));
+      btn.replaceWith(deeper);
+      return;
+    }
+    out.replaceChildren(thinking());
+    try {
+      const r = await tutor("explain", { passageId: id, studied });
+      out.replaceChildren(renderTutor(r.text, r.allowed));
+      btn.replaceWith(deeper);
+    } catch (err) {
+      out.replaceChildren(h("p", { class: "tutor-note" }, err.message));
+      btn.disabled = false;
+    }
+  } }, label);
+  return btn;
 }
 
 const thinking = () => h("div", { class: "thinking", "aria-label": "Thinking" }, h("i"), h("i"), h("i"));
@@ -398,18 +460,7 @@ function renderToday() {
 
   // 3. Explainer (text only, for focus)
   const explainOut = h("div");
-  const explainBtn = h("button", { class: "btn", onclick: async () => {
-    explainBtn.disabled = true;
-    explainOut.replaceChildren(thinking());
-    try {
-      const r = await tutor("explain", { passageId: pid(day), studied: studiedIds(day) });
-      explainOut.replaceChildren(renderTutor(r.text, r.allowed));
-      explainBtn.remove();
-    } catch (err) {
-      explainOut.replaceChildren(h("p", { class: "tutor-note" }, err.message));
-      explainBtn.disabled = false;
-    }
-  } }, "Longer explanation");
+  const explainBtn = explainButton(pid(day), explainOut, studiedIds(day), "Longer explanation");
   const explainer = h("section", { class: "card", style: { "--card-bg": "linear-gradient(180deg, #1d1b18, #121110)" } },
     h("p", { class: "eyebrow" }, "Explainer"),
     h("div", { class: "card-scroll" },
@@ -1162,18 +1213,7 @@ function mixCard(id, index, run) {
   const bg = { "--card-bg": dusk(["wisdom", "justice", "courage", "temperance"][index % 4], 160 + (index % 3) * 20) };
   if (!p) return h("section", { class: "card", style: bg }, h("p", { class: "lede" }, "This passage failed its integrity check, so it isn't shown."));
   const out = h("div");
-  const ask = h("button", { class: "btn", onclick: async () => {
-    ask.disabled = true;
-    out.replaceChildren(thinking());
-    try {
-      const r = await tutor("explain", { passageId: id, studied: [id] });
-      out.replaceChildren(renderTutor(r.text, r.allowed));
-      ask.remove();
-    } catch (err) {
-      out.replaceChildren(h("p", { class: "tutor-note" }, err.message));
-      ask.disabled = false;
-    }
-  } }, "Explain");
+  const ask = explainButton(id, out, [id], "Explain");
   const qsize = Math.max(19, Math.min(32, 32 - (p.text.length - 120) / 40));
   const card = h("section", { class: "card", style: { ...bg, "--qsize": `${qsize}px` } },
     h("button", { class: "eyebrow author-link", title: `Play ${p.author}`, onclick: () => playFrom(id) },

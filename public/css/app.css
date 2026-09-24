@@ -189,6 +189,9 @@ textarea.reflect:focus { border-color: var(--gold); }
 .tutor q.verbatim::before { content: "“"; } .tutor q.verbatim::after { content: "”"; }
 .tutor .paraphrase { font-style: italic; }
 .tutor .paraphrase::before { content: "≈ "; font-style: normal; color: var(--gold-soft); }
+.explainer-part { margin: 0 0 6px; }
+.explainer-label { font: 600 10px/1 var(--sans) !important; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-soft); margin: 14px 0 6px !important; }
+.page .explainer-label { color: var(--muted); }
 .tutor-note { font-size: 12px; color: rgba(239,233,221,0.5); margin-top: 4px; }
 .thinking { display: inline-flex; gap: 6px; }
 .thinking i { width: 6px; height: 6px; border-radius: 50%; background: var(--gold-soft); animation: pulse 1.4s infinite; }

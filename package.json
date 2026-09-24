@@ -8,7 +8,8 @@
     "start": "node server.js",
     "ingest": "node scripts/ingest.mjs",
     "ingest:volumes": "node scripts/ingest-volumes.mjs",
-    "test": "node --test test/*.test.mjs"
+    "explainers": "node scripts/build-explainers.mjs",
+    "test": "node scripts/build-explainers.mjs && node --test test/*.test.mjs"
   },
   "engines": {
     "node": ">=20"

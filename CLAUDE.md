@@ -20,5 +20,16 @@ A daily philosophy app to replace Instagram. The plan lives in the Claude Doc
   regenerate with `npm run ingest` / `npm run ingest:volumes`.
 - Course text (context, paraphrase, questions) must not put non-verbatim words
   in quotation marks; `test/library.test.mjs` enforces this.
+- Explainers are written here, not generated at runtime: every card's Explain
+  button shows a stored explainer from `public/data/explainers/<volume>.json`,
+  built from `scripts/explainers/<volume>[-part].mjs` by `npm run explainers`.
+  Each has three parts: `meaning` (the passage in plain, layman's English),
+  `today` (how it applies to modern life) and `you` (how it applies to the
+  owner: builds autonomous systems, leads teams, public service and defence
+  interests, family, replacing an Instagram habit with a morning session).
+  **Whenever a new author or text is added, write explainers for it in the
+  same check-in** (all Meditations passages; at least the featured cards of
+  every other volume). Don't put non-verbatim words in quotation marks.
+  "Go deeper" then hands a richer prompt to Claude.
 - The tutor defaults to the user's Claude app (hand-off, no API cost); an API
   key is optional.
