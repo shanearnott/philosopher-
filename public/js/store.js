@@ -13,6 +13,8 @@ export function freshState() {
     ledger: [],
     journal: [],
     saved: {}, // passage id -> { date, comment }
+    course: "meditations", // the daily path: the Meditations or a tradition course
+    courses: {}, // tradition id -> { completedDay, sessions: { date: { day, mode } } }
   };
 }
 

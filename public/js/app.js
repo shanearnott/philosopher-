@@ -430,7 +430,13 @@ document.addEventListener("keydown", (e) => {
 
 // ---------- Today: the daily swipe ----------
 
+// Every date with a session on any course (streaks and the weekly target count them all).
+function sessionDates() {
+  return [...new Set([...Object.keys(state.sessions), ...Object.values(state.courses || {}).flatMap((c) => Object.keys(c.sessions || {}))])];
+}
+
 function renderToday() {
+  if (state.course && state.course !== "meditations") return renderTraditionToday(state.course);
   const today = dayKey();
   const { day: dayNum, done, finished } = todaysDay(state.progress, state.sessions, today, course.days.length);
   if (finished && !state.sessions[today]) return renderReview();
@@ -529,7 +535,7 @@ function renderToday() {
       h("button", { class: "btn primary", onclick: () => go("swipe") }, "Keep swiping"),
       h("button", { class: "btn", onclick: () => go("browse") }, "Browse")));
   const drawEnd = (earned) => {
-    const sessions = Object.keys(state.sessions);
+    const sessions = sessionDates();
     const s = streak(sessions, today);
     endStats.replaceChildren(
       h("div", { class: "stat" }, h("b", { class: `num ${earned ? "shimmer" : ""}` }, totalPoints(state.ledger)), h("span", {}, "Points")),
@@ -559,6 +565,136 @@ function renderToday() {
   view.replaceChildren(deck);
   setTimeout(showInstallBanner, 1500);
   if (done && !finished) toast("Done for today. Revisiting.");
+}
+
+// ---------- Tradition courses (the Traditions wing, one passage a day) ----------
+
+function courseProgress(tid) {
+  state.courses ??= {};
+  return (state.courses[tid] ??= { completedDay: 0, sessions: {} });
+}
+
+function startCourse(tid) {
+  state.course = tid;
+  persist();
+  go("today");
+}
+
+async function renderTraditionToday(tid) {
+  document.body.classList.add("on-cards");
+  view.replaceChildren(h("div", { class: "page" }, h("p", { class: "muted" }, "Opening today's passage…")));
+  await loadIndex();
+  const t = traditionVolumes().find((x) => x.id === tid);
+  if (!t) { state.course = "meditations"; persist(); return renderToday(); }
+  const weeks = volIndex.traditions.weeks || [];
+  const today = dayKey();
+  const prog = courseProgress(tid);
+  const { day: n, done, finished } = todaysDay(prog, prog.sessions, today, t.days.length);
+  const entry = t.days[n - 1];
+  await Promise.all([loadVolume(volOf(entry.id)), loadExplainers(volOf(entry.id))]);
+  const p = verifiedPassage(library, entry.id);
+  const e = explainers[entry.id];
+  const week = weeks.find((w) => w.n === entry.week);
+  const tones = ["wisdom", "justice", "courage", "temperance"];
+  const bg = (angle) => ({ "--card-bg": dusk(tones[(entry.week - 1) % 4], angle) });
+  const deck = h("div", { class: "deck" });
+  const cards = [];
+
+  if (finished && !prog.sessions[today]) {
+    cards.push(h("section", { class: "card end", style: bg(180) },
+      h("p", { class: "eyebrow" }, `${t.author} · course complete`),
+      h("h2", {}, `You've finished the ${t.days.length}-day course.`),
+      h("p", { class: "soft" }, "Start another tradition, return to the Meditations, or begin this one again."),
+      h("div", { class: "btn-row", style: { justifyContent: "center" } },
+        h("button", { class: "btn primary", onclick: () => go("browse") }, "Choose a course"),
+        h("button", { class: "btn", onclick: () => { prog.completedDay = 0; persist(); renderToday(); } }, "Begin again"),
+        h("button", { class: "btn", onclick: () => startCourse("meditations") }, "The Meditations"))));
+    cards.forEach((c) => { c.classList.add("in"); deck.append(c); });
+    return view.replaceChildren(deck);
+  }
+
+  // 1. Passage
+  const mark = h("span", { class: "fav-mark" }, state.saved[entry.id] ? "✦" : "");
+  const qsize = p ? Math.max(19, Math.min(32, 32 - (p.text.length - 120) / 40)) : 24;
+  const passageCard = h("section", { class: "card", style: { ...bg(180), "--qsize": `${qsize}px` } },
+    h("p", { class: "eyebrow" }, `${t.author} · Day ${n} of ${t.days.length} · ${week ? `Week ${week.n}: ${week.theme}` : ""}`),
+    h("div", { class: "card-scroll" },
+      p ? h("blockquote", { class: "quote" }, p.text) : h("p", { class: "lede" }, "This passage failed its integrity check, so it isn't shown."),
+      p && originalText(p),
+      p && h("p", { class: "quote-ref" }, citeRef(p), mark, h("small", {}, `${p.author} · tr. ${p.translator}`)),
+      p && h("div", { class: "btn-row" }, compareButton(entry.id), cardActions(entry.id, mark))),
+    h("p", { class: "hint" }, "Swipe left to explain · Swipe up"));
+  if (p) explainPanel(passageCard, entry.id, [entry.id]);
+  cards.push(passageCard);
+
+  // 2. Background
+  if (e?.context) cards.push(h("section", { class: "card", style: bg(160) },
+    h("p", { class: "eyebrow" }, "Background"),
+    h("div", { class: "card-scroll" }, h("p", { class: "lede" }, e.context))));
+
+  // 3. Explainer
+  const deepOut = h("div");
+  const part = (label, text) => text && h("div", { class: "explainer-part" }, h("p", { class: "explainer-label" }, label), renderTutor(text, [entry.id]));
+  cards.push(h("section", { class: "card", style: { "--card-bg": "linear-gradient(180deg, #1d1b18, #121110)" } },
+    h("p", { class: "eyebrow" }, "Explainer"),
+    h("div", { class: "card-scroll" },
+      e ? h("div", { class: "explainer" }, part("In plain English", e.meaning), part("Today", e.today), part("For you", e.you))
+        : h("p", { class: "lede" }, "No stored explainer for this passage yet."),
+      deepOut,
+      h("div", { class: "btn-row" }, e ? deeperButton(entry.id, deepOut, [entry.id]) : explainButton(entry.id, deepOut, [entry.id], "Explain with Claude")))));
+
+  // 4. Compare
+  const theme = compareFor(entry.id)[0];
+  if (theme) {
+    const mine = theme.entries.find((x) => x.id === entry.id);
+    cards.push(h("section", { class: "card", style: bg(140) },
+      h("p", { class: "eyebrow" }, `Compare · ${theme.theme}`),
+      h("div", { class: "card-scroll" },
+        h("p", { class: "lede" }, theme.shared),
+        h("p", { class: "soft" }, theme.differs),
+        mine && h("p", { class: "soft" }, h("strong", {}, `${t.author}: `), mine.similar),
+        h("div", { class: "btn-row" }, h("button", { class: "btn", onclick: () => compareSheet(theme, entry.id) }, "See every tradition")))));
+  }
+
+  // End
+  const endStats = h("div", { class: "stats" });
+  const nextEntry = t.days[n]; // n is 1-based, so this is tomorrow
+  const nextWeek = nextEntry && weeks.find((w) => w.n === nextEntry.week);
+  const endCard = h("section", { class: "card end", style: { "--card-bg": "radial-gradient(90% 60% at 50% 100%, #6b4a33 0%, transparent 70%), linear-gradient(180deg, #221d19, #0e0d0c)" } },
+    h("p", { class: "eyebrow" }, "Session complete"),
+    h("h2", {}, "Done for today."),
+    endStats,
+    h("p", { class: "soft" }, nextEntry ? `Tomorrow: day ${t.days.indexOf(nextEntry) + 1} of ${t.days.length}, ${nextWeek?.theme.toLowerCase() || ""}.` : `That was the last day of the ${t.author} course.`),
+    h("div", { class: "btn-row", style: { justifyContent: "center" } },
+      h("button", { class: "btn primary", onclick: () => go("swipe") }, "Keep swiping"),
+      h("button", { class: "btn", onclick: () => go("browse") }, "Change course")));
+  const drawEnd = (earned) => {
+    const dates = sessionDates();
+    endStats.replaceChildren(
+      h("div", { class: "stat" }, h("b", { class: `num ${earned ? "shimmer" : ""}` }, totalPoints(state.ledger)), h("span", {}, "Points")),
+      h("div", { class: "stat" }, h("b", { class: "num" }, streak(dates, today).count), h("span", {}, "Day streak")),
+      h("div", { class: "stat" }, h("b", { class: "num" }, `${weekCount(dates, today)}/${WEEKLY_TARGET}`), h("span", {}, "This week")));
+  };
+  drawEnd(false);
+  new IntersectionObserver((es) => {
+    if (!es[0].isIntersecting || prog.sessions[today]) return;
+    let earned = award("session");
+    prog.sessions[today] = { day: n, mode: "full" };
+    if (n > prog.completedDay) {
+      prog.completedDay = n;
+      if (t.days[n]?.week !== entry.week) earned += award("unit", `${t.id}.w${entry.week}`);
+      if (n === t.days.length) earned += award("course", t.id);
+    }
+    persist();
+    drawEnd(earned > 0);
+    if (earned > 0) toast(`+${earned} points`);
+  }, { threshold: 0.7 }).observe(endCard);
+  cards.push(endCard);
+
+  const io = new IntersectionObserver((es) => es.forEach((en) => en.isIntersecting && en.target.classList.add("in")), { threshold: 0.35 });
+  cards.forEach((c) => { deck.append(c); io.observe(c); });
+  view.replaceChildren(deck);
+  if (done) toast("Done for today. Revisiting.");
 }
 
 // Course 1 ends with a review week: your saved passages, as cards. Then you
@@ -840,7 +976,7 @@ function renderYou() {
   const today = dayKey();
   const pts = totalPoints(state.ledger);
   const rank = rankFor(pts);
-  const sessions = Object.keys(state.sessions);
+  const sessions = sessionDates();
   const s = streak(sessions, today);
   const month = today.slice(0, 7);
   const graceLeft = GRACE_DAYS_PER_MONTH - s.graceDays.filter((d) => d.startsWith(month)).length;
@@ -1270,6 +1406,17 @@ async function renderBrowse() {
     traditionVolumes().length > 0 && [
       h("h2", {}, "World traditions"),
       h("p", { class: "muted" }, `Core passages from ${traditionVolumes().map((t) => t.author).join(", ")}, in four weekly themes: ${(volIndex.traditions.weeks || []).map((w) => w.theme).join(", ")}. Compare, don't rank.`),
+      h("h3", { class: "shelf" }, "Daily courses"),
+      h("div", {}, [{ id: "meditations", author: "Marcus Aurelius", work: "Meditations", days: course.days }, ...traditionVolumes()].map((c) => {
+        const prog = c.id === "meditations" ? state.progress : state.courses?.[c.id];
+        const current = (state.course || "meditations") === c.id;
+        const at = prog?.completedDay || 0;
+        return h("button", { class: "entry", onclick: () => startCourse(c.id) },
+          h("div", { class: "when" }, `${c.author}${current ? " · your daily course" : ""}`),
+          h("div", { class: "what" }, `${c.days.length}-day course: ${c.work}`),
+          h("div", { class: "snip" }, current ? `Day ${Math.min(at + 1, c.days.length)} of ${c.days.length}. Tap to open Today.` : at ? `Resume at day ${at + 1}. Tap to make it your daily course.` : "Tap to make it your daily course, one passage a day."));
+      })),
+      h("h3", { class: "shelf" }, "Compare"),
       h("div", { class: "filters", style: { flexWrap: "wrap" } },
         compareThemes().map((c) => h("button", { class: "chip", onclick: () => compareSheet(c) }, c.theme)),
         volIndex.compare?.principles && h("button", { class: "chip", onclick: principlesSheet }, "Core principles compared")),

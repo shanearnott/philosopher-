@@ -31,5 +31,12 @@ A daily philosophy app to replace Instagram. The plan lives in the Claude Doc
   same check-in** (all Meditations passages; at least the featured cards of
   every other volume). Don't put non-verbatim words in quotation marks.
   "Go deeper" then hands a richer prompt to Claude.
+- Traditions wing (`scripts/traditions/`): passages come only from the
+  public-domain or CC0 editions listed in `scripts/ingest-traditions.mjs`
+  (`npm run ingest:traditions`); every tradition card's explainer also needs
+  `context` (Background: history, how the branches read it, key original-
+  language terms). Compare cards live in `scripts/traditions/compare.mjs`.
+  Describe each tradition as it understands itself; never rank them.
+  Sikhism is pending until a public-domain English translation is reachable.
 - The tutor defaults to the user's Claude app (hand-off, no API cost); an API
   key is optional.
