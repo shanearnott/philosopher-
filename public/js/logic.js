@@ -285,13 +285,14 @@ export function savedMarkdown(items) {
   return lines.join("\n");
 }
 
-// Splits a passage for an illuminated initial: what comes before the first
-// letter (quote marks, a verse number), the letter, and the rest. Null only
-// when no letter appears in the first dozen characters.
-// lead + letter + rest is always the original text.
+// Splits a passage for an illuminated initial: what comes before it (quote
+// marks, an ellipsis), the initial, the separator hidden behind it, and the
+// rest. A leading verse number ("12. ") is itself the initial, with its
+// full stop and space as the separator. Null only when no letter appears in
+// the first dozen characters. lead + letter + sep + rest is always the text.
 export function splitInitial(text) {
-  // the lead keeps anything before the first letter: quote marks, a verse
-  // number ("1. "), an ellipsis; short, so a card never loses its opening
+  const n = text.match(/^(\d{1,4})([.:)]?\s+)(?=\S)/);
+  if (n) return { lead: "", letter: n[1], sep: n[2], rest: text.slice(n[0].length) };
   const m = text.match(/^([^\p{L}]{0,12}?)(\p{L})/u);
-  return m ? { lead: m[1], letter: m[2], rest: text.slice(m[0].length) } : null;
+  return m ? { lead: m[1], letter: m[2], sep: "", rest: text.slice(m[0].length) } : null;
 }

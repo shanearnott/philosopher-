@@ -726,11 +726,11 @@ function principlesSheet() {
 function illuminatedQuote(text, id) {
   const parts = splitInitial(text);
   if (!parts) return h("blockquote", { class: "quote" }, text); // starts with a number, etc.
-  const { lead, letter, rest } = parts;
+  const { lead, letter, sep, rest } = parts;
   const art = h("span", { class: "initial", "aria-hidden": "true" });
   art.innerHTML = initialSVG(letter, { style: volOf(id) === "islam" ? "geometric" : "knot" });
   if (lead) art.append(h("span", { class: "initial-lead" }, lead));
-  return h("blockquote", { class: "quote illuminated" }, art, h("span", { class: "sr-only" }, lead + letter), rest);
+  return h("blockquote", { class: "quote illuminated" }, art, h("span", { class: "sr-only" }, lead + letter + sep), rest);
 }
 
 // The original-language text (the Quran's Arabic), shown only when it matches its checksum.

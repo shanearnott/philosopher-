@@ -86,7 +86,13 @@ function girih(x, y, w, h, colour) {
 
 function letter(ch, cx, baseline, size, gid, inner = "#b5563a") {
   const cid = `c${uid}`, pid = `p${uid}`;
-  const glyph = (attrs) => `<text x="${cx}" y="${baseline}" text-anchor="middle" font-family="'EB Garamond', 'Uncial Antiqua', Georgia, serif" font-weight="600" font-size="${size}" ${attrs}>${ch}</text>`;
+  // a verse number can be the initial: shrink it to fit and keep it centred
+  if (ch.length > 1) {
+    const fit = size * Math.min(1, 1.5 / ch.length);
+    baseline -= (size - fit) * 0.375;
+    size = fit;
+  }
+  const glyph = (attrs) => `<text x="${cx}" y="${r2(baseline)}" text-anchor="middle" font-family="'EB Garamond', 'Uncial Antiqua', Georgia, serif" font-weight="600" font-size="${r2(size)}" style="font-variant-numeric: lining-nums" ${attrs}>${ch}</text>`;
   // a lattice of tiny dots and hairline spirals inside the letter, as in Insular initials
   const pattern = `<pattern id="${pid}" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><circle cx="3.5" cy="3.5" r="0.6" fill="${inner}" opacity="0.55"/><path d="M0 0 L7 7" stroke="${GOLD[2]}" stroke-width="0.3" opacity="0.4"/></pattern>`;
   return `<defs><clipPath id="${cid}">${glyph("")}</clipPath>${pattern}</defs>` +
