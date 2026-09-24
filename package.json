@@ -1,0 +1,18 @@
+{
+  "name": "stoa",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Stoa: a daily philosophy feed to take Instagram's place on your home screen.",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "ingest": "node scripts/ingest.mjs",
+    "test": "node --test test/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.128.0"
+  }
+}

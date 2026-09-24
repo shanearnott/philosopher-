@@ -1,0 +1,342 @@
+{
+  "source": "Standard Ebooks edition of George Long's translation (public domain text; CC0 edition)",
+  "sourceUrl": "https://standardebooks.org/ebooks/marcus-aurelius/meditations/george-long",
+  "passages": {
+    "meditations.1.1": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "1.1",
+      "text": "From my grandfather Verus I learned good morals and the government of my temper.",
+      "sha256": "5c343fe90818399ef7e1bba10e8000f806193e5a83db86bf1a6f8073245c2e2d"
+    },
+    "meditations.1.5": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "1.5",
+      "text": "From my governor, to be neither of the green nor of the blue party at the games in the Circus, nor a partisan either of the Parmularius or the Scutarius at the gladiators’ fights; from him too I learned endurance of labour, and to want little, and to work with my own hands, and not to meddle with other people’s affairs, and not to be ready to listen to slander.",
+      "sha256": "3bd1f46f172d0e166211d54d12d0695823c9b26e61c6bc5accdcc78cd8b281ef"
+    },
+    "meditations.1.6": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "1.6",
+      "text": "From Diognetus, not to busy myself about trifling things, and not to give credit to what was said by miracle-workers and jugglers about incantations and the driving away of daemons and such things; and not to breed quails for fighting, nor to give myself up passionately to such things; and to endure freedom of speech; and to have become intimate with philosophy; and to have been a hearer, first of Bacchius, then of Tandasis and Marcianus; and to have written dialogues in my youth; and to have desired a plank bed and skin, and whatever else of the kind belongs to the Grecian discipline.",
+      "sha256": "fc8e28141cc67e36cf4980593639223dfd3864f2acd317cbc69a820ef6823575"
+    },
+    "meditations.1.7": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "1.7",
+      "text": "From Rusticus I received the impression that my character required improvement and discipline; and from him I learned not to be led astray to sophistic emulation, nor to writing on speculative matters, nor to delivering little hortatory orations, nor to showing myself off as a man who practises much discipline, or does benevolent acts in order to make a display; and to abstain from rhetoric, and poetry, and fine writing; and not to walk about in the house in my outdoor dress, nor to do other things of the kind; and to write my letters with simplicity, like the letter which Rusticus wrote from Sinuessa to my mother; and with respect to those who have offended me by words, or done me wrong, to be easily disposed to be pacified and reconciled, as soon as they have shown a readiness to be reconciled; and to read carefully, and not to be satisfied with a superficial understanding of a book; nor hastily to give my assent to those who talk overmuch; and I am indebted to him for being acquainted with the discourses of Epictetus, which he communicated to me out of his own collection.",
+      "sha256": "73b4ce2a5afa4c601860907b850d4b987b33ea62021440983ebf58c02aaa18f7"
+    },
+    "meditations.1.8": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "1.8",
+      "text": "From Apollonius I learned freedom of will and undeviating steadiness of purpose; and to look to nothing else, not even for a moment, except to reason; and to be always the same, in sharp pains, on the occasion of the loss of a child, and in long illness; and to see clearly in a living example that the same man can be both most resolute and yielding, and not peevish in giving his instruction; and to have had before my eyes a man who clearly considered his experience and his skill in expounding philosophical principles as the smallest of his merits; and from him I learned how to receive from friends what are esteemed favours, without being either humbled by them or letting them pass unnoticed.",
+      "sha256": "e148e728e28d3b2eeb72a7282250cf2a557cb8355a3fc17e9de2c737bf6f9c7a"
+    },
+    "meditations.1.9": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "1.9",
+      "text": "From Sextus, a benevolent disposition, and the example of a family governed in a fatherly manner, and the idea of living conformably to nature; and gravity without affectation, and to look carefully after the interests of friends, and to tolerate ignorant persons, and those who form opinions without consideration: he had the power of readily accommodating himself to all, so that intercourse with him was more agreeable than any flattery; and at the same time he was most highly venerated by those who associated with him: and he had the faculty both of discovering and ordering, in an intelligent and methodical way, the principles necessary for life; and he never showed anger or any other passion, but was entirely free from passion, and also most affectionate; and he could express approbation without noisy display, and he possessed much knowledge without ostentation.",
+      "sha256": "61e26c74bf1e4eeddaa78acceedbec6cab7e12c95789af065d60d1183a6edef1"
+    },
+    "meditations.1.13": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "1.13",
+      "text": "From Catulus, not to be indifferent when a friend finds fault, even if he should find fault without reason, but to try to restore him to his usual disposition; and to be ready to speak well of teachers, as it is reported of Domitius and Athenodotus; and to love my children truly.",
+      "sha256": "af1a150263bf7952eae677d34644553d9a0ef235b85642cb62f00e1246c2647e"
+    },
+    "meditations.1.15": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "1.15",
+      "text": "From Maximus I learned self-government, and not to be led aside by anything; and cheerfulness in all circumstances, as well as in illness; and a just admixture in the moral character of sweetness and dignity, and to do what was set before me without complaining. I observed that everybody believed that he thought as he spoke, and that in all that he did he never had any bad intention; and he never showed amazement and surprise, and was never in a hurry, and never put off doing a thing, nor was perplexed nor dejected, nor did he ever laugh to disguise his vexation, nor, on the other hand, was he ever passionate or suspicious. He was accustomed to do acts of beneficence, and was ready to forgive, and was free from all falsehood; and he presented the appearance of a man who could not be diverted from right rather than of a man who had been improved. I observed, too, that no man could ever think that he was despised by Maximus, or ever venture to think himself a better man. He had also the art of being humorous in an agreeable way.",
+      "sha256": "152a2e0fd2fbace36691b865a4e7cf27a5fa9add2ae3663a9e6959f3daeac7ee"
+    },
+    "meditations.1.16": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "1.16",
+      "text": "In my father I observed mildness of temper, and unchangeable resolution in the things which he had determined after due deliberation; and no vainglory in those things which men call honours; and a love of labour and perseverance; and a readiness to listen to those who had anything to propose for the common weal; and undeviating firmness in giving to every man according to his deserts; and a knowledge derived from experience of the occasions for vigorous action and for remission. And I observed that he had overcome all passion for boys; and he considered himself no more than any other citizen; and he released his friends from all obligation to sup with him or to attend him of necessity when he went abroad, and those who had failed to accompany him, by reason of any urgent circumstances, always found him the same. I observed too his habit of careful inquiry in all matters of deliberation, and his persistency, and that he never stopped his investigation through being satisfied with appearances which first present themselves; and that his disposition was to keep his friends, and not to be soon tired of them, nor yet to be extravagant in his affection; and to be satisfied on all occasions, and cheerful; and to foresee things a long way off, and to provide for the smallest without display; and to check immediately popular applause and all flattery; and to be ever watchful over the things which were necessary for the administration of the empire, and to be a good manager of the expenditure, and patiently to endure the blame which he got for such conduct; and he was neither superstitious with respect to the gods, nor did he court men by gifts or by trying to please them, or by flattering the populace; but he showed sobriety in all things and firmness, and never any mean thoughts or action, nor love of novelty. And the things which conduce in any way to the commodity of life, and of which fortune gives an abundant supply, he used without arrogance and without excusing himself; so that when he had them, he enjoyed them without affectation, and when he had them not, he did not want them. No one could ever say of him that he was either a sophist or a homebred flippant slave or a pedant; but everyone acknowledged him to be a man ripe, perfect, above flattery, able to manage his own and other men’s affairs. Besides this, he honoured those who were true philosophers, and he did not reproach those who pretended to be philosophers, nor yet was he easily led by them. He was also easy in conversation, and he made himself agreeable without any offensive affectation. He took a reasonable care of his body’s health, not as one who was greatly attached to life, nor out of regard to personal appearance, nor yet in a careless way, but so that, through his own attention, he very seldom stood in need of the physician’s art or of medicine or external applications. He was most ready to give way without envy to those who possessed any particular faculty, such as that of eloquence or knowledge of the law or of morals, or of anything else; and he gave them his help, that each might enjoy reputation according to his deserts; and he always acted conformably to the institutions of his country, without showing any affectation of doing so. Further, he was not fond of change nor unsteady, but he loved to stay in the same places, and to employ himself about the same things; and after his paroxysms of headache he came immediately fresh and vigorous to his usual occupations. His secrets were not but very few and very rare, and these only about public matters; and he showed prudence and economy in the exhibition of the public spectacles and the construction of public buildings, his donations to the people, and in such things, for he was a man who looked to what ought to be done, not to the reputation which is got by a man’s acts. He did not take the bath at unseasonable hours; he was not fond of building houses, nor curious about what he ate, nor about the texture and colour of his clothes, nor about the beauty of his slaves. His dress came from Lorium, his villa on the coast, and from Lanuvium generally. We know how he behaved to the toll-collector at Tusculum who asked his pardon; and such was all his behaviour. There was in him nothing harsh, nor implacable, nor violent, nor, as one may say, anything carried to the sweating point; but he examined all things severally, as if he had abundance of time, and without confusion, in an orderly way, vigorously and consistently. And that might be applied to him which is recorded of Socrates, that he was able both to abstain from, and to enjoy, those things which many are too weak to abstain from, and cannot enjoy without excess. But to be strong enough both to bear the one and to be sober in the other is the mark of a man who has a perfect and invincible soul, such as he showed in the illness of Maximus.",
+      "sha256": "c3c45b1dd95eae7ba3ed30c5e64d101ed34a2c2b690cb4b7d67c623ab24dbdbb"
+    },
+    "meditations.1.17": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "1.17",
+      "text": "To the gods I am indebted for having good grandfathers, good parents, a good sister, good teachers, good associates, good kinsmen and friends, nearly everything good. Further, I owe it to the gods that I was not hurried into any offence against any of them, though I had a disposition which, if opportunity had offered, might have led me to do something of this kind; but, through their favour, there never was such a concurrence of circumstances as put me to the trial. Further, I am thankful to the gods that I was not longer brought up with my grandfather’s concubine, and that I preserved the flower of my youth, and that I did not make proof of my virility before the proper season, but even deferred the time; that I was subjected to a ruler and a father who was able to take away all pride from me, and to bring me to the knowledge that it is possible for a man to live in a palace without wanting either guards or embroidered dresses, or torches and statues, and suchlike show; but that it is in such a man’s power to bring himself very near to the fashion of a private person, without being for this reason either meaner in thought, or more remiss in action, with respect to the things which must be done for the public interest in a manner that befits a ruler. I thank the gods for giving me such a brother, who was able by his moral character to rouse me to vigilance over myself, and who, at the same time, pleased me by his respect and affection; that my children have not been stupid nor deformed in body; that I did not make more proficiency in rhetoric, poetry, and the other studies, in which I should perhaps have been completely engaged, if I had seen that I was making progress in them; that I made haste to place those who brought me up in the station of honour, which they seemed to desire, without putting them off with hope of my doing it some time after, because they were then still young; that I knew Apollonius, Rusticus, Maximus; that I received clear and frequent impressions about living according to nature, and what kind of a life that is, so that, so far as depended on the gods, and their gifts, and help, and inspirations, nothing hindered me from forthwith living according to nature, though I still fall short of it through my own fault, and through not observing the admonitions of the gods, and, I may almost say, their direct instructions; that my body has held out so long in such a kind of life; that I never touched either Benedicta or Theodotus, and that, after having fallen into amatory passions, I was cured; and, though I was often out of humour with Rusticus, I never did anything of which I had occasion to repent; that, though it was my mother’s fate to die young, she spent the last years of her life with me; that, whenever I wished to help any man in his need, or on any other occasion, I was never told that I had not the means of doing it; and that to myself the same necessity never happened, to receive anything from another; that I have such a wife, so obedient, and so affectionate, and so simple; that I had abundance of good masters for my children; and that remedies have been shown to me by dreams, both others, and against bloodspitting and giddiness … ; and that, when I had an inclination to philosophy, I did not fall into the hands of any sophist, and that I did not waste my time on writers of histories, or in the resolution of syllogisms, or occupy myself about the investigation of appearances in the heavens; for all these things require the help of the gods and fortune.",
+      "sha256": "099c230f206effed6930963611f3628d097444c00720e190b12291b9483b13ae"
+    },
+    "meditations.2.1": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "2.1",
+      "text": "Begin the morning by saying to thyself, I shall meet with the busybody, the ungrateful, arrogant, deceitful, envious, unsocial. All these things happen to them by reason of their ignorance of what is good and evil. But I who have seen the nature of the good that it is beautiful, and of the bad that it is ugly, and the nature of him who does wrong, that it is akin to me, not only of the same blood or seed, but that it participates in the same intelligence and the same portion of the divinity, I can neither be injured by any of them, for no one can fix on me what is ugly, nor can I be angry with my kinsman, nor hate him. For we are made for cooperation, like feet, like hands, like eyelids, like the rows of the upper and lower teeth. To act against one another then is contrary to nature; and it is acting against one another to be vexed and to turn away.",
+      "sha256": "8aae3cf87c83a58825773a5846cdbf53a6d8b6adb6c374a042aa9c28d79034d2"
+    },
+    "meditations.2.4": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "2.4",
+      "text": "Remember how long thou hast been putting off these things, and how often thou hast received an opportunity from the gods, and yet dost not use it. Thou must now at last perceive of what universe thou art a part, and of what administrator of the universe thy existence is an efflux, and that a limit of time is fixed for thee, which if thou dost not use for clearing away the clouds from thy mind, it will go and thou wilt go, and it will never return.",
+      "sha256": "9e6b0d46c4fdf0591edacdb0bb6b6c0373b8a19df4e12c1ff44bd39980c0f9b5"
+    },
+    "meditations.2.5": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "2.5",
+      "text": "Every moment think steadily as a Roman and a man to do what thou hast in hand with perfect and simple dignity, and feeling of affection, and freedom, and justice; and to give thyself relief from all other thoughts. And thou wilt give thyself relief, if thou doest every act of thy life as if it were the last, laying aside all carelessness and passionate aversion from the commands of reason, and all hypocrisy, and self-love, and discontent with the portion which has been given to thee. Thou seest how few the things are, the which if a man lays hold of, he is able to live a life which flows in quiet, and is like the existence of the gods; for the gods on their part will require nothing more from him who observes these things.",
+      "sha256": "6bd45553f515ec375b2cf414bbfb5649d0d2d8e319b2fb1a1d3863c9034c64ad"
+    },
+    "meditations.2.7": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "2.7",
+      "text": "Do the things external which fall upon thee distract thee? Give thyself time to learn something new and good, and cease to be whirled around. But then thou must also avoid being carried about the other way. For those too are triflers who have wearied themselves in life by their activity, and yet have no object to which to direct every movement, and, in a word, all their thoughts.",
+      "sha256": "acf7e4f73e67844eedbf05e7c9ac117e0566e59050e616cad47bf9098b2a163a"
+    },
+    "meditations.2.11": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "2.11",
+      "text": "Since it is possible that thou mayest depart from life this very moment, regulate every act and thought accordingly. But to go away from among men, if there are gods, is not a thing to be afraid of, for the gods will not involve thee in evil; but if indeed they do not exist, or if they have no concern about human affairs, what is it to me to live in a universe devoid of gods or devoid of Providence? But in truth they do exist, and they do care for human things, and they have put all the means in man’s power to enable him not to fall into real evils. And as to the rest, if there was anything evil, they would have provided for this also, that it should be altogether in a man’s power not to fall into it. Now that which does not make a man worse, how can it make a man’s life worse? But neither through ignorance, nor having the knowledge, but not the power to guard against or correct these things, is it possible that the nature of the universe has overlooked them; nor is it possible that it has made so great a mistake, either through want of power or want of skill, that good and evil should happen indiscriminately to the good and the bad. But death certainly, and life, honour and dishonour, pain and pleasure, all these things equally happen to good men and bad, being things which make us neither better nor worse. Therefore they are neither good nor evil.",
+      "sha256": "3c963472d5cdcb7758fe2ad7d159e3518f6500cfdcd8ca65ba818a32c535b0ff"
+    },
+    "meditations.2.15": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "2.15",
+      "text": "Remember that all is opinion. For what was said by the Cynic Monimus is manifest: and manifest too is the use of what was said, if a man receives what may be got out of it as far as it is true.",
+      "sha256": "389ea258545fdefcf4e5be791e6b1e72589f132e76ba3a4ab5026b16fb5e9daf"
+    },
+    "meditations.3.4": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "3.4",
+      "text": "Do not waste the remainder of thy life in thoughts about others, when thou dost not refer thy thoughts to some object of common utility. For thou losest the opportunity of doing something else when thou hast such thoughts as these, What is such a person doing, and why, and what is he saying, and what is he thinking of, and what is he contriving, and whatever else of the kind makes us wander away from the observation of our own ruling power. We ought then to check in the series of our thoughts everything that is without a purpose and useless, but most of all the overcurious feeling and the malignant; and a man should use himself to think of those things only about which if one should suddenly ask, What hast thou now in thy thoughts? With perfect openness thou mightest, immediately answer, This or That; so that from thy words it should be plain that everything in thee is simple and benevolent, and such as befits a social animal, and one that cares not for thoughts about pleasure or sensual enjoyments at all, nor has any rivalry or envy and suspicion, or anything else for which thou wouldst blush if thou shouldst say that thou hadst it in thy mind. For the man who is such and no longer delays being among the number of the best, is like a priest and minister of the gods, using too the deity which is planted within him, which makes the man uncontaminated by pleasure, unharmed by any pain, untouched by any insult, feeling no wrong, a fighter in the noblest fight, one who cannot be overpowered by any passion, dyed deep with justice, accepting with all his soul everything which happens and is assigned to him as his portion; and not often, nor yet without great necessity and for the general interest, imagining what another says, or does, or thinks. For it is only what belongs to himself that he makes the matter for his activity; and he constantly thinks of that which is allotted to himself out of the sum total of things, and he makes his own acts fair, and he is persuaded that his own portion is good. For the lot which is assigned to each man is carried along with him and carries him along with it. And he remembers also that every rational animal is his kinsman, and that to care for all men is according to man’s nature; and a man should hold on to the opinion not of all, but of those only who confessedly live according to nature. But as to those who live not so, he always bears in mind what kind of men they are both at home and from home, both by night and by day, and what they are, and with what men they live an impure life. Accordingly, he does not value at all the praise which comes from such men, since they are not even satisfied with themselves.",
+      "sha256": "57abebb0e049330420d48c1a241fedaa4cf9c2a7a009372bf4f1151d0ce7cd30"
+    },
+    "meditations.3.10": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "3.10",
+      "text": "Throwing away then all things, hold to these only which are few; and besides bear in mind that every man lives only this present time, which is an indivisible point, and that all the rest of his life is either past or it is uncertain. Short then is the time which every man lives, and small the nook of the earth where he lives; and short too the longest posthumous fame, and even this only continued by a succession of poor human beings, who will very soon die, and who know not even themselves, much less him who died long ago.",
+      "sha256": "0c87ea89512618b75a140f3cc264e32a1093e68cbf6e9607a455cc75830839dd"
+    },
+    "meditations.3.12": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "3.12",
+      "text": "If thou workest at that which is before thee, following right reason seriously, vigorously, calmly, without allowing anything else to distract thee, but keeping thy divine part pure, as if thou shouldst be bound to give it back immediately; if thou holdest to this, expecting nothing, fearing nothing, but satisfied with thy present activity according to nature, and with heroic truth in every word and sound which thou utterest, thou wilt live happy. And there is no man who is able to prevent this.",
+      "sha256": "891444c7c8eec74417b6725497cbc4133f4d9f9a2f764d8fd09d1bf594d8e4f3"
+    },
+    "meditations.4.2": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "4.2",
+      "text": "Let no act be done without a purpose, nor otherwise than according to the perfect principles of art.",
+      "sha256": "8ef4bd588ede35e77c9b6b0d9cc077e53b2fcdcfe3b2f6b6944c4b76b99b6897"
+    },
+    "meditations.4.3": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "4.3",
+      "text": "Men seek retreats for themselves, houses in the country, seashores, and mountains; and thou too art wont to desire such things very much. But this is altogether a mark of the most common sort of men, for it is in thy power whenever thou shalt choose to retire into thyself. For nowhere either with more quiet or more freedom from trouble does a man retire than into his own soul, particularly when he has within him such thoughts that by looking into them he is immediately in perfect tranquility; and I affirm that tranquility is nothing else than the good ordering of the mind. Constantly then give to thyself this retreat, and renew thyself; and let thy principles be brief and fundamental, which, as soon as thou shalt recur to them, will be sufficient to cleanse the soul completely, and to send thee back free from all discontent with the things to which thou returnest. For with what art thou discontented? With the badness of men? Recall to thy mind this conclusion, that rational animals exist for one another, and that to endure is a part of justice, and that men do wrong involuntarily; and consider how many already, after mutual enmity, suspicion, hatred, and fighting, have been stretched dead, reduced to ashes; and be quiet at last.—But perhaps thou art dissatisfied with that which is assigned to thee out of the universe.—Recall to thy recollection this alternative; either there is providence or atoms, fortuitous concurrence of things; or remember the arguments by which it has been proved that the world is a kind of political community, and be quiet at last.—But perhaps corporeal things will still fasten upon thee.—Consider then further that the mind mingles not with the breath, whether moving gently or violently, when it has once drawn itself apart and discovered its own power, and think also of all that thou hast heard and assented to about pain and pleasure, and be quiet at last.—But perhaps the desire of the thing called fame will torment thee.—See how soon everything is forgotten, and look at the chaos of infinite time on each side of the present, and the emptiness of applause, and the changeableness and want of judgement in those who pretend to give praise, and the narrowness of the space within which it is circumscribed, and be quiet at last. For the whole earth is a point, and how small a nook in it is this thy dwelling, and how few are there in it, and what kind of people are they who will praise thee.\nThis then remains: Remember to retire into this little territory of thy own, and above all do not distract or strain thyself, but be free, and look at things as a man, as a human being, as a citizen, as a mortal. But among the things readiest to thy hand to which thou shalt turn, let there be these, which are two. One is that things do not touch the soul, for they are external and remain immovable; but our perturbations come only from the opinion which is within. The other is that all these things, which thou seest, change immediately and will no longer be; and constantly bear in mind how many of these changes thou hast already witnessed. The universe is transformation: life is opinion.",
+      "sha256": "e0f03176adb758507110f6cf251b58a25f24c9b2d695e37f3367e48e91800cb6"
+    },
+    "meditations.4.7": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "4.7",
+      "text": "Take away thy opinion, and then there is taken away the complaint, “I have been harmed.” Take away the complaint, “I have been harmed,” and the harm is taken away.",
+      "sha256": "9401bea7da65b18f99f99e2c4594371921986a0ff83594e10b58631631021baf"
+    },
+    "meditations.4.17": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "4.17",
+      "text": "Do not act as if thou wert going to live ten thousand years. Death hangs over thee. While thou livest, while it is in thy power, be good.",
+      "sha256": "0ffc19d7b273096fd51234d7a640a5b6fdf296406ff349457e43fe9bbc784d63"
+    },
+    "meditations.4.18": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "4.18",
+      "text": "How much trouble he avoids who does not look to see what his neighbour says or does or thinks, but only to what he does himself, that it may be just and pure; or as Agathon says, look not round at the depraved morals of others, but run straight along the line without deviating from it.",
+      "sha256": "a5ac9137dc9868c9e29231ff04691d0124bc5fb4b7996f17aaed47f7ab1753c0"
+    },
+    "meditations.4.24": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "4.24",
+      "text": "Occupy thyself with few things, says the philosopher, if thou wouldst be tranquil.—But consider if it would not be better to say, Do what is necessary, and whatever the reason of the animal which is naturally social requires, and as it requires. For this brings not only the tranquility which comes from doing well, but also that which comes from doing few things. For the greatest part of what we say and do being unnecessary, if a man takes this away, he will have more leisure and less uneasiness. Accordingly on every occasion a man should ask himself, Is this one of the unnecessary things? Now a man should take away not only unnecessary acts, but also, unnecessary thoughts, for thus superfluous acts will not follow after.",
+      "sha256": "a79c443008a305f7e189fad17879ec92569f36f2b4c0c05f1bbeff93b8da44de"
+    },
+    "meditations.4.48": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "4.48",
+      "text": "Think continually how many physicians are dead after often contracting their eyebrows over the sick; and how many astrologers after predicting with great pretensions the deaths of others; and how many philosophers after endless discourses on death or immortality; how many heroes after killing thousands; and how many tyrants who have used their power over men’s lives with terrible insolence as if they were immortal; and how many cities are entirely dead, so to speak, Helice and Pompeii and Herculaneum, and others innumerable. Add to the reckoning all whom thou hast known, one after another. One man after burying another has been laid out dead, and another buries him: and all this in a short time. To conclude, always observe how ephemeral and worthless human things are, and what was yesterday a little mucus tomorrow will be a mummy or ashes. Pass then through this little space of time conformably to nature, and end thy journey in content, just as an olive falls off when it is ripe, blessing nature who produced it, and thanking the tree on which it grew.",
+      "sha256": "8323387c3f06c5622b0d297a080a21ed20ad0172f30cbdfb8e6858d9d43196ec"
+    },
+    "meditations.4.49": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "4.49",
+      "text": "Be like the promontory against which the waves continually break, but it stands firm and tames the fury of the water around it.\nUnhappy am I because this has happened to me.—Not so, but happy am I, though this has happened to me, because I continue free from pain, neither crushed by the present nor fearing the future. For such a thing as this might have happened to every man; but every man would not have continued free from pain on such an occasion. Why then is that rather a misfortune than this a good fortune? And dost thou in all cases call that a man’s misfortune, which is not a deviation from man’s nature? And does a thing seem to thee to be a deviation from man’s nature, when it is not contrary to the will of man’s nature? Well, thou knowest the will of nature. Will then this which has happened prevent thee from being just, magnanimous, temperate, prudent, secure against inconsiderate opinions and falsehood; will it prevent thee from having modesty, freedom, and everything else, by the presence of which man’s nature obtains all that is its own? Remember too on every occasion which leads thee to vexation to apply this principle: not that this is a misfortune, but that to bear it nobly is good fortune.",
+      "sha256": "82f662d70e8aa3f6d93e623758b05f07241ba76cee7962d27bd263e1778c9b79"
+    },
+    "meditations.5.1": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "5.1",
+      "text": "In the morning when thou risest unwillingly, let this thought be present—I am rising to the work of a human being. Why then am I dissatisfied if I am going to do the things for which I exist and for which I was brought into the world? Or have I been made for this, to lie in the bedclothes and keep myself warm?—But this is more pleasant.—Dost thou exist then to take thy pleasure, and not at all for action or exertion? Dost thou not see the little plants, the little birds, the ants, the spiders, the bees working together to put in order their several parts of the universe? And art thou unwilling to do the work of a human being, and dost thou not make haste to do that which is according to thy nature?—But it is necessary to take rest also.—It is necessary: however nature has fixed bounds to this too: she has fixed bounds both to eating and drinking, and yet thou goest beyond these bounds, beyond what is sufficient; yet in thy acts it is not so, but thou stoppest short of what thou canst do. So thou lovest not thyself, for if thou didst, thou wouldst love thy nature and her will. But those who love their several arts exhaust themselves in working at them unwashed and without food; but thou valuest thy own nature less than the turner values the turning art, or the dancer the dancing art, or the lover of money values his money, or the vainglorious man his little glory. And such men, when they have a violent affection to a thing, choose neither to eat nor to sleep rather than to perfect the things which they care for. But are the acts which concern society more vile in thy eyes and less worthy of thy labour?",
+      "sha256": "44579f37b4cac834546c2aa026c24b2e5f1e9f01b2c187cbf6cde09d2dafb1b4"
+    },
+    "meditations.5.2": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "5.2",
+      "text": "How easy it is to repel and to wipe away every impression which is troublesome or unsuitable, and immediately to be in all tranquility.",
+      "sha256": "72c0b978e5d7c99c8b52ecac00d965e5f5e581fbcd3323d2d519affe02bfb1e6"
+    },
+    "meditations.5.6": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "5.6",
+      "text": "One man, when he has done a service to another, is ready to set it down to his account as a favour conferred. Another is not ready to do this, but still in his own mind he thinks of the man as his debtor, and he knows what he has done. A third in a manner does not even know what he has done, but he is like a vine which has produced grapes, and seeks for nothing more after it has once produced its proper fruit. As a horse when he has run, a dog when he has tracked the game, a bee when it has made the honey, so a man when he has done a good act, does not call out for others to come and see, but he goes on to another act, as a vine goes on to produce again the grapes in season.—Must a man then be one of these, who in a manner act thus without observing it?—Yes.—But this very thing is necessary, the observation of what a man is doing: for, it may be said, it is characteristic of the social animal to perceive that he is working in a social manner, and indeed to wish that his social partner also should perceive it.—It is true what thou sayest, but thou dost not rightly understand what is now said: and for this reason thou wilt become one of those of whom I spoke before, for even they are misled by a certain show of reason. But if thou wilt choose to understand the meaning of what is said, do not fear that for this reason thou wilt omit any social act.",
+      "sha256": "c800dd5f8331c235bc5f4f3730123d2fa2b35b8f9144540382a82cad5634187a"
+    },
+    "meditations.5.16": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "5.16",
+      "text": "Such as are thy habitual thoughts, such also will be the character of thy mind; for the soul is dyed by the thoughts. Dye it then with a continuous series of such thoughts as these: for instance, that where a man can live, there he can also live well. But he must live in a palace;—well then, he can also live well in a palace. And again, consider that for whatever purpose each thing has been constituted, for this it has been constituted, and towards this it is carried; and its end is in that towards which it is carried; and where the end is, there also is the advantage and the good of each thing. Now the good for the reasonable animal is society; for that we are made for society has been shown above. Is it not plain that the inferior exist for the sake of the superior? But the things which have life are superior to those which have not life, and of those which have life the superior are those which have reason.",
+      "sha256": "251af1adbcef30dded3ea71bc4fd81da5c7467a5756209ee2462c40df5f26162"
+    },
+    "meditations.5.19": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "5.19",
+      "text": "Things themselves touch not the soul, not in the least degree; nor have they admission to the soul, nor can they turn or move the soul: but the soul turns and moves itself alone, and whatever judgements it may think proper to make, such it makes for itself the things which present themselves to it.",
+      "sha256": "588f72a3992626a4674ac6049c323bed003444e6438d0e021eab16b05a37af43"
+    },
+    "meditations.5.20": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "5.20",
+      "text": "In one respect man is the nearest thing to me, so far as I must do good to men and endure them. But so far as some men make themselves obstacles to my proper acts, man becomes to me one of the things which are indifferent, no less than the sun or wind or a wild beast. Now it is true that these may impede my action, but they are no impediments to my affects and disposition, which have the power of acting conditionally and changing: for the mind converts and changes every hindrance to its activity into an aid; and so that which is a hindrance is made a furtherance to an act; and that which is an obstacle on the road helps us on this road.",
+      "sha256": "db3b356caad7f0c3847ca4d6d0418db8908b31663f6d4ca5d59c6f86fdc8f699"
+    },
+    "meditations.5.25": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "5.25",
+      "text": "Does another do me wrong? Let him look to it. He has his own disposition, his own activity. I now have what the universal nature wills me to have; and I do what my nature now wills me to do.",
+      "sha256": "ba73e7d9de63beeb0a94383ca8246b62cc966f0e3725026bc8ee00aee8e18489"
+    },
+    "meditations.8.47": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "8.47",
+      "text": "If thou art pained by any external thing, it is not this thing that disturbs thee, but thy own judgement about it. And it is in thy power to wipe out this judgement now. But if anything in thy own disposition gives thee pain, who hinders thee from correcting thy opinion? And even if thou art pained because thou art not doing some particular thing which seems to thee to be right, why dost thou not rather act than complain?—But some insuperable obstacle is in the way?—Do not be grieved then, for the cause of its not being done depends not on thee.—But it is not worth while to live if this cannot be done.—Take thy departure then from life contentedly, just as he dies who is in full activity, and well pleased too with the things which are obstacles.",
+      "sha256": "a2292bce7c2ceb980bd837bbf814c36db1989002839ddf74281e662c68035c77"
+    },
+    "meditations.8.48": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "8.48",
+      "text": "Remember that the ruling faculty is invincible, when self-collected it is satisfied with itself, if it does nothing which it does not choose to do, even if it resist from mere obstinacy. What then will it be when it forms a judgement about anything aided by reason and deliberately? Therefore the mind which is free from passions is a citadel, for man has nothing more secure to which he can fly for, refuge and for the future be inexpugnable. He then who has not seen this is an ignorant man; but he who has seen it and does not fly to this refuge is unhappy.",
+      "sha256": "a56a6268284bd73e6a92bdcf0c312ab136714634689677f7e900c111ac3826ae"
+    },
+    "meditations.8.49": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "8.49",
+      "text": "Say nothing more to thyself than what the first appearances report. Suppose that it has been reported to thee that a certain person speaks ill of thee. This has been reported; but that thou hast been injured, that has not been reported. I see that my child is sick. I do see; but that he is in danger, I do not see. Thus then always abide by the first appearances, and add nothing thyself from within, and then nothing happens to thee. Or rather add something, like a man who knows everything that happens in the world.",
+      "sha256": "020b142e97198ddc94443e03ed9dde6b07ee2593a9cfe9775f028c8590c7179e"
+    },
+    "meditations.8.50": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "8.50",
+      "text": "A cucumber is bitter.—Throw it away.—There are briars in the road.—Turn aside from them.—This is enough. Do not add, And why were such things made in the world? For thou wilt be ridiculed by a man who is acquainted with nature, as thou wouldst be ridiculed by a carpenter and shoemaker if thou didst find fault because thou seest in their workshop shavings and cuttings from the things which they make. And yet they have places into which they can throw these shavings and cuttings, and the universal nature has no external space; but the wondrous part of her art is that though she has circumscribed herself, everything within her which appears to decay and to grow old and to be useless she changes into herself, and again makes other new things from these very same, so that she requires neither substance from without nor wants a place into which she may cast that which decays. She is content then with her own space, and her own matter and her own art.",
+      "sha256": "14d902527e8ed72a02621c34d595c213030dcfbb8ef3c1205947d8f59b553a82"
+    },
+    "meditations.12.17": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "12.17",
+      "text": "If it is not right, do not do it: if it is not true, do not say it. For let thy efforts be—",
+      "sha256": "e6bb23996459989c6c83e70424bcd7136b26ec4c118ce0546c017127094515b6"
+    },
+    "meditations.12.19": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "12.19",
+      "text": "Perceive at last that thou hast in thee something better and more divine than the things which cause the various affects, and as it were pull thee by the strings. What is there now in my mind? Is it fear, or suspicion, or desire, or anything of the kind?",
+      "sha256": "dbc4ae7dc84d87436e7908c11de4952df72881fcbfc8c046761b1dea93c060f2"
+    },
+    "meditations.12.22": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "12.22",
+      "text": "Consider that everything is opinion, and opinion is in thy power. Take away then, when thou choosest, thy opinion, and like a mariner, who has doubled the promontory, thou wilt find calm, everything stable, and a waveless bay.",
+      "sha256": "e13de41b6db2d542bb5f2166f0a076c76a7694a4d4c0d5d9b81b1adf5fe2a595"
+    },
+    "meditations.12.25": {
+      "work": "Meditations",
+      "author": "Marcus Aurelius",
+      "translator": "George Long (1862)",
+      "ref": "12.25",
+      "text": "Cast away opinion: thou art saved. Who then hinders thee from casting it away?",
+      "sha256": "f307c2d175a504b9f99313ece8a6682a5563631ac3a58751e6939c3eb054575a"
+    }
+  }
+}
