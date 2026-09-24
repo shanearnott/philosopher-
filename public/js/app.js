@@ -1482,4 +1482,13 @@ document.addEventListener("visibilitychange", () => {
 route();
 statusReady.then(() => current() === "you" && renderYou());
 
-if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+if ("serviceWorker" in navigator) {
+  // check for a new version on every open, bypassing the browser's cache of sw.js
+  navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).then((r) => r.update()).catch(() => {});
+  // when a new version takes over, reload once so the new tabs and code show
+  let reloaded = false;
+  const hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (hadController && !reloaded) { reloaded = true; location.reload(); }
+  });
+}

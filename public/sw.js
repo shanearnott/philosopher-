@@ -1,13 +1,13 @@
 // Offline shell: the texts and course are bundled, so the daily path works
 // without a connection. The tutor needs the network.
-const CACHE = "stoa-v22";
+const CACHE = "stoa-v23";
 const SHELL = [
   "./", "index.html", "css/app.css", "js/app.js", "js/logic.js", "js/store.js", "js/prompts.js", "js/direct.js", "js/themes.js", "js/illumination.js", "data/volumes/index.json", "data/explainers/meditations.json",
   "data/library.json", "data/course-meditations.json", "manifest.webmanifest", "icon.svg",
 ];
 
 self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL.map((u) => new Request(u, { cache: "reload" })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener("activate", (e) => {
@@ -19,11 +19,13 @@ self.addEventListener("activate", (e) => {
 });
 
 // Network first for the app itself (so updates land), cache as fallback.
+// "no-cache" revalidates with the server instead of reusing the browser's
+// copy, which GitHub Pages lets it keep for ten minutes.
 self.addEventListener("fetch", (e) => {
   const url = new URL(e.request.url);
   if (e.request.method !== "GET" || url.pathname.includes("/api/")) return;
   e.respondWith(
-    fetch(e.request)
+    fetch(e.request, url.origin === location.origin ? { cache: "no-cache" } : {})
       .then((res) => {
         if (res.ok && url.origin === location.origin) {
           const copy = res.clone();
