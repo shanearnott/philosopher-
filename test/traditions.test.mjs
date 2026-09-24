@@ -46,3 +46,16 @@ test("known passages come through word for word", () => {
   assert.match(find("hinduism", "Bhagavad Gita 2.47–48"), /^Thy concern is with work only, but not with the fruit/);
   assert.ok(read("volumes/islam.json").passages["islam.1"].original.startsWith("بِسْمِ"), "Arabic alongside");
 });
+
+test("every day of every tradition course has a stored explainer, with Background for tradition cards", () => {
+  const ex = {};
+  const load = (v) => (ex[v] ??= read(`explainers/${v}.json`));
+  for (const t of wing.traditions) {
+    for (const d of t.days) {
+      const v = d.id.split(".")[0];
+      const e = load(v)[d.id];
+      assert.ok(e && e.meaning && e.today && e.you, `${d.id}: explainer`);
+      if (v === t.id) assert.ok(e.context, `${d.id}: Background`);
+    }
+  }
+});
