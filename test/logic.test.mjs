@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
   POINTS, pointsFor, totalPoints, rankFor, streak, weekCount, addDays, todaysDay, guardReply,
-  virtueMeters, journalMarkdown, verifiedPassage,
+  virtueMeters, verifiedPassage,
 } from "../public/js/logic.js";
 
 const library = JSON.parse(readFileSync(new URL("../public/data/library.json", import.meta.url)));
@@ -19,14 +19,11 @@ test("points: once-a-day rules and the favourite cap", () => {
   assert.equal(add("quick"), POINTS.quick);
   assert.equal(add("session"), POINTS.session - POINTS.quick); // quick upgraded to full
   assert.equal(add("session"), 0);
-  assert.equal(add("reflection", "e1"), 20);
-  assert.equal(add("reflection", "e1"), 0);
+  assert.equal(add("reflection", "e1"), 0); // writing is no longer scored
   for (let i = 0; i < 5; i++) assert.equal(add("favourite", `p${i}`), 2);
   assert.equal(add("favourite", "p6"), 0);
-  assert.equal(add("evening"), 15);
-  assert.equal(add("evening"), 0);
   assert.equal(add("scroll"), 0); // swipes score nothing
-  assert.equal(totalPoints(ledger), 10 + 20 + 10 + 15);
+  assert.equal(totalPoints(ledger), 10 + 10);
 });
 
 test("ranks end one short of the sage", () => {
@@ -94,15 +91,6 @@ test("quote guard: a tampered passage is not shown", () => {
   assert.equal(verifiedPassage(library, "constructor"), null);
 });
 
-test("virtue meters count reflections, and the journal exports as a book", () => {
-  const journal = [
-    { date: "2026-09-24", passageId: "meditations.1.1", virtue: "temperance", reflection: "I kept my temper.", response: "Good. See [[meditations.4.7]].", applied: { yes: true, example: "At lunch" } },
-    { date: "2026-09-23", passageId: "meditations.2.1", virtue: "justice", reflection: "" },
-  ];
-  assert.deepEqual(virtueMeters(journal), { wisdom: 0, justice: 0, courage: 0, temperance: 1 });
-  const md = journalMarkdown(journal, library);
-  assert.match(md, /## 2026-09-23 · Meditations 2\.1[\s\S]*## 2026-09-24/);
-  assert.match(md, /> From my grandfather Verus/);
-  assert.match(md, /\(see 4\.7\)/);
-  assert.match(md, /\*\*Applied it\?\*\* Yes: At lunch/);
+test("virtue meters count completed days by their passage's virtue", () => {
+  assert.deepEqual(virtueMeters(["temperance", "justice", "justice", "nonsense"]), { wisdom: 0, justice: 2, courage: 0, temperance: 1 });
 });

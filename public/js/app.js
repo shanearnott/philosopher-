@@ -1,7 +1,7 @@
 import {
-  POINTS, RANKS, VIRTUES, WEEKLY_TARGET, GRACE_DAYS_PER_MONTH, REFLECTION_MIN_WORDS, MIX_RUN_LENGTH, MIX_REFLECTION_DAILY_CAP, sha256,
-  dayKey, addDays, wordCount, totalPoints, rankFor, pointsFor, streak, weekCount,
-  virtueMeters, todaysDay, verifiedPassage, guardReply, journalMarkdown, citeRef,
+  POINTS, RANKS, VIRTUES, WEEKLY_TARGET, GRACE_DAYS_PER_MONTH, MIX_RUN_LENGTH,
+  dayKey, totalPoints, rankFor, pointsFor, streak, weekCount,
+  virtueMeters, todaysDay, verifiedPassage, guardReply, citeRef,
 } from "./logic.js";
 import { load, save, wipe, freshState } from "./store.js";
 import { buildRequest, handoffText } from "./prompts.js";
@@ -124,14 +124,6 @@ function studiedIds(extraDay) {
   const ids = course.days.filter((d) => d.day <= state.progress.completedDay).map(pid);
   if (extraDay) ids.push(pid(extraDay));
   return [...new Set(ids)];
-}
-
-function recentReflections(excludeId) {
-  return state.journal
-    .filter((e) => e.reflection && e.id !== excludeId && e.ref)
-    .sort((a, b) => b.date.localeCompare(a.date))
-    .slice(0, 5)
-    .map((e) => ({ ref: e.ref, reflection: e.reflection }));
 }
 
 async function tutor(job, payload) {
@@ -343,26 +335,6 @@ document.addEventListener("keydown", (e) => {
   deck.scrollTo({ top: i * deck.clientHeight, behavior: "smooth" });
 });
 
-// ---------- journal helpers ----------
-
-function entryFor(date, day) {
-  let e = state.journal.find((j) => j.date === date && j.day === day.day);
-  if (!e) {
-    e = {
-      id: `${date}-${day.day}`, date, day: day.day, passageId: pid(day), ref: day.ref,
-      virtue: day.virtue, theme: day.theme, question: "", reflection: "", response: "",
-    };
-    state.journal.push(e);
-  }
-  return e;
-}
-
-function pendingCheckin(today) {
-  return state.journal
-    .filter((e) => e.date < today && e.date >= addDays(today, -2) && e.ref && !e.applied)
-    .sort((a, b) => b.date.localeCompare(a.date))[0];
-}
-
 // ---------- Today: the daily swipe ----------
 
 function renderToday() {
@@ -371,7 +343,6 @@ function renderToday() {
   if (finished && !state.sessions[today]) return renderReview();
   const day = dayByNum(dayNum);
   const passage = verifiedPassage(library, pid(day));
-  const entry = state.journal.find((j) => j.date === today && j.day === day.day);
   document.body.classList.add("on-cards");
 
   const deck = h("div", { class: "deck" });
@@ -383,32 +354,6 @@ function renderToday() {
     const i = cards.indexOf(el);
     cards[i + 1]?.scrollIntoView({ behavior: "smooth" });
   };
-
-  // 0. Next-day check-in (the highest-value action)
-  const pending = !done && pendingCheckin(today);
-  if (pending) {
-    const example = h("textarea", { class: "reflect", style: { minHeight: "18vh" }, placeholder: "Where did it show up? One or two sentences." });
-    const card = h("section", { class: "card", style: bg(200) },
-      h("p", { class: "eyebrow" }, "Check-in"),
-      h("h2", {}, `Did you apply ${pending.ref}?`),
-      h("p", { class: "soft" }, pending.question || "Yesterday's passage, in practice."),
-      example,
-      h("div", { class: "btn-row" },
-        h("button", { class: "btn gold", onclick: () => {
-          if (wordCount(example.value) < 3) return toast("Add a short example first");
-          pending.applied = { yes: true, example: example.value.trim(), date: today };
-          const pts = award("checkin", pending.id);
-          persist();
-          toast(pts ? `Practice beats reading · +${pts}` : "Saved");
-          next(card);
-        } }, "Yes, here's how"),
-        h("button", { class: "btn", onclick: () => {
-          pending.applied = { yes: false, date: today };
-          persist();
-          next(card);
-        } }, "Not yet")));
-    cards.push(card);
-  }
 
   // 1. Passage
   const fav = () => !!state.favourites[pid(day)];
@@ -474,156 +419,14 @@ function renderToday() {
         } }, "Quick mode: finish here"))));
   cards.push(explainer);
 
-  // 4. Apply
-  const e0 = entry || null;
-  const chosen = { question: e0?.question || "" };
-  const choices = Object.entries(day.apply).map(([area, q]) => {
-    const btn = h("button", { class: "choice", "aria-pressed": String(chosen.question === q), onclick: () => pick(q, btn) },
-      h("small", {}, area === "decision" ? "A current decision" : area), q);
-    btn.dataset.area = area;
-    return btn;
-  });
-  const tailored = h("div");
-  function pick(q, btn) {
-    chosen.question = q;
-    applyCard.querySelectorAll(".choice").forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
-    const e = entryFor(today, day);
-    e.question = q;
-    persist();
-    questionEcho.textContent = q;
-  }
-  const tailorBtn = h("button", { class: "btn", onclick: async () => {
-    const area = applyCard.querySelector('.choice[aria-pressed="true"]')?.dataset.area || "work";
-    tailorBtn.disabled = true;
-    tailored.replaceChildren(thinking());
-    try {
-      const r = await tutor("ask", { passageId: pid(day), area });
-      const btn = h("button", { class: "choice", onclick: () => pick(r.text, btn) }, h("small", {}, "Tailored to you"), r.text);
-      tailored.replaceChildren(btn);
-      pick(r.text, btn);
-    } catch (err) {
-      tailored.replaceChildren(h("p", { class: "tutor-note" }, err.message));
-    }
-    tailorBtn.disabled = false;
-  } }, "Tailor to me");
+  // 4. Apply: questions to carry into the day
   const applyCard = h("section", { class: "card", style: bg(140) },
     h("p", { class: "eyebrow" }, "Apply"),
-    h("div", { class: "card-scroll" }, choices, tailored,
-      h("div", { class: "btn-row" }, tailorBtn, h("button", { class: "btn", onclick: () => next(applyCard) }, "Skip"))));
+    h("div", { class: "card-scroll" },
+      h("p", { class: "soft" }, "Carry one of these into today."),
+      Object.entries(day.apply).map(([area, q]) =>
+        h("div", { class: "choice" }, h("small", {}, area === "decision" ? "A current decision" : area), q))));
   cards.push(applyCard);
-
-  // 5. Reflect
-  const questionEcho = h("p", { class: "soft" }, chosen.question || "What does this passage ask of you today?");
-  const ta = h("textarea", { class: "reflect", placeholder: "Write, or tap the mic and speak. A minute or three." });
-  ta.value = e0?.reflection || "";
-  const counter = h("span", {}, "");
-  const updateCount = () => {
-    const n = wordCount(ta.value);
-    counter.textContent = n >= REFLECTION_MIN_WORDS ? `${n} words` : `${n} / ${REFLECTION_MIN_WORDS} words`;
-  };
-  updateCount();
-  let draftTimer;
-  ta.addEventListener("input", () => {
-    updateCount();
-    clearTimeout(draftTimer);
-    draftTimer = setTimeout(() => { entryFor(today, day).reflection = ta.value; persist(); }, 500);
-  });
-  const mic = dictationButton(ta, updateCount);
-  // On this day: what you wrote on this passage last time round
-  const lastTime = state.journal
-    .filter((j) => j.passageId === pid(day) && j.date < today && wordCount(j.reflection) > 0)
-    .sort((a, b) => b.date.localeCompare(a.date))[0];
-  const reflectCard = h("section", { class: "card", style: bg(120) },
-    h("p", { class: "eyebrow" }, "Reflect"),
-    lastTime && h("details", { class: "last-time" },
-      h("summary", {}, `You wrote on this passage on ${fmtDate(lastTime.date)}`),
-      h("p", {}, lastTime.reflection)),
-    questionEcho,
-    ta,
-    h("div", { class: "meta-row" }, counter, mic),
-    h("div", { class: "btn-row" }, h("button", { class: "btn primary", onclick: () => {
-      const e = entryFor(today, day);
-      e.reflection = ta.value.trim();
-      if (!e.question) e.question = chosen.question;
-      persist();
-      if (wordCount(e.reflection) >= REFLECTION_MIN_WORDS) {
-        const pts = award("reflection", e.id);
-        if (pts) toast(`The real work · +${pts}`);
-      }
-      ta.blur();
-      next(reflectCard);
-    } }, "Save reflection")));
-  cards.push(reflectCard);
-
-  // 6. Tutor expounds
-  const expoundOut = h("div", { class: "card-scroll" });
-  const expoundCard = h("section", { class: "card", style: { "--card-bg": "linear-gradient(180deg, #1f1c18, #121110)" } },
-    h("p", { class: "eyebrow" }, "The tutor"),
-    expoundOut);
-  const drawExpound = () => {
-    const e = state.journal.find((j) => j.date === today && j.day === day.day);
-    expoundOut.replaceChildren();
-    if (e?.response) {
-      const allowed = [pid(day), ...studiedIds()];
-      expoundOut.append(renderTutor(e.response, allowed));
-      if (e.replyResponse) {
-        expoundOut.append(h("p", { class: "soft" }, h("em", {}, "You: "), e.reply), renderTutor(e.replyResponse, allowed));
-        expoundOut.append(h("p", { class: "tutor-note" }, "Saved to your journal."));
-      } else {
-        const replyTa = h("textarea", { class: "reflect", style: { minHeight: "14vh" }, placeholder: "Reply once more (optional)" });
-        const send = h("button", { class: "btn", onclick: async () => {
-          if (!replyTa.value.trim()) return;
-          send.disabled = true;
-          send.replaceChildren(thinking());
-          try {
-            const r = await tutor("reply", {
-              passageId: pid(day), studied: studiedIds(day), reflection: e.reflection, response: e.response, reply: replyTa.value.trim(),
-            });
-            e.reply = replyTa.value.trim();
-            e.replyResponse = r.text;
-            persist();
-            drawExpound();
-          } catch (err) {
-            send.disabled = false;
-            send.textContent = "Send";
-            toast(err.message);
-          }
-        } }, "Send");
-        expoundOut.append(h("p", { class: "tutor-note" }, "Saved to your journal."), replyTa, h("div", { class: "btn-row" }, send));
-      }
-      return;
-    }
-    const hasReflection = wordCount(e?.reflection) > 0;
-    expoundOut.append(h("p", { class: "lede" }, hasReflection
-      ? "The tutor has read the passage with you, and will respond to what you wrote."
-      : "Write a reflection on the card above and the tutor will respond to it."));
-    if (!hasReflection) return;
-    const out = h("div");
-    const ask = (deeper) => async () => {
-      row.remove();
-      out.replaceChildren(thinking());
-      try {
-        const r = await tutor("expound", {
-          passageId: pid(day), studied: studiedIds(day), deeper,
-          reflection: e.reflection, question: e.question, recent: recentReflections(e.id),
-        });
-        e.response = r.text;
-        persist();
-        drawExpound();
-      } catch (err) {
-        out.replaceChildren(h("p", { class: "tutor-note" }, `${err.message} Your reflection is saved to your journal.`));
-        expoundOut.append(row);
-      }
-    };
-    const row = h("div", { class: "btn-row" },
-      h("button", { class: "btn primary", onclick: ask(false) }, handoffMode() ? "Ask the tutor in Claude" : "Hear from the tutor"),
-      !handoffMode() && h("button", { class: "btn", onclick: ask(true), title: "Uses a larger model; for long reflections" }, "Go deeper"));
-    expoundOut.append(out, row);
-  };
-  drawExpound();
-  // refresh when arriving from the reflect card
-  new IntersectionObserver((es) => es[0].isIntersecting && drawExpound(), { threshold: 0.6 }).observe(expoundCard);
-  cards.push(expoundCard);
 
   // End card
   const endStats = h("div", { class: "stats" });
@@ -634,8 +437,7 @@ function renderToday() {
     endStats,
     endMsg,
     h("div", { class: "btn-row", style: { justifyContent: "center" } },
-      h("button", { class: "btn", onclick: () => eveningSheet() }, state.evenings[today] ? "Evening review ✓" : "Evening review"),
-      h("button", { class: "btn", onclick: () => go("journal") }, "Journal")));
+      h("button", { class: "btn", onclick: () => go("mix") }, "Explore the library")));
   const drawEnd = (earned) => {
     const sessions = Object.keys(state.sessions);
     const s = streak(sessions, today);
@@ -669,41 +471,36 @@ function renderToday() {
   if (done && !finished) toast("Done for today. Revisiting.");
 }
 
-// Course 1 ends with a review week: your saved passages and your own best
-// reflections, as cards. Then you can start the path again.
+// Course 1 ends with a review week: your saved passages, as cards. Then you
+// can start the path again.
 function renderReview() {
   document.body.classList.add("on-cards");
   const deck = h("div", { class: "deck" });
   const bg = { "--card-bg": "radial-gradient(90% 60% at 50% 0%, #6b5a33 0%, transparent 70%), linear-gradient(180deg, #221d19, #0e0d0c)" };
   const favs = Object.entries(state.favourites).sort((a, b) => a[1].localeCompare(b[1])).slice(0, 10)
     .map(([id]) => verifiedPassage(library, id)).filter(Boolean);
-  const best = state.journal.filter((e) => e.ref && wordCount(e.reflection) >= REFLECTION_MIN_WORDS)
-    .sort((a, b) => wordCount(b.reflection) - wordCount(a.reflection)).slice(0, 5);
   const cards = [
     h("section", { class: "card", style: bg },
       h("p", { class: "eyebrow" }, "Review week"),
       h("h2", {}, `You've finished the Meditations.`),
-      h("p", { class: "lede" }, `${course.days.length} days, ${Object.keys(state.sessions).length} ${Object.keys(state.sessions).length === 1 ? "session" : "sessions"}. Swipe through the passages you saved and the best of what you wrote.`)),
+      h("p", { class: "lede" }, `${course.days.length} days, ${Object.keys(state.sessions).length} ${Object.keys(state.sessions).length === 1 ? "session" : "sessions"}. Swipe through the passages you saved.`)),
     ...favs.map((p, i) => h("section", { class: "card", style: bg },
       h("p", { class: "eyebrow" }, `Saved passage ${i + 1} of ${favs.length}`),
       h("div", { class: "card-scroll" }, h("blockquote", { class: "quote", style: { "--qsize": `${Math.max(19, Math.min(30, 30 - (p.text.length - 120) / 40))}px` } }, p.text),
         h("p", { class: "quote-ref" }, citeRef(p))))),
-    ...best.map((e) => h("section", { class: "card", style: bg },
-      h("p", { class: "eyebrow" }, `You wrote · ${fmtDate(e.date)} · on ${e.ref}`),
-      h("div", { class: "card-scroll" }, h("p", { class: "lede", style: { whiteSpace: "pre-wrap" } }, e.reflection)))),
     h("section", { class: "card end", style: bg },
       h("p", { class: "eyebrow" }, "What next"),
       h("h2", {}, "Begin again, or wander."),
-      h("p", { class: "soft" }, "Repeat the path from day one; your journal stays, so you'll see what you wrote last time. Or explore the library in Mix."),
+      h("p", { class: "soft" }, "Repeat the path from day one, or explore the library in Mix."),
       h("div", { class: "btn-row", style: { justifyContent: "center" } },
         h("button", { class: "btn primary", onclick: () => {
-          if (!confirm("Start the 120-day path again from day 1? Your journal and points stay.")) return;
+          if (!confirm("Start the 120-day path again from day 1? Your saved cards and points stay.")) return;
           state.progress.completedDay = 0;
           state.progress.round = (state.progress.round || 1) + 1;
           persist();
           renderToday();
         } }, "Start again"),
-        h("button", { class: "btn", onclick: () => go("journal") }, "Journal"))),
+        h("button", { class: "btn", onclick: () => go("mix") }, "Explore the library"))),
   ];
   if (!favs.length) cards.splice(1, 0, h("section", { class: "card", style: bg },
     h("p", { class: "eyebrow" }, "Saved passages"), h("p", { class: "lede" }, "You didn't save any passages this time. Next round, hold a passage card to keep it.")));
@@ -719,8 +516,6 @@ function completeSession(day, mode) {
   if (existing && (existing.mode === "full" || mode === "quick")) return 0;
   let earned = award(mode === "quick" ? "quick" : "session");
   state.sessions[today] = { day: day.day, mode };
-  const e = entryFor(today, day);
-  e.mode = mode;
   if (day.day > state.progress.completedDay) {
     state.progress.completedDay = day.day;
     const unitDays = course.days.filter((d) => d.unit === day.unit);
@@ -731,37 +526,7 @@ function completeSession(day, mode) {
   return earned;
 }
 
-// ---------- voice dictation (where the browser supports it) ----------
-
-function dictationButton(textarea, onChange) {
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) return h("span");
-  let rec = null;
-  const btn = h("button", { class: "mic", "aria-label": "Dictate", onclick: () => {
-    if (rec) return rec.stop();
-    rec = new SR();
-    rec.continuous = true;
-    rec.interimResults = false;
-    rec.lang = navigator.language || "en-GB";
-    rec.onresult = (ev) => {
-      for (let i = ev.resultIndex; i < ev.results.length; i++) {
-        if (ev.results[i].isFinal) {
-          const sep = textarea.value && !/\s$/.test(textarea.value) ? " " : "";
-          textarea.value += sep + ev.results[i][0].transcript.trim();
-        }
-      }
-      textarea.dispatchEvent(new Event("input"));
-      onChange();
-    };
-    rec.onend = () => { rec = null; btn.classList.remove("live"); };
-    rec.onerror = () => toast("Dictation stopped");
-    rec.start();
-    btn.classList.add("live");
-  } }, "🎙");
-  return btn;
-}
-
-// ---------- evening review (Seneca's three questions) ----------
+// ---------- sheets ----------
 
 function sheet(...content) {
   const back = h("div", { class: "sheet-backdrop", onclick: (e) => e.target === back && back.remove() });
@@ -770,135 +535,9 @@ function sheet(...content) {
   return back;
 }
 
-function eveningSheet() {
-  const today = dayKey();
-  const prev = state.evenings[today] || {};
-  const f = (label, key) => {
-    const t = h("textarea", {}, prev[key] || "");
-    return [h("label", { class: "field" }, h("span", {}, label), t), t];
-  };
-  const [l1, well] = f("What did I do well today?", "well");
-  const [l2, badly] = f("What did I do badly?", "badly");
-  const [l3, undone] = f("What did I leave undone?", "undone");
-  const back = sheet(
-    h("h2", {}, "Evening review"),
-    h("p", { class: "muted" }, "Seneca's three questions, to close the day."),
-    l1, l2, l3,
-    h("div", { class: "btn-row" },
-      h("button", { class: "btn primary", onclick: () => {
-        if (!well.value.trim() && !badly.value.trim() && !undone.value.trim()) return toast("Answer at least one");
-        state.evenings[today] = { well: well.value.trim(), badly: badly.value.trim(), undone: undone.value.trim() };
-        const pts = award("evening");
-        persist();
-        back.remove();
-        toast(pts ? `Loop closed · +${pts}` : "Saved");
-        route();
-      } }, "Save"),
-      h("button", { class: "btn", onclick: () => back.remove() }, "Cancel")));
-}
-
-// ---------- Journal ----------
-
-let journalFilter = "all";
-
-function allEntries() {
-  const byDate = new Map();
-  const list = state.journal
-    .filter((e) => e.reflection || e.response || e.mode || e.applied || e.situation)
-    .map((e) => ({ ...e }));
-  for (const e of list) if (!byDate.has(e.date)) byDate.set(e.date, e);
-  for (const [date, ev] of Object.entries(state.evenings)) {
-    if (byDate.has(date)) byDate.get(date).evening = ev;
-    else list.push({ id: `evening-${date}`, date, title: "Evening review", evening: ev });
-  }
-  return list.sort((a, b) => b.date.localeCompare(a.date));
-}
-
-function renderJournal() {
-  document.body.classList.remove("on-cards");
-  const entries = allEntries();
-  const themes = [...new Set(entries.map((e) => e.theme).filter(Boolean))];
-  const filters = ["all", "favourites", ...VIRTUES, ...themes];
-  const shown = entries.filter((e) =>
-    journalFilter === "all" ? true
-    : journalFilter === "favourites" ? state.favourites[e.passageId]
-    : e.virtue === journalFilter || e.theme === journalFilter);
-
-  const list = h("div");
-  if (!shown.length) list.append(h("p", { class: "muted" }, entries.length ? "Nothing under this filter yet." : "Your journal fills one entry per session. Over time it becomes your own Meditations."));
-  for (const e of shown) {
-    const p = e.passage || (e.passageId && library.passages[e.passageId]);
-    list.append(h("button", { class: "entry", onclick: () => entrySheet(e) },
-      h("div", { class: "when" }, fmtDate(e.date)),
-      h("div", { class: "what" }, p ? citeRef(p) : e.title || "Entry", state.favourites[e.passageId] ? h("span", { class: "fav-mark" }, "✦") : null),
-      h("div", { class: "snip" }, e.reflection || e.situation || (e.evening && e.evening.well) || "Read, no reflection written."),
-      h("div", {}, e.virtue && h("span", { class: "tag" }, e.virtue), e.theme && h("span", { class: "tag" }, e.theme),
-        e.applied?.yes && h("span", { class: "tag" }, "applied"))));
-  }
-
-  const past = course.days.filter((d) => d.day <= state.progress.completedDay);
-  view.replaceChildren(h("div", { class: "page" },
-    h("p", { class: "eyebrow", style: { color: "var(--muted)" } }, "Journal"),
-    h("h1", {}, "My Meditations"),
-    h("p", { class: "sub" }, `${entries.length} ${entries.length === 1 ? "entry" : "entries"}, stored only on this device.`),
-    h("div", { class: "btn-row no-print", style: { marginTop: 0, marginBottom: "18px" } },
-      h("button", { class: "btn", onclick: exportMarkdown }, "Export Markdown"),
-      h("button", { class: "btn", onclick: printBook }, "Export PDF"),
-      h("button", { class: "btn", onclick: eveningSheet }, "Evening review")),
-    h("div", { class: "filters no-print" }, filters.map((f) =>
-      h("button", { class: "chip", "aria-pressed": String(f === journalFilter), onclick: () => { journalFilter = f; renderJournal(); } }, f))),
-    list,
-    past.length ? h("h2", {}, "Past cards") : null,
-    past.length ? h("p", { class: "muted" }, "Revisit any day you've studied. The path itself only moves forward one day at a time.") : null,
-    h("div", { class: "filters", style: { flexWrap: "wrap" } }, past.map((d) =>
-      h("button", { class: "chip", onclick: () => pastSheet(d) }, `${d.day} · ${d.ref}`)))));
-}
-
 function fmtDate(key) {
   const [y, m, d] = key.split("-").map(Number);
   return new Date(y, m - 1, d).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short", year: "numeric" });
-}
-
-function passageQuote(id, entry) {
-  const snap = entry?.passage;
-  const p = snap && sha256(snap.text) === snap.sha256 ? snap : verifiedPassage(library, id);
-  return p ? h("blockquote", { class: "book-quote" }, p.text, h("cite", {}, `${citeRef(p)} · tr. ${p.translator}`)) : null;
-}
-
-function entrySheet(e) {
-  const allowed = [e.passageId, ...studiedIds(), ...(e.allowed || [])].filter(Boolean);
-  const real = state.journal.find((j) => j.id === e.id);
-  const back = sheet(
-    h("p", { class: "muted" }, fmtDate(e.date)),
-    e.passageId ? passageQuote(e.passageId, e) : h("h2", {}, e.title || "Entry"),
-    e.situation && [h("h3", {}, "The situation"), h("p", { class: "prose" }, e.situation)],
-    e.question && h("p", { class: "muted" }, e.question),
-    e.reflection && [h("h3", {}, "My reflection"), h("p", { class: "prose" }, e.reflection)],
-    e.response && [h("h3", {}, "The tutor"), renderTutor(e.response, allowed)],
-    e.reply && [h("h3", {}, "My reply"), h("p", { class: "prose" }, e.reply)],
-    e.replyResponse && renderTutor(e.replyResponse, allowed),
-    e.applied && h("p", {}, h("strong", {}, "Applied it? "), e.applied.yes ? `Yes. ${e.applied.example || ""}` : "Not yet."),
-    e.evening && [h("h3", {}, "Evening review"),
-      h("p", { class: "prose" }, `Done well: ${e.evening.well || "—"}\nDone badly: ${e.evening.badly || "—"}\nLeft undone: ${e.evening.undone || "—"}`)],
-    h("div", { class: "btn-row" },
-      h("button", { class: "btn", onclick: () => back.remove() }, "Close"),
-      h("button", { class: "btn", onclick: () => {
-        if (!confirm("Delete this entry? This can't be undone.")) return;
-        if (real) state.journal = state.journal.filter((j) => j !== real);
-        if (e.evening) delete state.evenings[e.date];
-        persist();
-        back.remove();
-        renderJournal();
-      } }, "Delete entry")));
-}
-
-function pastSheet(d) {
-  const back = sheet(
-    h("p", { class: "muted" }, `Day ${d.day} · ${unitOf(d).title}`),
-    passageQuote(pid(d)),
-    h("h3", {}, "Context"), h("p", {}, d.context),
-    h("h3", {}, "Plain-English paraphrase"), h("p", { class: "prose" }, d.paraphrase),
-    h("div", { class: "btn-row" }, h("button", { class: "btn", onclick: () => back.remove() }, "Close")));
 }
 
 function download(name, text, type) {
@@ -908,24 +547,6 @@ function download(name, text, type) {
   a.click();
   a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
-function exportMarkdown() {
-  download(`stoa-journal-${dayKey()}.md`, journalMarkdown(allEntries(), library), "text/markdown");
-}
-
-function printBook() {
-  const entries = allEntries().reverse();
-  const book = h("div", { class: "page" },
-    h("h1", {}, "My Meditations"), h("p", { class: "sub" }, "A journal kept with Stoa"),
-    entries.map((e) => h("div", { class: "entry-print" },
-      h("h2", {}, fmtDate(e.date)),
-      e.passageId && passageQuote(e.passageId, e),
-      e.reflection && h("p", { class: "prose" }, e.reflection),
-      e.response && renderTutor(e.response, [e.passageId, ...studiedIds()]),
-      e.evening && h("p", { class: "prose" }, `Done well: ${e.evening.well}\nDone badly: ${e.evening.badly}\nLeft undone: ${e.evening.undone}`))));
-  view.replaceChildren(book);
-  setTimeout(() => { window.print(); renderJournal(); }, 200);
 }
 
 // ---------- Consult ----------
@@ -941,13 +562,7 @@ function renderConsult() {
     out.replaceChildren(thinking());
     try {
       const r = await tutor("consult", { situation: ta.value.trim(), studied });
-      out.replaceChildren(renderTutor(r.text, r.allowed), h("div", { class: "btn-row" },
-        h("button", { class: "btn", onclick: (ev) => {
-          state.journal.push({ id: `consult-${Date.now()}`, date: dayKey(), title: "Consult", situation: ta.value.trim(), response: r.text, allowed: r.allowed });
-          persist();
-          ev.target.disabled = true;
-          ev.target.textContent = "Saved to journal";
-        } }, "Save to journal")));
+      out.replaceChildren(renderTutor(r.text, r.allowed));
     } catch (err) {
       out.replaceChildren(h("p", { class: "muted" }, err.message));
     }
@@ -973,7 +588,7 @@ function renderYou() {
   const s = streak(sessions, today);
   const month = today.slice(0, 7);
   const graceLeft = GRACE_DAYS_PER_MONTH - s.graceDays.filter((d) => d.startsWith(month)).length;
-  const meters = virtueMeters(state.journal);
+  const meters = virtueMeters(Object.values(state.sessions).map((x) => dayByNum(x.day)?.virtue));
   const maxMeter = Math.max(4, ...Object.values(meters));
   const lowest = VIRTUES.reduce((a, b) => (meters[b] < meters[a] ? b : a));
   const highest = VIRTUES.reduce((a, b) => (meters[b] > meters[a] ? b : a));
@@ -1022,15 +637,15 @@ function renderYou() {
       h("div", { class: "meters" }, VIRTUES.map((v) => h("div", { class: "meter" },
         h("span", {}, v), h("div", { class: "progress" }, h("i", { style: { width: `${(meters[v] / maxMeter) * 100}%` } })), h("b", { class: "num" }, meters[v])))),
       h("p", { class: "muted", style: { marginBottom: 0, marginTop: "14px" } },
-        meters[highest] === 0 ? "Each reflection fills the meter of its passage's virtue." : `Heavy on ${highest}, light on ${lowest}.`)),
+        meters[highest] === 0 ? "Each day you complete fills the meter of its passage's virtue." : `Heavy on ${highest}, light on ${lowest}.`)),
     h("h2", {}, "How points work"),
     h("div", { class: "panel muted" },
       h("p", { style: { margin: 0 } },
-        `Daily session ${POINTS.session} · quick mode ${POINTS.quick} · reflection of ${REFLECTION_MIN_WORDS}+ words ${POINTS.reflection} · next-day check-in ${POINTS.checkin} · evening review ${POINTS.evening} · favourite ${POINTS.favourite} (up to 5 a day) · finish a unit ${POINTS.unit} · finish the course ${POINTS.course}. Swipes, time in app and extra words score nothing.`),
+        `Daily session ${POINTS.session} · quick mode ${POINTS.quick} · save a card ${POINTS.favourite} (up to 5 a day) · finish a unit ${POINTS.unit} · finish the course ${POINTS.course}. Swipes and time in the app score nothing.`),
       h("p", { style: { marginBottom: 0 } }, "Ranks: ", RANKS.map((r) => `${r.name} ${r.min.toLocaleString()}`).join(" · "))),
     h("h2", {}, "About you"),
     h("div", { class: "panel" },
-      h("p", { class: "muted", style: { marginTop: 0 } }, "A short profile the tutor sees, with your last five reflections. Nothing else is sent."),
+      h("p", { class: "muted", style: { marginTop: 0 } }, "A short profile the tutor sees when you go deeper or consult. Nothing else is sent."),
       field("Role", "role"),
       field("Current challenges", "challenges", true),
       field("Goals", "goals", true)),
@@ -1051,9 +666,8 @@ function renderYou() {
         } }, "Share setup link to another device")),
       h("p", { class: "muted" }, tutorNote),
       h("div", { class: "btn-row" },
-        h("button", { class: "btn", onclick: exportMarkdown }, "Export journal"),
         h("button", { class: "btn", onclick: () => {
-          if (!confirm("Delete your whole journal, points and progress from this device? This can't be undone.")) return;
+          if (!confirm("Delete your saved cards, points and progress from this device? This can't be undone.")) return;
           wipe();
           state = freshState();
           persist();
@@ -1066,8 +680,7 @@ function renderYou() {
 
 // ---------- Library: Mix and Play ----------
 // Outside the daily path, the library works like a music app. Reading here
-// scores nothing; reflecting on a card scores 10, up to 3 a day. A run ends
-// after 20 cards.
+// scores nothing. A run ends after 20 cards.
 
 const MED = { id: "meditations", author: "Marcus Aurelius", work: "Meditations", translator: "George Long (1862)", why: "The foundation", course: 1 };
 let volIndex = null;
@@ -1109,12 +722,13 @@ function mixState() {
   return state.mix;
 }
 
-// Themes from recent reflections, for the Daily Mix.
+// Themes from the cards you've saved most recently, for the Daily Mix.
 function dailyThemes() {
   const counts = {};
-  for (const e of state.journal.filter((j) => j.reflection).slice(-10)) {
-    const p = e.passage || library.passages[e.passageId];
-    for (const t of tagThemes(`${e.reflection} ${p?.text || ""}`)) counts[t] = (counts[t] || 0) + 1;
+  const recent = Object.entries(state.favourites).sort((a, b) => String(a[1]).localeCompare(String(b[1]))).slice(-10);
+  for (const [id] of recent) {
+    const p = library.passages[id];
+    if (p) for (const t of tagThemes(p.text)) counts[t] = (counts[t] || 0) + 1;
   }
   const top = Object.entries(counts).sort((a, b) => b[1] - a[1]).map(([t]) => t).slice(0, 2);
   return top.length ? top : ["control", "others"];
@@ -1185,31 +799,6 @@ function runLabel(run) {
   return THEMES[run.themes?.[0]]?.label || "Mix";
 }
 
-function mixReflectSheet(id) {
-  const p = library.passages[id];
-  const ta = h("textarea", { placeholder: "What does this say to you today?" });
-  const back = sheet(
-    h("h2", {}, "Reflect"),
-    h("p", { class: "muted" }, `${p.author}, ${p.ref}. Reflecting here scores ${POINTS.mixReflection}, up to ${MIX_REFLECTION_DAILY_CAP} a day.`),
-    h("label", { class: "field" }, ta),
-    h("div", { class: "btn-row" },
-      h("button", { class: "btn primary", onclick: () => {
-        if (!ta.value.trim()) return toast("Write something first");
-        const e = {
-          id: `mix-${Date.now()}`, date: dayKey(), kind: "mix", title: "Mix", passageId: id, ref: p.ref,
-          passage: { work: p.work, author: p.author, translator: p.translator, ref: p.ref, text: p.text, sha256: p.sha256 },
-          theme: themesOf(id)[0], reflection: ta.value.trim(),
-        };
-        state.journal.push(e);
-        const pts = award("mixReflection", e.id);
-        persist();
-        back.remove();
-        toast(pts ? `Saved to your journal · +${pts}` : "Saved to your journal");
-      } }, "Save"),
-      h("button", { class: "btn", onclick: () => back.remove() }, "Cancel")));
-  setTimeout(() => ta.focus(), 100);
-}
-
 function mixCard(id, index, run) {
   const p = verifiedPassage(library, id);
   const vol = volOf(id);
@@ -1226,7 +815,6 @@ function mixCard(id, index, run) {
       h("p", { class: "quote-ref" }, p.ref, state.favourites[id] ? h("span", { class: "fav-mark" }, "✦") : null, h("small", {}, `tr. ${p.translator}`)),
       out,
       h("div", { class: "btn-row" },
-        h("button", { class: "btn", onclick: () => mixReflectSheet(id) }, "Reflect"),
         ask,
         h("button", { class: "btn", onclick: (ev) => {
           if (state.favourites[id]) delete state.favourites[id];
@@ -1265,10 +853,9 @@ function renderRun(startAt) {
   const endCard = () => h("section", { class: "card end", style: { "--card-bg": "radial-gradient(90% 60% at 50% 100%, #6b4a33 0%, transparent 70%), linear-gradient(180deg, #221d19, #0e0d0c)" } },
     h("p", { class: "eyebrow" }, `${MIX_RUN_LENGTH} cards`),
     h("h2", {}, "Enough for now."),
-    h("p", { class: "soft" }, "That's the end of this run. Reflect on one of them in your journal, or come back tomorrow."),
+    h("p", { class: "soft" }, "That's the end of this run. Come back tomorrow, or start another from the library."),
     h("div", { class: "btn-row", style: { justifyContent: "center" } },
-      h("button", { class: "btn", onclick: () => { mix.run = null; persist(); renderMix(); } }, "Back to the library"),
-      h("button", { class: "btn", onclick: () => go("journal") }, "Journal")));
+      h("button", { class: "btn", onclick: () => { mix.run = null; persist(); renderMix(); } }, "Back to the library")));
   const add = (id, i) => {
     const c = mixCard(id, i, run);
     deck.append(c);
@@ -1347,7 +934,7 @@ async function renderMix() {
   view.replaceChildren(h("div", { class: "page" },
     h("p", { class: "eyebrow", style: { color: "var(--muted)" } }, "Library"),
     h("h1", {}, "Mix"),
-    h("p", { class: "sub" }, `Outside the daily path. Reading here scores nothing; reflecting on a card scores ${POINTS.mixReflection}, up to ${MIX_REFLECTION_DAILY_CAP} a day. A run ends after ${MIX_RUN_LENGTH} cards.`),
+    h("p", { class: "sub" }, `Outside the daily path. Reading here scores nothing, and a run ends after ${MIX_RUN_LENGTH} cards.`),
     run && h("div", { class: "panel resume" },
       h("div", {}, h("b", {}, runLabel(run)), h("div", { class: "muted" }, `Card ${Math.min((run.i ?? 0) + 1, run.ids.length)} of ${MIX_RUN_LENGTH}`)),
       h("button", { class: "btn primary", onclick: () => renderRun() }, "Resume")),
@@ -1387,7 +974,7 @@ function alongsideSheet(book) {
 
 // ---------- routing ----------
 
-const ROUTES = { today: renderToday, mix: () => (mixState().run && mixState().run.date === dayKey() ? renderRun() : renderMix()), journal: renderJournal, consult: renderConsult, you: renderYou };
+const ROUTES = { today: renderToday, mix: () => (mixState().run && mixState().run.date === dayKey() ? renderRun() : renderMix()), consult: renderConsult, you: renderYou };
 function current() {
   const t = location.hash.slice(1);
   return ROUTES[t] ? t : "today";

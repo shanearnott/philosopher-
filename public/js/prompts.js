@@ -1,4 +1,5 @@
-// Claude's four jobs from the plan: Explain, Ask, Expound (+ one reply), Consult.
+// Claude's jobs: Explain (when no explainer is stored), Go deeper, Consult and
+// Read alongside.
 // Shared by the Node server and the browser (for hosting on GitHub Pages).
 // Every prompt is built from the locked library by passage ID, and Claude is
 // told to cite passages only as [[id]] tokens. The app swaps tokens for
@@ -23,7 +24,7 @@ How you speak:
 - Plain prose in short paragraphs. No headings, lists or bold unless asked. Address the user as "you".
 - Stay on conduct and character. Don't moralise about politics, and don't diagnose health problems; if the user seems in crisis, say plainly that a trusted person or professional is the right next step.`;
 
-const LIMITS = { reflection: 4000, reply: 2000, situation: 2000, profile: 1200, recent: 600 };
+const LIMITS = { situation: 2000, profile: 1200 };
 const has = (library, id) => typeof id === "string" && Object.hasOwn(library.passages, id);
 const clip = (s, n) => (typeof s === "string" ? s.slice(0, n) : "");
 
@@ -42,15 +43,6 @@ function profileBlock(profile) {
   return lines.length ? `<user_profile>\n${lines.join("\n")}\n</user_profile>` : "";
 }
 
-function recentBlock(recent) {
-  if (!Array.isArray(recent) || !recent.length) return "";
-  const items = recent
-    .slice(0, 5)
-    .map((r) => `- ${clip(r.ref, 20)}: ${clip(r.reflection, LIMITS.recent)}`)
-    .join("\n");
-  return `<recent_reflections>\n${items}\n</recent_reflections>`;
-}
-
 function studiedIds(library, studied, extra = []) {
   const ids = new Set([...(Array.isArray(studied) ? studied : []), ...extra]);
   return [...ids].filter((id) => has(library, id));
@@ -59,13 +51,13 @@ function studiedIds(library, studied, extra = []) {
 // Returns { model, effort, prompt, allowed } or throws a 400-style error.
 export function buildRequest(body, library, course, models = DEFAULT_MODELS) {
   const { job, passageId, deeper } = body || {};
-  const needsPassage = ["explain", "deeper", "ask", "expound", "reply"].includes(job);
+  const needsPassage = ["explain", "deeper"].includes(job);
   if (needsPassage && !has(library, passageId)) throw badRequest("Unknown passage");
   const day = course.days.find((d) => `meditations.${d.ref}` === passageId);
   const context = day ? `<context>${day.context}</context>` : "";
   const studied = studiedIds(library, body.studied, needsPassage ? [passageId] : []);
   const others = studied.filter((id) => id !== passageId);
-  const model = deeper ? models.deep : models.daily;
+  const model = deeper || job === "deeper" ? models.deep : models.daily;
   const parts = [];
   let effort = "low";
 
@@ -85,37 +77,6 @@ export function buildRequest(body, library, course, models = DEFAULT_MODELS) {
         profileBlock(body.profile),
         body.explainer ? `<explainer_already_read>\n${clip(body.explainer, 2000)}\n</explainer_already_read>` : "",
         `The user has read a short explainer of this passage (above) and wants to go deeper. In 250 to 350 words: the historical and personal context in which the author wrote it; how it connects to the author's other ideas and to one other thinker; the strongest objection to it and how the author might answer; and two concrete practices to try this week, fitted to the user's profile if one is given. Don't repeat the explainer.`,
-      );
-      break;
-    case "ask": {
-      const area = ["work", "family", "decision"].includes(body.area) ? body.area : "work";
-      parts.push(
-        passageBlock(library, passageId),
-        profileBlock(body.profile),
-        `Write one question, under 35 words, that links this passage to the user's ${area === "decision" ? "current decisions" : area}. Make it specific to their profile if one is given. Output only the question.`,
-      );
-      break;
-    }
-    case "expound":
-      effort = deeper ? "high" : "medium";
-      parts.push(
-        passageBlock(library, passageId),
-        profileBlock(body.profile),
-        recentBlock(body.recent),
-        body.question ? `<question>${clip(body.question, 300)}</question>` : "",
-        `<reflection>\n${clip(body.reflection, LIMITS.reflection)}\n</reflection>`,
-        others.length ? `Passages the user has already studied (cite at most one): ${others.join(", ")}` : "",
-        `Respond to the user's reflection in 150 to 250 words. Say what is strong in it, specifically. Then name at least one place where Marcus would push further, even if the reflection is good. ${others.length ? "If one of the studied passages genuinely bears on it, point to it with its [[id]] token." : "Don't cite other passages."} End with one short line they can carry into tomorrow.`,
-      );
-      break;
-    case "reply":
-      effort = deeper ? "high" : "medium";
-      parts.push(
-        passageBlock(library, passageId),
-        `<reflection>\n${clip(body.reflection, LIMITS.reflection)}\n</reflection>`,
-        `<your_response>\n${clip(body.response, 3000)}\n</your_response>`,
-        `<user_reply>\n${clip(body.reply, LIMITS.reply)}\n</user_reply>`,
-        `This is the user's one follow-up for today. Answer it in under 150 words, then close the conversation warmly; there is no further reply.`,
       );
       break;
     case "consult":

@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
-import { pointsFor, POINTS, guardReply } from "../public/js/logic.js";
+import { pointsFor, guardReply } from "../public/js/logic.js";
 import { tagThemes, THEMES } from "../public/js/themes.js";
 import { buildRequest } from "../public/js/prompts.js";
 import { blocks, cards, VOLUMES, GUTENBERG, EPICURUS, decode, isEnglish } from "../scripts/ingest-volumes.mjs";
@@ -71,15 +71,9 @@ test("themes are tagged by whole words", () => {
   assert.ok(Object.keys(THEMES).length >= 6);
 });
 
-test("Mix: reading scores nothing, reflecting scores 10 up to 3 a day", () => {
-  const ledger = [];
-  const d = "2026-09-24";
-  for (let i = 0; i < 4; i++) {
-    const pts = pointsFor("mixReflection", ledger, d, `m${i}`);
-    if (pts) ledger.push({ date: d, kind: "mixReflection", pts });
-    assert.equal(pts, i < 3 ? POINTS.mixReflection : 0);
-  }
-  assert.equal(pointsFor("mixRead", ledger, d), 0);
+test("Mix: reading and writing score nothing", () => {
+  assert.equal(pointsFor("mixRead", [], "2026-09-24"), 0);
+  assert.equal(pointsFor("mixReflection", [], "2026-09-24", "m1"), 0);
 });
 
 test("quote guard cites passages from any author in the library", () => {

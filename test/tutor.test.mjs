@@ -13,14 +13,15 @@ test("prompts carry verbatim library text, never client-supplied passages", () =
   assert.ok(!r.prompt.includes("fake"));
 });
 
-test("expound cites only studied passages and uses the deeper model on request", () => {
+test("go deeper cites only real passages and carries the stored explainer", () => {
   const r = buildRequest({
-    job: "expound", passageId: "meditations.2.1", deeper: true, reflection: "I will meet difficult people.",
+    job: "deeper", passageId: "meditations.2.1", explainer: "Plain meaning here.",
     studied: ["meditations.1.1", "meditations.99.1", "__proto__"],
   }, library, course);
   assert.equal(r.model, DEEP_MODEL);
   assert.deepEqual(r.allowed, ["meditations.2.1", "meditations.1.1"]);
-  assert.match(r.prompt, /at least one place where Marcus would push further/);
+  assert.match(r.prompt, /Plain meaning here/);
+  assert.throws(() => buildRequest({ job: "expound", passageId: "meditations.2.1" }, library, course), /Unknown job/);
 });
 
 test("consult offers only the user's studied passages", () => {
@@ -40,7 +41,7 @@ test("browser requests use the plan's models and Opus refusal fallback", async (
   const daily = requestBody(build({ job: "explain", passageId: "meditations.4.7" }, library, course));
   assert.equal(daily.model, "claude-sonnet-5");
   assert.equal(daily.fallbacks, undefined);
-  const deep = requestBody(build({ job: "expound", passageId: "meditations.4.7", deeper: true, reflection: "x" }, library, course));
+  const deep = requestBody(build({ job: "consult", situation: "x", studied: ["meditations.4.7"], deeper: true }, library, course));
   assert.equal(deep.model, "claude-opus-5");
   assert.equal(deep.fallbacks, "default");
   assert.equal(deep.output_config.effort, "high");

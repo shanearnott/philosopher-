@@ -3,18 +3,12 @@
 export const POINTS = {
   session: 10,
   quick: 4,
-  reflection: 20,
-  checkin: 25,
-  evening: 15,
-  favourite: 2,
+  favourite: 2, // saving a card
   unit: 50,
   course: 250,
-  mixReflection: 10,
 };
-export const MIX_REFLECTION_DAILY_CAP = 3;
 export const MIX_RUN_LENGTH = 20;
 export const FAVOURITE_DAILY_CAP = 5;
-export const REFLECTION_MIN_WORDS = 50;
 export const GRACE_DAYS_PER_MONTH = 2;
 export const WEEKLY_TARGET = 5;
 
@@ -75,18 +69,9 @@ export function pointsFor(kind, ledger, date, key) {
       return today.some((e) => e.kind === "quick") ? POINTS.session - POINTS.quick : POINTS.session;
     case "quick":
       return today.some((e) => e.kind === "session" || e.kind === "quick") ? 0 : POINTS.quick;
-    case "mixReflection":
-      // reading in Mix or Play scores nothing; reflecting scores, up to 3 a day
-      return today.filter((e) => e.kind === "mixReflection").length < MIX_REFLECTION_DAILY_CAP
-        ? POINTS.mixReflection
-        : 0;
-    case "evening":
-      return today.some((e) => e.kind === "evening") ? 0 : POINTS.evening;
-    case "reflection":
-    case "checkin":
     case "unit":
     case "course":
-      // once per key (journal entry id, unit number, course id)
+      // once per key (unit number, course id)
       return ledger.some((e) => e.kind === kind && e.key === key) ? 0 : POINTS[kind];
     default:
       return 0;
@@ -132,11 +117,10 @@ export function weekCount(sessionDates, today = dayKey()) {
 
 // ---------- virtue meters ----------
 
-export function virtueMeters(journal) {
+// virtues: the virtue of each completed day's passage.
+export function virtueMeters(virtues) {
   const meters = Object.fromEntries(VIRTUES.map((v) => [v, 0]));
-  for (const e of journal) {
-    if (e.virtue in meters && wordCount(e.reflection) > 0) meters[e.virtue]++;
-  }
+  for (const v of virtues) if (v in meters) meters[v]++;
   return meters;
 }
 
@@ -281,27 +265,4 @@ function splitQuotes(text, sources) {
   }
   if (last < text.length) parts.push({ t: "text", text: text.slice(last) });
   return parts;
-}
-
-// ---------- export ----------
-
-export function journalMarkdown(journal, library) {
-  const lines = ["# My Meditations", "", "_A journal kept with Stoa._", ""];
-  for (const e of [...journal].sort((a, b) => a.date.localeCompare(b.date))) {
-    const p = e.passage && sha256(e.passage.text) === e.passage.sha256 ? e.passage : library.passages[e.passageId];
-    lines.push(`## ${e.date} · ${p ? citeRef(p) : e.title || "Entry"}`, "");
-    if (p) {
-      lines.push(...p.text.split("\n").map((l) => `> ${l}`), "", `> — ${p.author}, ${citeRef(p)} (tr. ${p.translator})`, "");
-    }
-    if (e.question) lines.push(`**Question:** ${e.question}`, "");
-    if (e.reflection) lines.push("**My reflection**", "", e.reflection, "");
-    if (e.response) lines.push("**Tutor's response**", "", e.response.replace(/\[\[[a-z]+\.([\d.]+)\]\]/g, "(see $1)"), "");
-    if (e.reply) lines.push("**My reply**", "", e.reply, "");
-    if (e.replyResponse) lines.push("**Tutor**", "", e.replyResponse.replace(/\[\[[a-z]+\.([\d.]+)\]\]/g, "(see $1)"), "");
-    if (e.applied) lines.push(`**Applied it?** ${e.applied.yes ? "Yes" : "Not yet"}${e.applied.example ? `: ${e.applied.example}` : ""}`, "");
-    if (e.evening) {
-      lines.push("**Evening review**", "", `- Done well: ${e.evening.well}`, `- Done badly: ${e.evening.badly}`, `- Left undone: ${e.evening.undone}`, "");
-    }
-  }
-  return lines.join("\n");
 }
