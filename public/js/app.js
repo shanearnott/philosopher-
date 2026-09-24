@@ -1228,7 +1228,9 @@ function mixCard(id, index, run) {
   const p = verifiedPassage(library, id);
   const vol = volOf(id);
   const bg = { "--card-bg": dusk(["wisdom", "justice", "courage", "temperance"][index % 4], 160 + (index % 3) * 20) };
-  if (!p) return h("section", { class: "card", style: bg }, h("p", { class: "lede" }, "This passage failed its integrity check, so it isn't shown."));
+  if (!p) return h("section", { class: "card", style: bg }, h("p", { class: "lede" }, library.passages[id]
+    ? "This passage failed its integrity check, so it isn't shown."
+    : "This card couldn't be loaded. Check your connection, then swipe on."));
   const mark = h("span", { class: "fav-mark" }, state.saved[id] ? "✦" : "");
   const ask = h("button", { class: "btn", onclick: () => card.explain.open() }, "Explain");
   const qsize = Math.max(19, Math.min(32, 32 - (p.text.length - 120) / 40));
@@ -1276,11 +1278,15 @@ async function themeFrom(id, theme) {
   toast(THEMES[theme].label);
 }
 
-function renderRun(startAt) {
+async function renderRun(startAt) {
   const mix = mixState();
   const run = mix.run;
   if (!run) return startRun("shuffle");
   document.body.classList.add("on-cards", "with-player");
+  // a saved run can span several books; load them all before drawing (after a
+  // restart only the Meditations is in memory)
+  await Promise.all([...new Set(run.ids.map(volOf))].map((v) => loadVolume(v).catch(() => {})));
+  if (mixState().run !== run) return; // replaced while loading
   const deck = h("div", { class: "deck" });
   const io = new IntersectionObserver((es) => es.forEach((en) => en.isIntersecting && en.target.classList.add("in")), { threshold: 0.35 });
   let appending = false;
