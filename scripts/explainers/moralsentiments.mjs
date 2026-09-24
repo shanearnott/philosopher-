@@ -1,0 +1,83 @@
+// Featured explainers: Adam Smith, The Theory of Moral Sentiments.
+export default {
+  "moralsentiments.1": {
+    meaning: "Smith opens by saying that however selfish people may be, something in our nature makes us care about others' fortunes, even when we gain nothing from it. Pity and compassion are the clearest examples: we feel sorrow at others' misery, and even the hardest criminal isn't wholly without it.",
+    today: "The founder of economics started not with self-interest but with empathy. Markets rest on a moral foundation.",
+    you: "When designing incentives for a team or system, remember people aren't only self-interested. Fellow feeling is a real force to work with.",
+  },
+  "moralsentiments.7": {
+    meaning: "Seeing someone's grief or joy makes us feel a little of it ourselves, because it suggests good or bad fortune has come to them. But anger is different: we hold back sympathy until we know its cause, because it points to someone else who might be harmed.",
+    today: "We catch sadness and happiness easily, but wisely wait before sharing someone's outrage.",
+    you: "When a colleague is angry about someone, ask for the full story before you join in. Sympathy for anger should wait for the facts.",
+  },
+  "moralsentiments.38": {
+    meaning: "How lovable is the person whose sympathetic heart echoes the feelings of others, grieving at their misfortunes and rejoicing at their luck. And how off-putting is the hard, unfeeling person who's deaf to others' emotions.",
+    today: "Emotional attunement is one of the most attractive human qualities, in friends and in leaders.",
+    you: "In your next one-to-one, focus fully on echoing what the other person feels before you move to solutions.",
+  },
+  "moralsentiments.44": {
+    meaning: "Sometimes a person in great suffering can't bring their emotions down to the level an impartial observer would fully approve. Even so, their effort at self-command deserves applause. It may fall short of perfection yet be far better than most people could manage.",
+    today: "Composure under pressure doesn't have to be perfect to be admirable. The effort counts.",
+    you: "Be generous about your own and others' imperfect composure in a crisis. Credit the effort, not just the result.",
+  },
+  "moralsentiments.77": {
+    meaning: "Our sympathy with deep distress is strong and sincere; we weep even at a play. If you fall into poverty, illness or disgrace, even partly through your own fault, you can usually count on the sincere sympathy of your friends.",
+    today: "People are often kinder in real trouble than we fear. Asking for help works more than we expect.",
+    you: "If you or someone near you is struggling, don't hide it out of shame. Real friends respond to real distress.",
+  },
+  "moralsentiments.150": {
+    meaning: "Sometimes we punish, and approve of punishment, purely for the good of society, even when no one is directly hurt. Military discipline is Smith's example: a sentry who falls asleep may be executed, because the whole army's safety depends on it.",
+    today: "Some rules exist for the system's integrity rather than any single victim. Their penalties can feel harsh in the moment.",
+    you: "In defence and safety-critical systems, explain why certain rules are strict. People accept hard rules better when they see the stakes.",
+  },
+  "moralsentiments.184": {
+    meaning: "What greater happiness is there than to be loved, and to know we deserve it? What greater misery than to be hated, and to know we deserve that? Being approved of matters, but deserving approval matters more.",
+    today: "Popularity isn't the goal. Being worthy of respect is what brings lasting peace.",
+    you: "Aim to deserve the respect of your team and family, not just to receive it. The first is the one you control.",
+  },
+  "moralsentiments.200": {
+    meaning: "Mathematicians and scientists depend little on public opinion, so they rarely form factions or attack rivals. Poets and writers depend on the public's verdict, so they're more prone to cliques and intrigue.",
+    today: "Work judged by objective results breeds less politics than work judged by opinion.",
+    you: "Where you can, make outcomes measurable in ways that reduce politics. Where you can't, watch for cliques forming.",
+  },
+  "moralsentiments.225": {
+    meaning: "A moderate sensitivity to others' misfortunes, and tender memories of friends who have died, aren't unpleasant. They look like pain on the outside, but inside they carry the mark of virtue and self-approval.",
+    today: "Grief and compassion, felt in proportion, can be deeply meaningful rather than purely painful.",
+    you: "Let yourself remember people you've lost. It's a sign of love, and it can sit alongside getting on with your duties.",
+  },
+  "moralsentiments.302": {
+    meaning: "A young officer risks his life for a small gain of territory. His own life matters more to him than any conquest, but he knows how the conduct will look to an impartial observer, and he wants to act worthily in their eyes.",
+    today: "Public service often asks people to put the common good above self-interest. It runs on honour, not calculation.",
+    you: "In defence and public service, honour those who take risks for others. And remember the spectator who judges your own conduct.",
+  },
+  "moralsentiments.353": {
+    meaning: "Among decent people, working together creates a bond like family. Colleagues and business partners call each other brothers, and often feel that way. Their harmony benefits everyone.",
+    today: "Good teams feel like families. That bond is a real asset, built through reliable cooperation.",
+    you: "Invest in the working relationships around you as you would in family ties. They carry you through hard seasons.",
+  },
+  "moralsentiments.357": {
+    meaning: "Kindness breeds kindness. If being loved by those around us is our great ambition, the surest way is to show through our conduct that we really love them.",
+    today: "Relationships follow reciprocity. Generosity is usually returned, often many times over.",
+    you: "Do one visibly kind thing for a colleague or family member today, with no strings attached.",
+  },
+  "moralsentiments.376": {
+    meaning: "The man of system falls in love with his ideal plan and can't bear any deviation. He imagines he can move people like pieces on a chessboard, forgetting that each piece has its own motion, which may be quite different from the one he wants to impose.",
+    today: "Grand plans that ignore how people actually behave tend to fail. People aren't chess pieces.",
+    you: "When designing autonomous systems or reforms, build in the humans' own motives. Your plan will meet their will, not replace it.",
+  },
+  "moralsentiments.392": {
+    meaning: "Controlling anger can be as noble as controlling fear. The great speeches of Demosthenes and Cicero get their power from just indignation, but that indignation is anger restrained to what an impartial observer could accept.",
+    today: "Anger can be powerful and right, but only when it's disciplined.",
+    you: "When something at work deserves anger, express it at the level a fair observer would share. Restraint makes it more persuasive.",
+  },
+  "moralsentiments.429": {
+    meaning: "Proud and vain people are never satisfied. The proud resent others' superiority; the vain dread being found out. Even genuinely great people who overrate themselves face resentment if their luck turns.",
+    today: "An inflated self-image brings constant anxiety, not real confidence.",
+    you: "Keep an accurate view of your abilities, neither inflated nor diminished. It's a quieter place to lead from.",
+  },
+  "moralsentiments.494": {
+    meaning: "Smith describes the Epicurean view that labour, pain and danger aren't desirable in themselves; we accept them only to avoid greater evils, like poverty or losing our freedom. On that view, even courage serves pleasure and safety in the end.",
+    today: "Hard work and risk are often chosen as prices for security, not for their own sake. That's worth being honest about.",
+    you: "Be clear about what your hard work and risk are buying. Make sure it's worth what it costs your family.",
+  },
+}
