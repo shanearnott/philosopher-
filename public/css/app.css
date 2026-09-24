@@ -343,7 +343,7 @@ h3.shelf { font: 600 12px/1.4 var(--sans); letter-spacing: 0.1em; text-transform
 .principle dd { margin: 0; font-size: 14px; color: var(--text-soft); }
 /* illuminated initial on the day's first card */
 .quote .initial { float: left; display: flex; align-items: flex-start; height: 2.8em; margin: 0.14em 0.24em 0 0; }
-.quote .initial svg { width: 2.8em; height: 2.8em; display: block; flex: none; filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45)); }
+.quote .initial svg { width: 2.8em; height: 2.8em; display: block; flex: none; opacity: 0.94; }
 .quote .initial-lead { order: -1; margin-right: 0.08em; line-height: 1; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 4px; }

@@ -4,9 +4,11 @@
 // For Islamic cards the frame is geometric only (no figurative art).
 
 const INK = "#1a1714";
-const GOLD = ["#f3dc92", "#d9b45a", "#9c7424"];
+// muted, aged gilt rather than bright gold, so the initial sits into the card
+const GOLD = ["#e6d4a4", "#bfa56c", "#86703f"];
+const SHADE = "rgba(0,0,0,0.42)";
 const PALETTES = {
-  kells: { field: "#1f3a5f", accent: "#b5563a", strand: "#d9b45a", second: "#3f6b5c" },
+  kells: { field: "#1e2d3f", accent: "#8a5a45", strand: "#bfa56c", second: "#4d5f55" },
   verdigris: { field: "#20352f", accent: "#c0913f", strand: "#e2c47a", second: "#8a3b2b" },
   lapis: { field: "#16233f", accent: "#d9b45a", strand: "#f0d88f", second: "#7a2e2a" },
 };
@@ -28,7 +30,7 @@ function plait(x0, y0, x1, y1, width, colour, cycles) {
     return out;
   };
   const d = (p) => "M" + p.map(([x, y]) => `${r2(x)} ${r2(y)}`).join(" L");
-  const strand = (p) => `<path d="${d(p)}" stroke="${INK}" stroke-width="5.2" fill="none" stroke-linecap="round"/><path d="${d(p)}" stroke="${colour}" stroke-width="2.6" fill="none" stroke-linecap="round"/>`;
+  const strand = (p) => `<path d="${d(p)}" stroke="${SHADE}" stroke-width="3.6" fill="none" stroke-linecap="round"/><path d="${d(p)}" stroke="${colour}" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.85"/>`;
   const a = pts(0), b = pts(Math.PI);
   // redraw strand A over B at every other crossing, so the weave alternates
   let over = "";
@@ -86,9 +88,9 @@ function letter(ch, cx, baseline, size, gid, inner = "#b5563a") {
   const cid = `c${uid}`, pid = `p${uid}`;
   const glyph = (attrs) => `<text x="${cx}" y="${baseline}" text-anchor="middle" font-family="'EB Garamond', 'Uncial Antiqua', Georgia, serif" font-weight="600" font-size="${size}" ${attrs}>${ch}</text>`;
   // a lattice of tiny dots and hairline spirals inside the letter, as in Insular initials
-  const pattern = `<pattern id="${pid}" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><circle cx="3.5" cy="3.5" r="0.75" fill="${inner}"/><path d="M0 0 L7 7" stroke="${GOLD[2]}" stroke-width="0.35" opacity="0.6"/></pattern>`;
+  const pattern = `<pattern id="${pid}" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><circle cx="3.5" cy="3.5" r="0.6" fill="${inner}" opacity="0.55"/><path d="M0 0 L7 7" stroke="${GOLD[2]}" stroke-width="0.3" opacity="0.4"/></pattern>`;
   return `<defs><clipPath id="${cid}">${glyph("")}</clipPath>${pattern}</defs>` +
-    glyph(`fill="none" stroke="${INK}" stroke-width="3.2" stroke-linejoin="round"`) +
+    glyph(`fill="none" stroke="${SHADE}" stroke-width="2.4" stroke-linejoin="round"`) +
     `<g clip-path="url(#${cid})"><rect x="0" y="0" width="96" height="96" fill="url(#${gid})"/><rect x="0" y="0" width="96" height="96" fill="url(#${pid})"/></g>` +
     glyph(`fill="none" stroke="${GOLD[0]}" stroke-width="0.5" opacity="0.8"`);
 }
@@ -107,12 +109,12 @@ export function initialSVG(ch, { style = "knot", palette = "kells" } = {}) {
   const S = 96;
   let body = "";
   if (style === "knot") {
-    body += `<rect x="1" y="1" width="94" height="94" rx="3" fill="${INK}"/>`;
-    body += `<rect x="4" y="4" width="88" height="88" fill="${P.accent}"/>`;
-    body += plait(10, 7.5, 86, 7.5, 9, P.strand, 5) + plait(10, 88.5, 86, 88.5, 9, P.strand, 5);
-    body += plait(7.5, 10, 7.5, 86, 9, P.strand, 5) + plait(88.5, 10, 88.5, 86, 9, P.strand, 5);
-    body += `<rect x="13" y="13" width="70" height="70" fill="${P.field}" stroke="${INK}" stroke-width="1.5"/>`;
-    body += [[7.5, 7.5], [88.5, 7.5], [7.5, 88.5], [88.5, 88.5]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="6" fill="${P.second}" stroke="${INK}" stroke-width="1.2"/>` + triskele(x, y, 4.4, P.strand, 0.8)).join("");
+    // translucent field and hairline rules, so the card's own colour shows through
+    body += `<rect x="1.5" y="1.5" width="93" height="93" rx="2" fill="rgba(0,0,0,0.22)" stroke="${GOLD[1]}" stroke-width="0.8" opacity="0.9"/>`;
+    body += plait(11, 7.5, 85, 7.5, 8, GOLD[1], 5) + plait(11, 88.5, 85, 88.5, 8, GOLD[1], 5);
+    body += plait(7.5, 11, 7.5, 85, 8, GOLD[1], 5) + plait(88.5, 11, 88.5, 85, 8, GOLD[1], 5);
+    body += `<rect x="13" y="13" width="70" height="70" fill="${P.field}" fill-opacity="0.55" stroke="${GOLD[2]}" stroke-width="0.7"/>`;
+    body += [[7.5, 7.5], [88.5, 7.5], [7.5, 88.5], [88.5, 88.5]].map(([x, y]) => triskele(x, y, 3.8, GOLD[1], 0.7)).join("");
     body += letter(ch, 48, 72, 64, gid, P.accent);
   } else if (style === "spiral") {
     body += dots(14, 10, 68, 76, 5, "#c0392b");
@@ -124,11 +126,11 @@ export function initialSVG(ch, { style = "knot", palette = "kells" } = {}) {
     body += [[12, 12], [84, 12], [12, 84], [84, 84]].map(([x, y]) => triskele(x, y, 6, GOLD[1], 0.9)).join("");
     body += letter(ch, 48, 72, 66, gid, P.second);
   } else if (style === "geometric") {
-    body += `<rect x="1" y="1" width="94" height="94" fill="${INK}"/>`;
-    body += girih(4, 4, 88, 88, GOLD[1]);
-    body += `<rect x="14" y="14" width="68" height="68" fill="#1d3b3a" stroke="${GOLD[1]}" stroke-width="1.5"/>`;
-    body += `<rect x="17" y="17" width="62" height="62" fill="none" stroke="${GOLD[2]}" stroke-width="0.6"/>`;
-    body += letter(ch, 48, 70, 58, gid, "#1d3b3a");
+    body += `<rect x="1.5" y="1.5" width="93" height="93" fill="rgba(0,0,0,0.22)" stroke="${GOLD[1]}" stroke-width="0.8"/>`;
+    body += `<g opacity="0.7">${girih(4, 4, 88, 88, GOLD[1])}</g>`;
+    body += `<rect x="14" y="14" width="68" height="68" fill="#16302e" fill-opacity="0.75" stroke="${GOLD[1]}" stroke-width="0.8"/>`;
+    body += `<rect x="17" y="17" width="62" height="62" fill="none" stroke="${GOLD[2]}" stroke-width="0.5"/>`;
+    body += letter(ch, 48, 70, 58, gid, "#4f6b5d");
   }
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${S} ${S}" role="presentation"><defs>${gilt(gid)}</defs>${body}</svg>`;
 }
