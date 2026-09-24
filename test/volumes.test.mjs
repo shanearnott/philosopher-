@@ -93,3 +93,14 @@ test("Read alongside is summary-only and limited to the shelf", () => {
   assert.deepEqual(r.allowed, []);
   assert.throws(() => buildRequest({ job: "alongside", book: "Harry Potter" }, lib, course), /Unknown book/);
 });
+
+test("every card carries its current subjects, and the indexes count them (npm run themes)", async () => {
+  const { countThemes } = await import("../scripts/tag-themes.mjs");
+  const trad = read("traditions.json");
+  for (const v of [...index.volumes, ...trad.traditions]) {
+    const d = read(`volumes/${v.id}.json`);
+    for (const [id, p] of Object.entries(d.passages)) assert.deepEqual(p.themes, tagThemes(p.text), `${id}: run npm run themes`);
+    assert.deepEqual(v.themes, countThemes(d.passages), `${v.id}: run npm run themes`);
+  }
+  for (const t of trad.traditions) assert.ok(Object.values(t.themes).some((n) => n >= 5), `${t.id} has subject coverage`);
+});

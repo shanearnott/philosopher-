@@ -2,7 +2,7 @@
   "name": "Stoa",
   "short_name": "Stoa",
   "description": "One passage of real philosophy a day, then it stops.",
-  "start_url": "./#today",
+  "start_url": "./#learn",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",

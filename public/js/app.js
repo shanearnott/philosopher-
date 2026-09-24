@@ -295,6 +295,7 @@ function explainPanel(card, id, studied, { before, after } = {}) {
 
 // Thin line icons (player and tabs), drawn in currentColor.
 const ICONS = {
+  subjects: '<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>',
   shuffle: '<path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="m4 4 5 5"/>',
   browse: '<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/>',
   forward: '<path d="M6 5.5v13l9-6.5z"/><path d="M18.5 5.5v13"/>',
@@ -380,7 +381,7 @@ let installEvent = null;
 window.addEventListener("beforeinstallprompt", (e) => {
   e.preventDefault();
   installEvent = e;
-  if (current() === "today") showInstallBanner();
+  if (current() === "learn") showInstallBanner();
 });
 
 function installDismissed() {
@@ -430,12 +431,10 @@ document.addEventListener("keydown", (e) => {
   deck.scrollTo({ top: i * deck.clientHeight, behavior: "smooth" });
 });
 
-// ---------- Today: the daily swipe ----------
-
-// ---------- Today: the current course or book, read at your own pace ----------
-// Today opens at your place in the current course (the Meditations path or a
+// ---------- Learn: the current course or book, read at your own pace ----------
+// Learn opens at your place in the current course (the Meditations path or a
 // tradition) or book. Read as many passages as you like; your place is saved as
-// you go, and Today resumes there until it's done.
+// you go, and Learn resumes there until it's done.
 
 // Every date you read on (streaks and the weekly target count them all).
 function sessionDates() {
@@ -448,16 +447,16 @@ function courseProgress(key) {
   return (state.courses[key] ??= { completedDay: 0, sessions: {} });
 }
 
-// Make a course ("meditations", a tradition id) or a book ("book:<volume>") Today's reading.
+// Make a course ("meditations", a tradition id) or a book ("book:<volume>") what Learn reads.
 function startCourse(key) {
   state.course = key;
   persist();
-  go("today");
+  go("learn");
 }
 
 const chapterOf = (ref) => (/, ¶/.test(ref) ? ref.replace(/, ¶.*$/, "") : null);
 
-// The reading for Today: a title and an ordered list of passages with their chapters.
+// The reading for Learn: a title and an ordered list of passages with their chapters.
 async function currentReading() {
   const key = state.course || "meditations";
   if (key === "meditations") {
@@ -510,10 +509,10 @@ function applyNotes(d) {
     Object.entries(d.apply).map(([area, q]) => h("div", { class: "choice" }, h("small", {}, area === "decision" ? "A current decision" : area), q)));
 }
 
-async function renderToday() {
+async function renderLearn() {
   document.body.classList.add("on-cards");
   const reading = await currentReading();
-  if (!reading) { state.course = "meditations"; persist(); return renderToday(); }
+  if (!reading) { state.course = "meditations"; persist(); return renderLearn(); }
   const { items, progress } = reading;
   const today = dayKey();
   const start = Math.min(progress.completedDay || 0, items.length);
@@ -558,7 +557,7 @@ async function renderToday() {
         p && originalText(p),
         p && h("p", { class: "quote-ref" }, citeRef(p), mark, h("small", {}, `${p.author} · tr. ${p.translator}`)),
         p && actions),
-      i === start && h("p", { class: "hint" }, "Swipe left to explain · Swipe up for the next · Stop any time, and Today resumes here"));
+      i === start && h("p", { class: "hint" }, "Swipe left to explain · Swipe up for the next · Stop any time, and Learn resumes here"));
     card.dataset.i = String(i);
     if (p) explainPanel(card, it.id, reading.key === "meditations" ? studiedIds(it.day) : [it.id], it.day
       ? { after: () => h("div", {}, courseNotes(it.day), applyNotes(it.day)) } : {});
@@ -570,7 +569,7 @@ async function renderToday() {
     h("h2", {}, "The end."),
     h("p", { class: "soft" }, `You've read all ${items.length} passages of ${reading.title}.`),
     h("div", { class: "btn-row", style: { justifyContent: "center" } },
-      h("button", { class: "btn primary", onclick: () => renderToday() }, "Continue"),
+      h("button", { class: "btn primary", onclick: () => renderLearn() }, "Continue"),
       h("button", { class: "btn", onclick: () => go("browse") }, "Choose what's next")));
 
   const append = (n) => {
@@ -607,7 +606,7 @@ function renderFinished(reading) {
     h("p", { class: "soft" }, "Choose another course or book, or begin this one again."),
     h("div", { class: "btn-row", style: { justifyContent: "center" } },
       h("button", { class: "btn primary", onclick: () => go("browse") }, "Choose what's next"),
-      h("button", { class: "btn", onclick: () => { reading.progress.completedDay = 0; persist(); renderToday(); } }, "Begin again")));
+      h("button", { class: "btn", onclick: () => { reading.progress.completedDay = 0; persist(); renderLearn(); } }, "Begin again")));
   deck.append(card);
   view.replaceChildren(deck);
 }
@@ -641,7 +640,7 @@ function renderReview() {
           state.progress.completedDay = 0;
           state.progress.round = (state.progress.round || 1) + 1;
           persist();
-          renderToday();
+          renderLearn();
         } }, "Start again"),
         h("button", { class: "btn", onclick: () => go("browse") }, "Browse the library"))),
   ];
@@ -1022,6 +1021,17 @@ async function loadVolume(vol) {
   loadedVols.add(vol);
   delete volIds[vol];
 }
+// A subject is a theme, or "traditions" (every card in the Traditions wing).
+const subjectLabel = (k) => (k === "traditions" ? "World traditions" : THEMES[k]?.label || k);
+const isTradition = (vol) => traditionVolumes().some((t) => t.id === vol);
+function subjectsMatch(want) {
+  const trad = want.includes("traditions"), themes = want.filter((t) => t !== "traditions");
+  return {
+    vol: (v) => (trad && isTradition(v)) || themes.some((t) => v === "meditations" || (metaOf(v)?.themes?.[t] || 0) > 0),
+    card: (id) => (trad && isTradition(volOf(id))) || themesOf(id).some((t) => themes.includes(t)),
+  };
+}
+
 function themesOf(id) {
   const p = library.passages[id];
   p.themes ??= tagThemes(p.text);
@@ -1060,8 +1070,16 @@ async function nextPassage(run) {
     mix.positions[run.vol] = pos + 1;
     return ids[pos % ids.length];
   }
+  const want = run.mode === "echo" && last ? themesOf(last) : run.themes || [];
+  const match = subjectsMatch(want);
   const lastAuthor = lastVol && metaOf(lastVol)?.author;
-  const others = vols.filter((v) => metaOf(v)?.author !== lastAuthor);
+  // only volumes that hold the chosen subjects (counted in the index, so nothing extra downloads)
+  const fit = want.length ? vols.filter(match.vol) : vols;
+  // a jukebox: not the last author, and not a book from the last few cards, where possible
+  const recent = new Set(run.ids.slice(-4).map(volOf));
+  const away = fit.filter((v) => metaOf(v)?.author !== lastAuthor);
+  const fresher = away.filter((v) => !recent.has(v));
+  const others = fresher.length ? fresher : away.length ? away : fit.length ? fit : vols;
   const started = others.filter((v) => mix.positions[v] || mix.read[v]);
   const fresh = others.filter((v) => !started.includes(v));
   // Echo follows a compare link when the last card has one (e.g. Matthew 6:1–4 to Meditations 5.6)
@@ -1074,14 +1092,13 @@ async function nextPassage(run) {
       return id;
     }
   }
-  const want = run.mode === "echo" && last ? themesOf(last) : run.themes || [];
   for (let tries = 0; tries < 8; tries++) {
     // Shuffle weighting: mostly volumes you've started, some discovery
     const pool = started.length && (!fresh.length || Math.random() * 100 < mix.weight) ? started : fresh.length ? fresh : others;
     const vol = pick(pool);
     await loadVolume(vol);
     let ids = idsOf(vol).filter((id) => !run.ids.includes(id));
-    if (want.length) ids = ids.filter((id) => themesOf(id).some((t) => want.includes(t)));
+    if (want.length) ids = ids.filter(match.card);
     else if (Math.random() < 0.8) {
       const themed = ids.filter((id) => themesOf(id).length);
       if (themed.length) ids = themed;
@@ -1101,7 +1118,34 @@ async function startRun(mode, opts = {}) {
   await extendRun();
   await extendRun();
   persist();
-  go("swipe");
+  go("mix");
+}
+
+// Mix plays at random from the subjects you've picked (none picked: everything).
+function mixSubjects() {
+  const mix = mixState();
+  mix.subjects = (mix.subjects || []).filter((k) => k === "traditions" || THEMES[k]);
+  return mix.subjects;
+}
+function startMix() {
+  const subjects = mixSubjects();
+  return subjects.length ? startRun("theme", { themes: [...subjects] }) : startRun("shuffle");
+}
+function subjectSheet() {
+  const chosen = new Set(mixSubjects());
+  const keys = [...Object.keys(SUBJECTS), "traditions"];
+  const chips = h("div", { class: "filters", style: { flexWrap: "wrap" } });
+  const draw = () => chips.replaceChildren(
+    h("button", { class: "chip", "aria-pressed": String(!chosen.size), onclick: () => { chosen.clear(); draw(); } }, "Everything"),
+    ...keys.map((k) => h("button", { class: "chip", "aria-pressed": String(chosen.has(k)), onclick: () => { chosen.has(k) ? chosen.delete(k) : chosen.add(k); draw(); } },
+      `${k === "traditions" ? "❖" : SUBJECTS[k][0]} ${subjectLabel(k)}`)));
+  draw();
+  const back = sheet(h("p", { class: "eyebrow" }, "Mix"), h("h2", {}, "What should Mix play?"),
+    h("p", { class: "muted" }, "Pick one subject or several; Mix plays cards from any of them at random, across every author and tradition."),
+    chips,
+    h("div", { class: "btn-row" },
+      h("button", { class: "btn primary", onclick: () => { mixState().subjects = [...chosen]; persist(); back.remove(); mixState().run = null; startMix(); } }, "Play"),
+      h("button", { class: "btn", onclick: () => back.remove() }, "Cancel")));
 }
 
 async function extendRun() {
@@ -1115,10 +1159,11 @@ async function extendRun() {
 
 function runLabel(run) {
   if (run.mode === "play") return `Play · ${metaOf(run.vol)?.author}`;
-  if (run.mode === "shuffle") return "Shuffle";
+  if (run.mode === "shuffle") return "Mix · Everything";
   if (run.mode === "echo") return "Echo";
-  if (run.mode === "daily") return `Daily Mix · ${run.themes.map((t) => THEMES[t].label).join(" + ")}`;
-  return THEMES[run.themes?.[0]]?.label || "Mix";
+  if (run.mode === "daily") return `Daily Mix · ${run.themes.map(subjectLabel).join(" + ")}`;
+  const names = (run.themes || []).map(subjectLabel);
+  return names.length > 2 ? `Mix · ${names[0]} + ${names.length - 1} more` : names.length ? `Mix · ${names.join(" + ")}` : "Mix";
 }
 
 function mixCard(id, index, run) {
@@ -1138,8 +1183,8 @@ function mixCard(id, index, run) {
       h("blockquote", { class: "quote" }, p.text),
       originalText(p),
       h("p", { class: "quote-ref" }, p.ref, mark, h("small", {}, `tr. ${p.translator}`)),
-      themesOf(id).length > 0 && h("div", { class: "card-tags" }, themesOf(id).slice(0, 3).map((t) =>
-        h("button", { class: "tag-link", "aria-pressed": String(run.mode === "theme" && run.themes?.[0] === t), onclick: () => themeFrom(id, t) }, `${THEMES[t].label} ▸`))),
+      themesOf(id).length > 0 && h("div", { class: "card-tags" }, [...themesOf(id)].sort((a, b) => (run.themes?.includes(b) ?? 0) - (run.themes?.includes(a) ?? 0)).slice(0, 3).map((t) =>
+        h("button", { class: "tag-link", "aria-pressed": String(run.mode === "theme" && !!run.themes?.includes(t)), onclick: () => themeFrom(id, t) }, `${THEMES[t].label} ▸`))),
       h("div", { class: "btn-row" }, ask, compareButton(id), cardActions(id, mark))),
     index === 0 && h("p", { class: "hint" }, "Swipe left to explain · Swipe up for the next card"));
   explainPanel(card, id, [id]);
@@ -1159,7 +1204,7 @@ async function playFrom(id) {
   mix.run = { mode: "play", vol, ids: keep, i: keep.length - 1, date: dayKey() };
   await extendRun();
   persist();
-  go("swipe");
+  go("mix");
   toast(`Playing ${metaOf(vol).author}`);
 }
 
@@ -1171,8 +1216,8 @@ async function themeFrom(id, theme) {
   mix.run = { mode: "theme", themes: [theme], ids: keep, i: keep.length - 1, date: dayKey() };
   await extendRun();
   persist();
-  go("swipe");
-  toast(THEMES[theme].label);
+  go("mix");
+  toast(subjectLabel(theme));
 }
 
 async function renderRun(startAt) {
@@ -1241,15 +1286,17 @@ function showPlayer(run) {
   const skip = () => { const d = deck(); d?.scrollTo({ top: (Math.round(d.scrollTop / d.clientHeight) + 1) * d.clientHeight, behavior: "smooth" }); };
   bar.replaceChildren(
     h("div", { class: "player-text" }, h("small", {}, runLabel(run)), h("span", { id: "player-title" }, "")),
-    h("button", { "aria-label": "Shuffle", title: "Shuffle", class: run.mode === "shuffle" ? "on" : "", onclick: async () => {
+    h("button", { "aria-label": "Shuffle", title: "Shuffle", class: run.mode === "shuffle" || run.mode === "theme" ? "on" : "", onclick: async () => {
       const r = mixState().run;
       r.ids = r.ids.slice(0, (r.i ?? 0) + 1);
-      r.mode = "shuffle";
+      const subjects = mixSubjects();
+      r.mode = subjects.length ? "theme" : "shuffle";
+      r.themes = [...subjects];
       delete r.vol;
       await extendRun();
       renderRun(r.ids.length - 2);
     } }, icon("shuffle")),
-    h("button", { "aria-label": "Browse", title: "Browse", onclick: () => { persist(); go("browse"); } }, icon("browse")),
+    h("button", { "aria-label": "Subjects", title: "Subjects", onclick: subjectSheet }, icon("subjects")),
     h("button", { "aria-label": "Skip", title: "Skip", onclick: skip }, icon("forward")));
   bar.hidden = false;
 }
@@ -1270,6 +1317,12 @@ const SUBJECTS = {
   fame: ["✧", "Praise, reputation and the Metric Cage"],
   death: ["⧗", "Mortality and the shortness of time"],
   simplicity: ["○", "Enough, and wanting less"],
+  faith: ["✺", "God, prayer and worship, across the traditions"],
+  love: ["♡", "Mercy, charity and loving-kindness"],
+  justice: ["§", "Right and wrong, law and dharma"],
+  soul: ["◎", "Self, soul, Atman and not-self"],
+  stillness: ["◌", "Calm, quiet and meditation"],
+  suffering: ["☁", "Pain, grief and adversity"],
 };
 const SHELVES = [
   ["The Stoics", ["meditations", "enchiridion", "discourses", "seneca"]],
@@ -1300,9 +1353,9 @@ async function renderBrowse() {
     const read = state.courses?.[`book:${v.id}`]?.completedDay || 0;
     const reading = state.course === `book:${v.id}`;
     return h("button", { class: "entry", onclick: () => bookSheet(v) },
-      h("div", { class: "when" }, `${v.author}${v.year ? ` · ${v.year}` : ""}${reading ? " · reading in Today" : ""}`),
+      h("div", { class: "when" }, `${v.author}${v.year ? ` · ${v.year}` : ""}${reading ? " · reading in Learn" : ""}`),
       h("div", { class: "what" }, v.work),
-      h("div", { class: "snip" }, `${v.why}. ${read ? `Read ${read} of ${v.count}` : pos ? `Swiped to ${pos + 1} of ${v.count}` : `${v.count} passages`}.`));
+      h("div", { class: "snip" }, `${v.why}. ${read ? `Read ${read} of ${v.count}` : pos ? `Mixed to ${pos + 1} of ${v.count}` : `${v.count} passages`}.`));
   };
   const key = state.course || "meditations";
   const nowTitle = key === "meditations" ? "Marcus Aurelius · Meditations" : key.startsWith("book:")
@@ -1311,36 +1364,40 @@ async function renderBrowse() {
   view.replaceChildren(h("div", { class: "page" },
     h("p", { class: "eyebrow", style: { color: "var(--muted)" } }, "Library"),
     h("h1", {}, "Browse"),
-    h("p", { class: "sub" }, `Pick what Today reads, or a way in for Swipe. On any card, tap the author to read on in that book, or a subject to follow it across authors. Swiping scores nothing, and a run ends after ${MIX_RUN_LENGTH} cards.`),
+    h("p", { class: "sub" }, `Pick what Learn reads, or what Mix plays. On any card, tap the author to read on in that book, or a subject to follow it across authors. Mix scores nothing, and a run ends after ${MIX_RUN_LENGTH} cards.`),
     h("div", { class: "panel resume" },
-      h("div", {}, h("div", { class: "muted" }, "Reading in Today"), h("b", {}, nowTitle)),
-      h("button", { class: "btn primary", onclick: () => go("today") }, "Read")),
+      h("div", {}, h("div", { class: "muted" }, "Reading in Learn"), h("b", {}, nowTitle)),
+      h("button", { class: "btn primary", onclick: () => go("learn") }, "Read")),
     run && h("div", { class: "panel resume" },
       h("div", {}, h("b", {}, runLabel(run)), h("div", { class: "muted" }, `Card ${Math.min((run.i ?? 0) + 1, run.ids.length)} of ${MIX_RUN_LENGTH}`)),
-      h("button", { class: "btn primary", onclick: () => go("swipe") }, "Resume")),
-    h("h2", {}, "Just swipe"),
+      h("button", { class: "btn primary", onclick: () => go("mix") }, "Resume")),
+    h("h2", {}, "Mix"),
     h("div", { class: "modes" },
-      mode("Shuffle", "A new author every card", () => startRun("shuffle"), "⤮"),
+      mode("Choose subjects", mixSubjects().length ? `Playing: ${mixSubjects().map(subjectLabel).join(", ")}` : "One or several; Mix plays them at random", subjectSheet, "◈"),
+      mode("Shuffle", "Everything, a new author every card", () => { mixState().subjects = []; startRun("shuffle"); }, "⤮"),
       mode("Daily Mix", daily, () => startRun("daily"), "☀"),
       mode("Echo", "Each card links to the last by subject", () => startRun("echo"), "∿")),
     h("h2", {}, "By subject"),
+    h("p", { class: "muted" }, "Tap one to play it in Mix, or choose several above."),
     h("div", { class: "subject-grid" }, Object.entries(SUBJECTS).map(([k, [glyph, blurb]]) =>
       h("button", { class: "subject", onclick: () => startRun("theme", { themes: [k] }) },
-        h("span", { class: "subject-glyph", "aria-hidden": "true" }, glyph), h("b", {}, THEMES[k].label), h("small", {}, blurb)))),
+        h("span", { class: "subject-glyph", "aria-hidden": "true" }, glyph), h("b", {}, THEMES[k].label), h("small", {}, blurb))),
+      h("button", { class: "subject", onclick: () => startRun("theme", { themes: ["traditions"] }) },
+        h("span", { class: "subject-glyph", "aria-hidden": "true" }, "❖"), h("b", {}, "World traditions"), h("small", {}, "Judaism, Christianity, Islam, Hinduism, Buddhism"))),
     h("h2", {}, "By author"),
     shelves.flatMap(([name, list]) => [h("h3", { class: "shelf" }, name), h("div", {}, list.map(authorRow))]),
     traditionVolumes().length > 0 && [
       h("h2", {}, "World traditions"),
       h("p", { class: "muted" }, `Core passages from ${traditionVolumes().map((t) => t.author).join(", ")}, in four weekly themes: ${(volIndex.traditions.weeks || []).map((w) => w.theme).join(", ")}. Compare, don't rank.`),
-      h("h3", { class: "shelf" }, "Courses for Today"),
+      h("h3", { class: "shelf" }, "Courses for Learn"),
       h("div", {}, [{ id: "meditations", author: "Marcus Aurelius", work: "Meditations", days: course.days }, ...traditionVolumes()].map((c) => {
         const prog = c.id === "meditations" ? state.progress : state.courses?.[c.id];
         const current = (state.course || "meditations") === c.id;
         const at = prog?.completedDay || 0;
         return h("button", { class: "entry", onclick: () => startCourse(c.id) },
-          h("div", { class: "when" }, `${c.author}${current ? " · reading in Today" : ""}`),
+          h("div", { class: "when" }, `${c.author}${current ? " · reading in Learn" : ""}`),
           h("div", { class: "what" }, `${c.days.length}-passage course: ${c.work}`),
-          h("div", { class: "snip" }, current ? `Passage ${Math.min(at + 1, c.days.length)} of ${c.days.length}. Tap to read on.` : at ? `Resume at passage ${at + 1}. Tap to read it in Today.` : "Tap to read it in Today, as much or as little as you like."));
+          h("div", { class: "snip" }, current ? `Passage ${Math.min(at + 1, c.days.length)} of ${c.days.length}. Tap to read on.` : at ? `Resume at passage ${at + 1}. Tap to read it in Learn.` : "Tap to read it in Learn, as much or as little as you like."));
       })),
       h("h3", { class: "shelf" }, "Compare"),
       h("div", { class: "filters", style: { flexWrap: "wrap" } },
@@ -1358,7 +1415,7 @@ async function renderBrowse() {
     h("p", { class: "muted" }, volIndex.coming.join(" · "))));
 }
 
-// An author row: read the book in Today (it resumes where you stopped) or swipe through it.
+// An author row: read the book in Learn (it resumes where you stopped) or play it in Mix.
 function bookSheet(v) {
   const read = state.courses?.[`book:${v.id}`]?.completedDay || 0;
   const pos = mixState().positions[v.id] || 0;
@@ -1366,8 +1423,8 @@ function bookSheet(v) {
     h("p", { class: "muted" }, `${v.why}. ${v.count} passages.`),
     h("div", { class: "btn-row" },
       h("button", { class: "btn primary", onclick: () => { back.remove(); startCourse(`book:${v.id}`); } },
-        read >= v.count ? "Read again in Today" : read ? `Read in Today (resume at ${read + 1})` : "Read in Today"),
-      h("button", { class: "btn", onclick: () => { back.remove(); startRun("play", { vol: v.id }); } }, pos ? `Swipe on from ${pos + 1}` : "Swipe through it"),
+        read >= v.count ? "Read again in Learn" : read ? `Read in Learn (resume at ${read + 1})` : "Read in Learn"),
+      h("button", { class: "btn", onclick: () => { back.remove(); startRun("play", { vol: v.id }); } }, pos ? `Play in Mix from ${pos + 1}` : "Play in Mix"),
       h("button", { class: "btn", onclick: () => back.remove() }, "Close")));
 }
 
@@ -1384,19 +1441,20 @@ function alongsideSheet(book) {
 // ---------- routing ----------
 
 const ROUTES = {
-  today: renderToday,
+  learn: renderLearn,
   // Swipe opens straight into cards: today's run, or a fresh shuffle
-  swipe: () => (mixState().run?.date === dayKey() ? renderRun() : startRun("shuffle")),
+  // Mix opens straight into cards: today's run, or a fresh one from your chosen subjects
+  mix: () => (mixState().run?.date === dayKey() ? renderRun() : startMix()),
   browse: renderBrowse,
   saved: renderSaved,
   consult: renderConsult,
   you: renderYou,
 };
-const ALIASES = { mix: "swipe", journal: "saved" }; // old links
+const ALIASES = { today: "learn", swipe: "mix", journal: "saved" }; // old links
 const TAB_OF = { consult: "browse" };
 function current() {
   const t = location.hash.slice(1);
-  return ROUTES[t] ? t : ALIASES[t] || "today";
+  return ROUTES[t] ? t : ALIASES[t] || "learn";
 }
 function go(tab) {
   if (location.hash.slice(1) === tab) route();
@@ -1406,8 +1464,8 @@ function route() {
   const t = current();
   const tab = TAB_OF[t] || t;
   tabs.forEach((b) => (b.dataset.tab === tab ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current")));
-  if (t !== "today") document.querySelector(".install")?.remove();
-  if (t !== "swipe") hidePlayer();
+  if (t !== "learn") document.querySelector(".install")?.remove();
+  if (t !== "mix") hidePlayer();
   ROUTES[t]();
   window.scrollTo(0, 0);
 }

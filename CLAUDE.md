@@ -38,5 +38,8 @@ A daily philosophy app to replace Instagram. The plan lives in the Claude Doc
   language terms). Compare cards live in `scripts/traditions/compare.mjs`.
   Describe each tradition as it understands itself; never rank them.
   Sikhism is pending until a public-domain English translation is reachable.
+- Subjects live in `public/js/themes.js`. After editing it (or any ingest),
+  run `npm run themes` to re-tag every card and the per-volume counts Mix
+  uses; `npm test` fails if they're stale. Only `themes` fields change.
 - The tutor defaults to the user's Claude app (hand-off, no API cost); an API
   key is optional.

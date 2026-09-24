@@ -7,11 +7,12 @@
   "scripts": {
     "start": "node server.js",
     "ingest": "node scripts/ingest.mjs",
-    "ingest:volumes": "node scripts/ingest-volumes.mjs",
+    "ingest:volumes": "node scripts/ingest-volumes.mjs && node scripts/tag-themes.mjs",
     "explainers": "node scripts/build-explainers.mjs",
     "test": "node scripts/build-explainers.mjs && node scripts/traditions/build-compare.mjs && node --test test/*.test.mjs",
-    "ingest:traditions": "node scripts/ingest-traditions.mjs",
-    "compare": "node scripts/traditions/build-compare.mjs"
+    "ingest:traditions": "node scripts/ingest-traditions.mjs && node scripts/tag-themes.mjs",
+    "compare": "node scripts/traditions/build-compare.mjs",
+    "themes": "node scripts/tag-themes.mjs"
   },
   "engines": {
     "node": ">=20"

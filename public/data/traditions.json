@@ -191,7 +191,23 @@
           "licence": "Public domain",
           "url": "https://www.sefaria.org (Sefaria export)"
         }
-      ]
+      ],
+      "themes": {
+        "fame": 4,
+        "leadership": 3,
+        "death": 5,
+        "simplicity": 3,
+        "war": 4,
+        "others": 7,
+        "control": 1,
+        "duty": 6,
+        "faith": 21,
+        "love": 8,
+        "justice": 10,
+        "soul": 7,
+        "stillness": 4,
+        "suffering": 0
+      }
     },
     {
       "id": "christianity",
@@ -370,7 +386,23 @@
           "licence": "Public domain",
           "url": "https://www.gutenberg.org/ebooks/1653 (via GITenberg)"
         }
-      ]
+      ],
+      "themes": {
+        "fame": 3,
+        "leadership": 2,
+        "death": 4,
+        "simplicity": 2,
+        "war": 1,
+        "others": 5,
+        "control": 3,
+        "duty": 2,
+        "faith": 25,
+        "love": 14,
+        "justice": 8,
+        "soul": 7,
+        "stillness": 2,
+        "suffering": 0
+      }
     },
     {
       "id": "islam",
@@ -539,7 +571,23 @@
           "licence": "Public domain (translation); Arabic: Tanzil Quran Text (Simple), tanzil.net, copied verbatim with attribution",
           "url": "https://tanzil.net (via github.com/fawazahmed0/quran-api)"
         }
-      ]
+      ],
+      "themes": {
+        "fame": 3,
+        "leadership": 3,
+        "death": 3,
+        "simplicity": 1,
+        "war": 2,
+        "others": 7,
+        "control": 0,
+        "duty": 2,
+        "faith": 31,
+        "love": 8,
+        "justice": 4,
+        "soul": 4,
+        "stillness": 2,
+        "suffering": 4
+      }
     },
     {
       "id": "hinduism",
@@ -686,7 +734,23 @@
           "licence": "Public domain",
           "url": "https://www.gutenberg.org/ebooks/3283 (via GITenberg)"
         }
-      ]
+      ],
+      "themes": {
+        "fame": 1,
+        "leadership": 1,
+        "death": 3,
+        "simplicity": 2,
+        "war": 1,
+        "others": 3,
+        "control": 2,
+        "duty": 3,
+        "faith": 6,
+        "love": 3,
+        "justice": 3,
+        "soul": 10,
+        "stillness": 3,
+        "suffering": 4
+      }
     },
     {
       "id": "buddhism",
@@ -827,7 +891,23 @@
           "licence": "CC0 (public domain dedication)",
           "url": "https://suttacentral.net (via github.com/suttacentral/bilara-data)"
         }
-      ]
+      ],
+      "themes": {
+        "fame": 0,
+        "leadership": 1,
+        "death": 4,
+        "simplicity": 2,
+        "war": 0,
+        "others": 2,
+        "control": 0,
+        "duty": 1,
+        "faith": 1,
+        "love": 2,
+        "justice": 0,
+        "soul": 2,
+        "stillness": 7,
+        "suffering": 7
+      }
     }
   ],
   "pending": [
