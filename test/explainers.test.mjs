@@ -33,8 +33,10 @@ test("every library volume has explainers for its featured cards", () => {
   const index = read("volumes/index.json");
   for (const v of index.volumes) {
     const file = new URL(`../public/data/explainers/${v.id}.json`, import.meta.url);
-    if (!existsSync(file)) continue; // enforced once featured explainers exist for all (see CLAUDE.md)
+    assert.ok(existsSync(file), `${v.id}: add explainers when adding a volume (see CLAUDE.md)`);
     const ex = read(`explainers/${v.id}.json`);
     assert.ok(Object.keys(ex).length >= 15, `${v.id}: at least 15 featured explainers`);
+    const vol = read(`volumes/${v.id}.json`).passages;
+    assert.deepEqual(Object.keys(ex).filter((id) => !vol[id]), [], `${v.id}: explainers point at real cards`);
   }
 });

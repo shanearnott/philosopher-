@@ -8,6 +8,7 @@ This is **Phase 1** of the plan (*Stoa — A Philosophy Feed to Replace Instagra
 
 - **The daily swipe.** Six full-screen cards, swiped vertically: Passage → Context → Explainer → Apply → Reflect → Tutor, then an end card that says *Done for today.* The path is locked to one passage a day. When you've finished, you can revisit past cards or your journal, but the path doesn't move until tomorrow.
 - **Original words only.** Each passage is verbatim George Long (1862), pulled from the Standard Ebooks edition by `scripts/ingest.mjs` and stored with a SHA-256 checksum. The app won't show a passage whose text doesn't match its checksum.
+- **Explainers built into the app.** Tapping *Longer explanation* (on the day's Explainer card) or *Explain* (on a Mix card) shows a stored explainer straight away, with no Claude call and no cost. It has three parts: *In plain English* (what the passage says, in everyday words), *Today* (how it applies to modern life) and *For you* (applied to your own life: leadership, public service, defence and strategy, building autonomous systems, family, and the morning habit that replaced Instagram). Explainers cover all 120 course days and every one of the 471 Meditations passages, plus 16 featured cards in each other volume (21 for Epicurus). Outside Play, Mix draws from explained cards. A **Go deeper** button then hands a richer prompt to Claude, with the stored explainer included, for history, connections, the strongest objection and two practices. Cards without a stored explainer (mostly in Play) go straight to Claude.
 - **The tutor (Claude).** It does the four jobs from the plan: *Explain* (a longer explanation), *Ask* (tailors the Apply question to your profile), *Expound* (responds to your reflection and always names one place you could go further, with one follow-up reply) and *Consult* (picks 2–3 passages you've already studied that bear on a situation you describe). Claude cites passages only as IDs, and the app inserts the verbatim text. Any quoted phrase that isn't in the library loses its quote marks and is marked `≈` as a paraphrase.
 - **Mix and Play (the library).** Outside the daily path, 23 more volumes work like a music app: *Shuffle* (a new author every card, never the same one twice in a row), *Play* (one author in order, resuming where you left off), *Themed mix* (fame, leadership, death and time, simplicity, war and strategy, other people, control, duty), *Echo* (each card shares a theme with the last, from a different author) and *Daily Mix* (built from the themes of your recent reflections). A mini-player shows the author, with Shuffle, Pause and Skip; tap the author on any card to switch into Play. Shuffle leans 70/30 towards volumes you've started (adjustable). A run ends after 20 cards with *Enough for now*. Reading scores nothing; reflecting on a card scores 10, up to 3 a day. Volumes: Epictetus (Enchiridion, Discourses), Seneca (Dialogues), Cicero (On Duties), Boethius, Montaigne, Bacon, the Tao Te Ching, the Dhammapada, Adam Smith, Thucydides, Franklin, Pascal, Plutarch, Sun Tzu, Machiavelli, Confucius, Aristotle, La Rochefoucauld, Epicurus, Thoreau, Emerson and Schopenhauer. Most come from Standard Ebooks; Cicero, Montaigne, Bacon, the Dhammapada, Pascal, Plutarch, La Rochefoucauld and Schopenhauer come from Project Gutenberg via the GITenberg mirror. Editors' and transcribers' notes are stripped (Montaigne's bracketed notes, page markers); translators' own brackets are kept. Numbered works keep their standard numbers; prose works are cited by chapter and paragraph (¶) in that edition. A *Read alongside* shelf (Frankl, Stockdale, Musashi) gives tutor summaries only, never quotes, since those books are in copyright.
 - **Quick mode.** Stop after card 3 on busy days. The streak is kept, and you get fewer points.
@@ -26,7 +27,7 @@ GitHub hosts the app at **https://shanearnott.github.io/philosopher-/**. There's
 1. **Publish.** Every push to `main` runs the tests and publishes `public/` to the `gh-pages` branch, which GitHub Pages serves (see `.github/workflows/pages.yml`). You can also run it from the **Actions** tab (**Deploy to GitHub Pages → Run workflow**).
 2. **If the page doesn't appear**, go to the repo's **Settings → Pages** and set **Source** to **Deploy from a branch**, with branch `gh-pages` and folder `/ (root)`.
 3. **On your phone or iPad**, open the address in Safari. Stoa shows a banner: tap **Share**, then **Add to Home Screen**, and move it to where Instagram was.
-4. **Turn on the tutor.** The first time you use it, Stoa asks for a Claude API key from [console.anthropic.com](https://console.anthropic.com/settings/keys). You can also add it later under **You → Settings**. Do this *inside the home-screen app*, because iOS keeps its storage separate from Safari.
+4. **The tutor.** By default the tutor hands off to your Claude app: Stoa copies a ready-made prompt and opens Claude, so it uses your existing plan and adds no API cost. Stored explainers need no Claude at all. If you'd rather have replies inside Stoa, add a Claude API key from [console.anthropic.com](https://console.anthropic.com/settings/keys) under **You → Settings**. Do this *inside the home-screen app*, because iOS keeps its storage separate from Safari.
 
 About the key: it stays in that device's storage and is sent only to `api.anthropic.com`. It is never in the repo or on the website. Anyone else who opens the site sees the app but has no tutor unless they add their own key. To stop spending a lot, set a monthly spend limit in the Anthropic console.
 
@@ -73,6 +74,10 @@ Any other Node host with HTTPS (Fly, Railway, a VPS) works the same way as Rende
 
 `npm run ingest:volumes` rebuilds the wider library in `public/data/volumes/` (one file per volume, loaded only when Mix needs it). Still to come, because no edition was reachable for ingest: Seneca's Letters (Gummere's translation was never on Project Gutenberg) and the Bhagavad Gita. Plutarch is Stewart and Long's translation (vol. I) rather than Dryden/Clough.
 
+### Explainers for new texts
+
+When you add an author or text, write its explainers in the same check-in. Run `node scripts/pick-featured.mjs <volume>` for suggested cards (well-known passages first, then the best-themed card from each stretch of the work), write `scripts/explainers/<volume>.mjs`, and run `npm run explainers`. The build rejects any part under eight words, any card id that doesn't exist, and any words in quotation marks that aren't verbatim from the passage. The tests fail if a library volume has no explainers or fewer than 15.
+
 ## Layout
 
 ```
@@ -80,9 +85,12 @@ server.js                 static server + /api/tutor (holds the API key)
 lib/tutor.js              runs tutor requests on the server with the Anthropic SDK
 scripts/ingest.mjs        Meditations pipeline: download, align, checksum
 scripts/ingest-volumes.mjs   the wider library for Mix and Play
+scripts/explainers/       hand-written explainers (plain meaning, today, for you), one file per volume or part
+scripts/build-explainers.mjs  validates them and writes public/data/explainers/ (runs before npm test)
+scripts/pick-featured.mjs suggests featured cards for a new volume
 public/                   the app (no build step)
   data/library.json       locked passage library (generated)
-  data/course-meditations.json   the 30-day path: context, key word, paraphrase, questions
+  data/course-meditations.json   the 120-day path: context, key word, paraphrase, questions
   js/prompts.js           Claude prompts for Explain / Ask / Expound / Reply / Consult (shared)
   js/direct.js            calls Claude from the browser with your own key (GitHub Pages)
   js/logic.js             points, streaks, ranks, quote guard, checksum (pure, tested)

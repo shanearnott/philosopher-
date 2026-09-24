@@ -1,0 +1,108 @@
+// Featured explainers: Epicurus, Letter to Menoeceus and Principal Doctrines (Yonge, from Diogenes Laertius).
+export default {
+  "epicurus.1": {
+    meaning: "Epicurus writes to a young friend: don't put off philosophy while you're young, and don't tire of it when you're old. It's never too early or too late to care for the health of your soul. The young need it to face the future without fear; the old to stay young in spirit through gratitude for the past.",
+    today: "Self-reflection isn't a phase of life. It's lifelong maintenance, like exercise.",
+    you: "Whatever your age, this morning habit counts. It's never too late to start caring for the soul's health.",
+  },
+  "epicurus.2": {
+    meaning: "We should think about what produces happiness, since with it we have everything, and without it we do everything to get it. First, think of the gods as blessed and imperishable, and don't attach to them anything that contradicts this, like anger or meddling. The popular idea of vengeful gods is false.",
+    today: "Epicurus wanted people freed from fear of divine punishment so they could live calmly.",
+    you: "Ask whether any fear shaping your choices is really grounded, or inherited without examination.",
+  },
+  "epicurus.3": {
+    meaning: "Get used to thinking death is nothing to us, since good and bad lie in sensation, and death is the end of sensation. Understanding this makes mortal life enjoyable, not by adding endless time, but by removing the longing for immortality. While we exist, death isn't here; when death is here, we aren't.",
+    today: "It's one of philosophy's most famous arguments against the fear of death.",
+    you: "Try Epicurus's line when mortality worries you: where I am, death is not. Then return to living fully.",
+  },
+  "epicurus.6": {
+    meaning: "We need pleasure only when its absence causes pain. When we're not in pain, we don't need more pleasure. That's why Epicurus calls pleasure the beginning and end of a happy life: our natural guide for what to choose and avoid.",
+    today: "For Epicurus, pleasure mostly means the absence of pain and anxiety, not constant thrills.",
+    you: "Notice today how often a calm, pain-free moment is already enough. You don't need to add anything.",
+  },
+  "epicurus.7": {
+    meaning: "Every pleasure is good, but not every pleasure is worth choosing; every pain is bad, but not every pain should be avoided. Weigh them by their consequences. Contentment with little is a great good, not so we always have little, but so we can enjoy little if that's all we have. Those who need luxury least enjoy it most.",
+    today: "It's the original case for delayed gratification and frugal living, based on pleasure itself.",
+    you: "Enjoy simple meals and simple evenings as fully as expensive ones. It makes you harder to shake.",
+  },
+  "epicurus.8": {
+    meaning: "Prudence, practical wisdom, is the greatest good, more valuable even than philosophy, because all other virtues come from it. You can't live pleasantly without living wisely, honourably and justly, and you can't live that way without living pleasantly.",
+    today: "Epicurus, often caricatured as a hedonist, ties the good life firmly to wisdom and justice.",
+    you: "Use practical wisdom as your first test for decisions: is this sensible, honourable and fair? Pleasure follows.",
+  },
+  "epicurus.10": {
+    meaning: "Epicurus urges his friend to study these teachings day and night, alone and with like-minded friends. Then he'll never be disturbed, waking or sleeping, and will live like a god among men.",
+    today: "Repeated reflection, alone and with friends, is how ideas become habits of mind.",
+    you: "Discuss one idea from Stoa with a friend or your partner this week. Ideas stick better when shared.",
+  },
+  "epicurus.12": {
+    meaning: "Death is nothing to us: what has dissolved has no sensation, and what has no sensation is nothing to us.",
+    today: "In one sentence, Epicurus tries to dissolve humanity's deepest fear.",
+    you: "Say this line to yourself when anxiety about the end creeps in. Then give your attention to the living.",
+  },
+  "epicurus.14": {
+    meaning: "Pain doesn't last continuously. Extreme pain is brief; pain that just outweighs pleasure lasts only a few days; and long illnesses contain more pleasure than pain.",
+    today: "Epicurus himself suffered chronic illness. His point is that pain is more bearable than we fear.",
+    you: "When facing pain or hardship, remind yourself: intense pain is brief, and long hardship still has good moments.",
+  },
+  "epicurus.15": {
+    meaning: "You can't live pleasantly without living wisely, honourably and justly; and you can't live wisely, honourably and justly without living pleasantly. Whoever lacks these can't live pleasantly.",
+    today: "Good character and a good life are intertwined. Unethical shortcuts undermine the peace we want.",
+    you: "When tempted by a shortcut, remember: it will cost you the calm you're really after.",
+  },
+  "epicurus.23": {
+    meaning: "Great power and wealth can give some security against other people. But real security comes from a tranquil soul and freedom from ambition.",
+    today: "External security has limits. Inner calm is the deeper protection.",
+    you: "In a career built around security, remember the inner kind: freedom from restless ambition.",
+  },
+  "epicurus.24": {
+    meaning: "Nature's wealth is limited and easy to get; the desires of vain opinion are endless.",
+    today: "Real needs are few and satisfiable. Manufactured wants never end.",
+    you: "Before your next purchase, ask: natural need or vain desire? The first is easy; the second never stops.",
+  },
+  "epicurus.26": {
+    meaning: "The just person is the most free from disturbance; the unjust person is constantly troubled.",
+    today: "A clear conscience is a remarkable source of calm. Wrongdoing breeds anxiety.",
+    you: "If something is troubling your peace, check whether there's an unresolved injustice you've done. Fix it.",
+  },
+  "epicurus.27": {
+    meaning: "Once the pain of want is removed, bodily pleasure doesn't increase; it only varies.",
+    today: "Beyond enough, more doesn't make us happier. It just changes the flavour.",
+    you: "Once your family's needs are met, stop chasing more. Enjoy variety, not escalation.",
+  },
+  "epicurus.38": {
+    meaning: "Of everything wisdom provides for a happy life, by far the most important is friendship.",
+    today: "Research on wellbeing agrees: close relationships are the strongest predictor of a happy life.",
+    you: "Rank your priorities honestly. Is friendship near the top, where Epicurus puts it?",
+  },
+  "epicurus.39": {
+    meaning: "Wisdom also teaches us that no evil lasts forever or even long, and that within our short lives, friendship is the surest protection.",
+    today: "Friends are a shield against life's misfortunes, and misfortunes are rarely permanent.",
+    you: "In a hard season, lean on friends. It's what Epicurus built his whole philosophy around.",
+  },
+  "epicurus.40": {
+    meaning: "Some desires are natural and necessary, some natural but unnecessary, and some neither natural nor necessary, arising only from empty opinion.",
+    today: "It's a simple triage tool for wants: food and shelter; nice extras; status symbols.",
+    you: "Sort your current wants into Epicurus's three boxes. Drop one from the third box this week.",
+  },
+  "epicurus.41": {
+    meaning: "Desires that don't cause pain when unsatisfied aren't necessary. They're easy to silence when they're hard to fulfil or likely to cause harm.",
+    today: "If going without something doesn't actually hurt, you don't need it.",
+    you: "Test one habit, a daily purchase or app, by skipping it for a week. If it doesn't hurt, let it go.",
+  },
+  "epicurus.43": {
+    meaning: "Natural justice is an agreement about what's useful, made so people neither harm nor are harmed by one another.",
+    today: "Epicurus is an early social-contract thinker: justice as mutual protection.",
+    you: "In team norms and international agreements alike, focus on the shared benefit of mutual restraint.",
+  },
+  "epicurus.52": {
+    meaning: "If you want to live calmly without fear of others, make friends. Those you can't befriend, at least don't make enemies of. And those you can't manage either way, keep at a distance, as far as it serves you.",
+    today: "A simple, practical strategy for managing relationships: befriend, neutralise, or avoid.",
+    you: "Apply Epicurus's triage to difficult relationships at work: befriend where you can, never create enemies needlessly.",
+  },
+  "epicurus.53": {
+    meaning: "The happiest people are those who have nothing to fear from those around them. They live together pleasantly, trust each other deeply, enjoy friendship fully, and don't treat even a friend's early death as a cause for despair.",
+    today: "Trust within a community is the foundation of happiness. Fearless, trusting relationships are rare and precious.",
+    you: "Build a circle, at home and at work, where nobody fears anybody. That's Epicurus's garden.",
+  },
+}

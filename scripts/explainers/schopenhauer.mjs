@@ -1,0 +1,83 @@
+// Featured explainers: Arthur Schopenhauer, The Wisdom of Life and Counsels and Maxims (Saunders).
+export default {
+  "schopenhauer.5": {
+    meaning: "Schopenhauer divides what affects our happiness into three: what a person is, what they have, and how they stand in others' estimation. This third is simply the light in which others see us, shown by their opinions, and revealed through honour, rank and reputation.",
+    today: "Our status in others' eyes is the least reliable of the three, yet often the one we chase hardest.",
+    you: "Rank your effort across the three: who you are, what you have, how you're seen. Is the balance right?",
+  },
+  "schopenhauer.10": {
+    meaning: "A clear, penetrating mind, a gentle will and a good conscience are privileges no rank or wealth can replace. What a person is in themselves, what goes with them when they're alone, what no one can give or take away, matters more than possessions or reputation.",
+    today: "Inner character and mental health outweigh external success in determining how life feels.",
+    you: "Invest in what you'll carry when alone: your character, your mind, your conscience. They go everywhere with you.",
+  },
+  "schopenhauer.22": {
+    meaning: "Quoting Epictetus, Schopenhauer says people are moved not by things but by their thoughts about things. And nine-tenths of our happiness depends on health alone. With health, everything can be enjoyed; without it, nothing, not even a great mind or cheerful temperament.",
+    today: "We sacrifice health for career or wealth, then struggle to enjoy either.",
+    you: "Treat your health as nine-tenths of the portfolio. Protect sleep and exercise as fiercely as deadlines.",
+  },
+  "schopenhauer.44": {
+    meaning: "Wealth of soul is the only true wealth; other riches bring troubles greater than themselves. A person with inner resources needs nothing from outside except undisturbed leisure to develop their mind and enjoy their inner riches.",
+    today: "People with rich inner lives need less from the world, and are harder to manipulate.",
+    you: "Build inner resources, reading, thinking, making things, that need nothing but a quiet hour.",
+  },
+  "schopenhauer.51": {
+    meaning: "Our wants set the measure of our satisfaction: we don't miss what we never expected. Wealth is like sea water: the more you drink, the thirstier you get, and the same is true of fame. Losing wealth leaves us, after the first grief, much as we were before.",
+    today: "Hedonic adaptation again: more money and fame raise the bar rather than satisfying us.",
+    you: "This is the Metric Cage in liquid form. Decide what enough is, and stop drinking sea water.",
+  },
+  "schopenhauer.66": {
+    meaning: "Schopenhauer describes a condemned man who, facing a dreadful death and eternity, cared only about the impression he made on the crowd of onlookers and the opinion he'd leave behind. It shows how absurdly strong our concern for others' opinion is.",
+    today: "Worry about how we look can override every other concern, even at the most serious moments.",
+    you: "Notice when image management takes over at serious moments. What matters is the substance, not the audience.",
+  },
+  "schopenhauer.146": {
+    meaning: "The longer fame will last, the later it tends to arrive, because excellent work takes time to be recognised. Lasting fame grows like an oak, slowly; short-lived fame is like annual plants that spring up fast and die.",
+    today: "Quick recognition often fades fast, while slowly built reputations tend to endure.",
+    you: "Don't be discouraged if your best work isn't recognised quickly. Oaks grow slowly.",
+  },
+  "schopenhauer.185": {
+    meaning: "We're all born in Arcadia, as Schiller said: full of claims to happiness and hoping to make them good. Fate soon teaches us roughly that we own nothing and everything can be taken. Wisdom lies in lowering our expectations, so life's inevitable losses sting less.",
+    today: "Unrealistic expectations are a major source of disappointment. Moderating them isn't pessimism; it's resilience.",
+    you: "Examine one expectation you hold about how life should go. Hold it more lightly, and you'll feel steadier.",
+  },
+  "schopenhauer.205": {
+    meaning: "Instead of always planning for the future or regretting the past, remember the present is the only reality and certainty. The future almost always turns out differently than expected, and the past was different from how we remember it.",
+    today: "Presence is a practical strategy: the present is the only place we can act.",
+    you: "Before you lose this morning to planning or rehashing, take one minute to be fully here.",
+  },
+  "schopenhauer.220": {
+    meaning: "Society requires mutual accommodation, and the larger it is, the blander it becomes. A person can be fully themselves only when alone; anyone who doesn't love solitude doesn't love freedom, because only alone are we truly free.",
+    today: "Constant social contact, including online, makes us conform. Solitude restores the self.",
+    you: "Guard some solitude each week, no feeds or messages. It's where you're most yourself.",
+  },
+  "schopenhauer.224": {
+    meaning: "To fit in with ordinary company, we have to give up three-quarters of ourselves. The more a person is worth, the less the company makes up for what's lost. That's why thoughtful people often prefer solitude.",
+    today: "Social conformity costs us parts of ourselves. It's worth noticing how much.",
+    you: "Find the people you don't have to shrink for. Spend more time with them, and less with the rest.",
+  },
+  "schopenhauer.227": {
+    meaning: "Schopenhauer speaks bluntly: however close friendship, love or marriage, a person ultimately looks to their own welfare, at most their child's. The less you depend on general contact with people, in business or intimacy, the better off you are.",
+    today: "It's a bleak view many would dispute. But self-reliance does protect us from disappointment.",
+    you: "Take the useful part: rely less on others for your wellbeing. Reject the cynical part: invest deeply in your family anyway.",
+  },
+  "schopenhauer.281": {
+    meaning: "Schopenhauer returns to health as the chief element of happiness and gives rules for keeping it. Harden the body with hard work and exercise in good health; in illness, do the opposite, and take care. Muscles grow with use, but nerves are weakened by overwork.",
+    today: "Train the body, rest the mind: it's modern advice on exercise and burnout.",
+    you: "Push your body, protect your nervous system. Hard workouts, yes; late-night inbox-clearing, no.",
+  },
+  "schopenhauer.320": {
+    meaning: "Voltaire said all war is robbery, and Schopenhauer tells the Germans to take note. Then he adds that no one can be left entirely to themselves: everyone needs a plan and general rules to steer by.",
+    today: "Personal principles and plans guide us through situations we can't foresee.",
+    you: "Write down your own few rules for life and leadership. Consult them when you're pulled off course.",
+  },
+  "schopenhauer.405": {
+    meaning: "After forty, Schopenhauer says, any thoughtful person shows some trace of misanthropy. By then he's judged others by himself and been disappointed, finding them inferior in head, heart or both, and prefers not to mix with them.",
+    today: "Disappointment in others tends to accumulate with age. Whether it hardens into contempt is a choice.",
+    you: "If you notice creeping cynicism with experience, balance it: seek out the people who still surprise you with goodness.",
+  },
+  "schopenhauer.429": {
+    meaning: "The first forty years of life give us the text; the following thirty supply the commentary. Without the commentary we can't understand the text's true meaning, its coherence and its lessons.",
+    today: "Midlife isn't a decline but a turn towards understanding. Experience gives earlier years their meaning.",
+    you: "Treat your journal as the start of your commentary. Reflection is how you'll read your own text well.",
+  },
+}
