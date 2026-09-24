@@ -430,7 +430,8 @@ function renderToday() {
     endStats,
     endMsg,
     h("div", { class: "btn-row", style: { justifyContent: "center" } },
-      h("button", { class: "btn", onclick: () => go("mix") }, "Explore the library")));
+      h("button", { class: "btn primary", onclick: () => go("swipe") }, "Keep swiping"),
+      h("button", { class: "btn", onclick: () => go("browse") }, "Browse")));
   const drawEnd = (earned) => {
     const sessions = Object.keys(state.sessions);
     const s = streak(sessions, today);
@@ -486,7 +487,7 @@ function renderReview() {
     h("section", { class: "card end", style: bg },
       h("p", { class: "eyebrow" }, "What next"),
       h("h2", {}, "Begin again, or wander."),
-      h("p", { class: "soft" }, "Repeat the path from day one, or explore the library in Mix."),
+      h("p", { class: "soft" }, "Repeat the path from day one, or browse the library."),
       h("div", { class: "btn-row", style: { justifyContent: "center" } },
         h("button", { class: "btn primary", onclick: () => {
           if (!confirm("Start the 120-day path again from day 1? Your saved cards and points stay.")) return;
@@ -495,7 +496,7 @@ function renderReview() {
           persist();
           renderToday();
         } }, "Start again"),
-        h("button", { class: "btn", onclick: () => go("mix") }, "Explore the library"))),
+        h("button", { class: "btn", onclick: () => go("browse") }, "Browse the library"))),
   ];
   if (!favs.length) cards.splice(1, 0, h("section", { class: "card", style: bg },
     h("p", { class: "eyebrow" }, "Saved passages"), h("p", { class: "lede" }, "You didn't save any passages this time. Next round, hold a passage card to keep it.")));
@@ -643,7 +644,7 @@ function savedSheet(id) {
     h("div", { class: "btn-row" },
       explainButton(id, out, [id], "Explain"),
       h("button", { class: "btn", onclick: () => shareCard(id) }, "Share"),
-      h("button", { class: "btn", onclick: () => { back.remove(); playFrom(id).then(() => go("mix")); } }, `Read on in ${p.author.split(" ").pop()}`),
+      h("button", { class: "btn", onclick: () => { back.remove(); playFrom(id); } }, `Read on in ${p.author.split(" ").pop()}`),
       h("button", { class: "btn", onclick: () => {
         if (!confirm("Remove this card and its comment from Saved?")) return;
         delete state.saved[id];
@@ -674,7 +675,8 @@ function renderConsult() {
     go_.disabled = false;
   } }, "Consult my library");
   view.replaceChildren(h("div", { class: "page" },
-    h("p", { class: "eyebrow", style: { color: "var(--muted)" } }, "Situation mode"),
+    h("button", { class: "btn", style: { marginBottom: "14px" }, onclick: () => go("browse") }, "← Browse"),
+    h("p", { class: "eyebrow", style: { color: "var(--muted)" } }, "By situation"),
     h("h1", {}, "Consult"),
     h("p", { class: "sub" }, "Describe what's happening. The tutor picks two or three passages you've already studied that bear on it."),
     studied.length
@@ -884,7 +886,7 @@ async function startRun(mode, opts = {}) {
   await extendRun();
   await extendRun();
   persist();
-  renderRun();
+  go("swipe");
 }
 
 async function extendRun() {
@@ -919,6 +921,8 @@ function mixCard(id, index, run) {
     h("div", { class: "card-scroll" },
       h("blockquote", { class: "quote" }, p.text),
       h("p", { class: "quote-ref" }, p.ref, mark, h("small", {}, `tr. ${p.translator}`)),
+      themesOf(id).length > 0 && h("div", { class: "card-tags" }, themesOf(id).slice(0, 3).map((t) =>
+        h("button", { class: "tag-link", "aria-pressed": String(run.mode === "theme" && run.themes?.[0] === t), onclick: () => themeFrom(id, t) }, `${THEMES[t].label} ▸`))),
       out,
       h("div", { class: "btn-row" }, ask, cardActions(id, mark))));
   card.dataset.id = id;
@@ -933,18 +937,30 @@ async function playFrom(id) {
   const mix = mixState();
   mix.positions[vol] = idsOf(vol).indexOf(id) + 1;
   const run = mix.run;
-  const keep = run ? run.ids.slice(0, run.ids.indexOf(id) + 1) : [id];
+  const keep = run?.ids.includes(id) ? run.ids.slice(0, run.ids.indexOf(id) + 1) : [id];
   mix.run = { mode: "play", vol, ids: keep, i: keep.length - 1, date: dayKey() };
   await extendRun();
   persist();
-  renderRun(keep.length - 1);
+  go("swipe");
   toast(`Playing ${metaOf(vol).author}`);
+}
+
+// Tap a subject on any card: carry on through that subject, across authors.
+async function themeFrom(id, theme) {
+  const mix = mixState();
+  const run = mix.run;
+  const keep = run?.ids.includes(id) ? run.ids.slice(0, run.ids.indexOf(id) + 1) : [id];
+  mix.run = { mode: "theme", themes: [theme], ids: keep, i: keep.length - 1, date: dayKey() };
+  await extendRun();
+  persist();
+  go("swipe");
+  toast(THEMES[theme].label);
 }
 
 function renderRun(startAt) {
   const mix = mixState();
   const run = mix.run;
-  if (!run) return renderMix();
+  if (!run) return startRun("shuffle");
   document.body.classList.add("on-cards", "with-player");
   const deck = h("div", { class: "deck" });
   const io = new IntersectionObserver((es) => es.forEach((en) => en.isIntersecting && en.target.classList.add("in")), { threshold: 0.35 });
@@ -952,9 +968,10 @@ function renderRun(startAt) {
   const endCard = () => h("section", { class: "card end", style: { "--card-bg": "radial-gradient(90% 60% at 50% 100%, #6b4a33 0%, transparent 70%), linear-gradient(180deg, #221d19, #0e0d0c)" } },
     h("p", { class: "eyebrow" }, `${MIX_RUN_LENGTH} cards`),
     h("h2", {}, "Enough for now."),
-    h("p", { class: "soft" }, "That's the end of this run. Come back tomorrow, or start another from the library."),
+    h("p", { class: "soft" }, "That's the end of this run. Come back tomorrow, or pick another way in."),
     h("div", { class: "btn-row", style: { justifyContent: "center" } },
-      h("button", { class: "btn", onclick: () => { mix.run = null; persist(); renderMix(); } }, "Back to the library")));
+      h("button", { class: "btn", onclick: () => { mix.run = null; persist(); go("browse"); } }, "Browse"),
+      h("button", { class: "btn", onclick: () => { mix.run = null; startRun("shuffle"); } }, "New shuffle")));
   const add = (id, i) => {
     const c = mixCard(id, i, run);
     deck.append(c);
@@ -1010,7 +1027,7 @@ function showPlayer(run) {
       await extendRun();
       renderRun(r.ids.length - 2);
     } }, "⤮"),
-    h("button", { "aria-label": "Pause", title: "Pause", onclick: () => { persist(); renderMix(); } }, "❚❚"),
+    h("button", { "aria-label": "Browse", title: "Browse", onclick: () => { persist(); go("browse"); } }, "▦"),
     h("button", { "aria-label": "Skip", title: "Skip", onclick: skip }, "⏭"));
   bar.hidden = false;
 }
@@ -1021,7 +1038,27 @@ function hidePlayer() {
   document.body.classList.remove("with-player");
 }
 
-async function renderMix() {
+// Ways into the library for Browse. Every one opens in Swipe.
+const SUBJECTS = {
+  leadership: ["♜", "Rulers, generals and anyone in charge"],
+  war: ["⚔", "Sun Tzu, Thucydides, Machiavelli and more"],
+  control: ["⚖", "What is up to you, and what isn't"],
+  others: ["☍", "Friends, anger, forgiveness"],
+  duty: ["⚒", "Work, office and doing your part"],
+  fame: ["✧", "Praise, reputation and the Metric Cage"],
+  death: ["⧗", "Mortality and the shortness of time"],
+  simplicity: ["○", "Enough, and wanting less"],
+};
+const SHELVES = [
+  ["The Stoics", ["meditations", "enchiridion", "discourses", "seneca"]],
+  ["Greece and Rome", ["ethics", "epicurus", "onduties", "plutarch", "thucydides", "boethius"]],
+  ["Strategy and statecraft", ["artofwar", "prince"]],
+  ["The East", ["taoteching", "analects", "dhammapada"]],
+  ["Essayists and moralists", ["montaigne", "bacon", "pascal", "rochefoucauld", "moralsentiments", "schopenhauer"]],
+  ["Americans", ["franklin", "walden", "emerson"]],
+];
+
+async function renderBrowse() {
   hidePlayer();
   document.body.classList.remove("on-cards");
   const mix = mixState();
@@ -1030,35 +1067,44 @@ async function renderMix() {
   const run = mix.run && mix.run.date === dayKey() && mix.run.ids.length < MIX_RUN_LENGTH + 1 ? mix.run : null;
   const mode = (label, sub, fn, glyph) => h("button", { class: "mode", onclick: fn }, h("span", { class: "mode-glyph", "aria-hidden": "true" }, glyph), h("span", {}, h("b", {}, label), h("small", {}, sub)));
   const daily = dailyThemes().map((t) => THEMES[t].label).join(" + ");
+  const vols = allVolumes();
+  const shelved = new Set(SHELVES.flatMap(([, ids]) => ids));
+  const shelves = [...SHELVES, ["More", vols.map((v) => v.id).filter((id) => !shelved.has(id))]]
+    .map(([name, ids]) => [name, ids.map((id) => vols.find((v) => v.id === id)).filter(Boolean)])
+    .filter(([, list]) => list.length);
+  const authorRow = (v) => {
+    const pos = mix.positions[v.id] || 0;
+    return h("button", { class: "entry", onclick: () => startRun("play", { vol: v.id }) },
+      h("div", { class: "when" }, `${v.author}${v.year ? ` · ${v.year}` : ""}`),
+      h("div", { class: "what" }, v.work),
+      h("div", { class: "snip" }, `${v.why}. ${pos ? `Resume at ${pos + 1} of ${v.count}` : `${v.count} passages`}.`));
+  };
   view.replaceChildren(h("div", { class: "page" },
     h("p", { class: "eyebrow", style: { color: "var(--muted)" } }, "Library"),
-    h("h1", {}, "Mix"),
-    h("p", { class: "sub" }, `Outside the daily path. Reading here scores nothing, and a run ends after ${MIX_RUN_LENGTH} cards.`),
+    h("h1", {}, "Browse"),
+    h("p", { class: "sub" }, `Pick a way in; it opens in Swipe. On any card, tap the author to read on in that book, or a subject to follow it across authors. Reading scores nothing, and a run ends after ${MIX_RUN_LENGTH} cards.`),
     run && h("div", { class: "panel resume" },
       h("div", {}, h("b", {}, runLabel(run)), h("div", { class: "muted" }, `Card ${Math.min((run.i ?? 0) + 1, run.ids.length)} of ${MIX_RUN_LENGTH}`)),
-      h("button", { class: "btn primary", onclick: () => renderRun() }, "Resume")),
+      h("button", { class: "btn primary", onclick: () => go("swipe") }, "Resume")),
+    h("h2", {}, "Just swipe"),
     h("div", { class: "modes" },
       mode("Shuffle", "A new author every card", () => startRun("shuffle"), "⤮"),
       mode("Daily Mix", daily, () => startRun("daily"), "☀"),
-      mode("Echo", "Each card links to the last by theme", () => startRun("echo"), "∿")),
-    h("h2", {}, "Themed mix"),
-    h("div", { class: "filters", style: { flexWrap: "wrap" } },
-      Object.entries(THEMES).map(([k, t]) => h("button", { class: "chip", onclick: () => startRun("theme", { themes: [k] }) }, t.label))),
-    h("h2", {}, "Play one author"),
-    h("div", {}, allVolumes().map((v) => {
-      const pos = mix.positions[v.id] || 0;
-      return h("button", { class: "entry", onclick: () => startRun("play", { vol: v.id }) },
-        h("div", { class: "when" }, `${v.author}${v.year ? ` · ${v.year}` : ""}`),
-        h("div", { class: "what" }, v.work),
-        h("div", { class: "snip" }, `${v.why}. ${v.translator}. ${pos ? `Resume at ${pos + 1} of ${v.count}` : `${v.count} passages`}.`),
-        v.flagged && h("div", { class: "muted", style: { fontSize: "12px" } }, `Licence note: ${v.flagged}`));
-    })),
-    h("h2", {}, "Coming to the library"),
-    h("p", { class: "muted" }, volIndex.coming.join(" · ")),
+      mode("Echo", "Each card links to the last by subject", () => startRun("echo"), "∿")),
+    h("h2", {}, "By subject"),
+    h("div", { class: "subject-grid" }, Object.entries(SUBJECTS).map(([k, [glyph, blurb]]) =>
+      h("button", { class: "subject", onclick: () => startRun("theme", { themes: [k] }) },
+        h("span", { class: "subject-glyph", "aria-hidden": "true" }, glyph), h("b", {}, THEMES[k].label), h("small", {}, blurb)))),
+    h("h2", {}, "By author"),
+    shelves.flatMap(([name, list]) => [h("h3", { class: "shelf" }, name), h("div", {}, list.map(authorRow))]),
+    h("h2", {}, "By situation"),
+    h("div", {}, mode("Consult", "Describe what's happening; the tutor picks passages you've studied", () => go("consult"), "⚖")),
     h("h2", {}, "Read alongside"),
     h("p", { class: "muted" }, "Still in copyright, so no quotes: the tutor gives you a summary instead."),
     h("div", {}, ALONGSIDE.map((b) => h("button", { class: "entry", onclick: () => alongsideSheet(b) },
-      h("div", { class: "what" }, b.title), h("div", { class: "snip" }, b.author))))));
+      h("div", { class: "what" }, b.title), h("div", { class: "snip" }, b.author)))),
+    h("h2", {}, "Coming to the library"),
+    h("p", { class: "muted" }, volIndex.coming.join(" · "))));
 }
 
 function alongsideSheet(book) {
@@ -1073,10 +1119,20 @@ function alongsideSheet(book) {
 
 // ---------- routing ----------
 
-const ROUTES = { today: renderToday, saved: renderSaved, mix: () => (mixState().run && mixState().run.date === dayKey() ? renderRun() : renderMix()), consult: renderConsult, you: renderYou };
+const ROUTES = {
+  today: renderToday,
+  // Swipe opens straight into cards: today's run, or a fresh shuffle
+  swipe: () => (mixState().run?.date === dayKey() ? renderRun() : startRun("shuffle")),
+  browse: renderBrowse,
+  saved: renderSaved,
+  consult: renderConsult,
+  you: renderYou,
+};
+const ALIASES = { mix: "swipe", journal: "saved" }; // old links
+const TAB_OF = { consult: "browse" };
 function current() {
   const t = location.hash.slice(1);
-  return ROUTES[t] ? t : "today";
+  return ROUTES[t] ? t : ALIASES[t] || "today";
 }
 function go(tab) {
   if (location.hash.slice(1) === tab) route();
@@ -1084,9 +1140,10 @@ function go(tab) {
 }
 function route() {
   const t = current();
-  tabs.forEach((b) => (b.dataset.tab === t ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current")));
+  const tab = TAB_OF[t] || t;
+  tabs.forEach((b) => (b.dataset.tab === tab ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current")));
   if (t !== "today") document.querySelector(".install")?.remove();
-  if (t !== "mix") hidePlayer();
+  if (t !== "swipe") hidePlayer();
   ROUTES[t]();
   window.scrollTo(0, 0);
 }

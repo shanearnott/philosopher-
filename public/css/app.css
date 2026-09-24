@@ -303,6 +303,15 @@ body.with-player .card { padding-bottom: calc(var(--tabs-h) + var(--safe-b) + 84
 .mode b { display: block; font: 400 21px/1.2 var(--serif); }
 .mode small { display: block; color: var(--muted); font-size: 13px; margin-top: 2px; }
 .mode-glyph { width: 44px; height: 44px; flex: none; display: grid; place-items: center; border-radius: 50%; background: var(--text); color: var(--bg); font-size: 20px; }
+.subject-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.subject { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; text-align: left; padding: 14px; border-radius: 16px; border: 1px solid var(--line); background: var(--surface); min-height: 118px; }
+.subject b { font: 400 18px/1.2 var(--serif); }
+.subject small { color: var(--muted); font-size: 12px; line-height: 1.35; }
+.subject-glyph { font-size: 20px; color: var(--gold); }
+h3.shelf { font: 600 12px/1.4 var(--sans); letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin: 22px 0 0; }
+.card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 4px; }
+.tag-link { border: 1px solid rgba(255, 255, 255, 0.22); background: none; color: inherit; opacity: 0.8; border-radius: 999px; padding: 5px 11px; font-size: 12px; }
+.tag-link[aria-pressed="true"] { border-color: var(--gold); color: var(--gold); opacity: 1; }
 .resume { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 
 /* add-to-home-screen banner */
