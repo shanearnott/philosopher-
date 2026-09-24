@@ -141,19 +141,101 @@
       "why": "Strategy, power and war decisions; the Melian Dialogue",
       "volume": 11,
       "count": 137
+    },
+    {
+      "id": "onduties",
+      "author": "Cicero",
+      "work": "On Duties",
+      "translator": "Walter Miller (1913)",
+      "year": "44 BC",
+      "why": "Ethics of public service and leadership",
+      "course": 4,
+      "count": 369
+    },
+    {
+      "id": "plutarch",
+      "author": "Plutarch",
+      "work": "Lives (vol. I)",
+      "translator": "Aubrey Stewart and George Long (1880)",
+      "year": "c. 100",
+      "why": "Leaders' character under pressure, as paired case studies",
+      "volume": 14,
+      "count": 782
+    },
+    {
+      "id": "bacon",
+      "author": "Francis Bacon",
+      "work": "Essays",
+      "translator": "Original English (1625)",
+      "year": "1625",
+      "why": "Short, sharp essays on ambition, counsel and power",
+      "course": 7,
+      "count": 172
+    },
+    {
+      "id": "pascal",
+      "author": "Blaise Pascal",
+      "work": "Pensées",
+      "translator": "W. F. Trotter (1910)",
+      "year": "1670",
+      "why": "Distraction and the inability to sit quietly alone",
+      "volume": 13,
+      "flagged": "Translator's death date unknown; may be in copyright outside the US",
+      "count": 1175
+    },
+    {
+      "id": "dhammapada",
+      "author": "The Buddha (attributed)",
+      "work": "Dhammapada",
+      "translator": "F. Max Müller (1881)",
+      "year": "c. 300 BC",
+      "why": "Similar ideas on control and attachment from another tradition",
+      "course": 8,
+      "count": 141
+    },
+    {
+      "id": "rochefoucauld",
+      "author": "François de La Rochefoucauld",
+      "work": "Maxims",
+      "translator": "J. W. Willis Bund and J. Hain Friswell (1871)",
+      "year": "1678",
+      "why": "One-line truths on vanity; ideal swipe cards",
+      "volume": 19,
+      "count": 502
+    },
+    {
+      "id": "montaigne",
+      "author": "Michel de Montaigne",
+      "work": "Essays",
+      "translator": "Charles Cotton (1685), ed. W. C. Hazlitt (1877)",
+      "year": "1580",
+      "why": "Stoicism applied to retirement from public life",
+      "course": 6,
+      "count": 1936
+    },
+    {
+      "id": "schopenhauer",
+      "author": "Arthur Schopenhauer",
+      "work": "The Wisdom of Life; Counsels and Maxims",
+      "translator": "T. Bailey Saunders (1890)",
+      "year": "1851",
+      "why": "Reputation and what a man represents",
+      "volume": 23,
+      "count": 449
+    },
+    {
+      "id": "epicurus",
+      "author": "Epicurus",
+      "work": "Letter to Menoeceus; Principal Doctrines",
+      "translator": "C. D. Yonge (1853)",
+      "year": "c. 300 BC",
+      "why": "Simple pleasures, friendship, the garden",
+      "volume": 20,
+      "count": 53
     }
   ],
   "coming": [
     "Seneca, Letters (Gummere)",
-    "Cicero, On Duties",
-    "Montaigne, Essays",
-    "Francis Bacon, Essays",
-    "The Dhammapada",
-    "Bhagavad Gita",
-    "Pascal, Pensées",
-    "Plutarch, Lives",
-    "La Rochefoucauld, Maxims",
-    "Epicurus, Letters and Principal Doctrines",
-    "Schopenhauer, The Wisdom of Life"
+    "Bhagavad Gita (Arnold or Telang)"
   ]
 }

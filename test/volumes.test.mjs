@@ -5,13 +5,14 @@ import { createHash } from "node:crypto";
 import { pointsFor, POINTS, guardReply } from "../public/js/logic.js";
 import { tagThemes, THEMES } from "../public/js/themes.js";
 import { buildRequest } from "../public/js/prompts.js";
-import { blocks, cards, VOLUMES } from "../scripts/ingest-volumes.mjs";
+import { blocks, cards, VOLUMES, GUTENBERG, EPICURUS, decode, isEnglish } from "../scripts/ingest-volumes.mjs";
 
 const read = (p) => JSON.parse(readFileSync(new URL(`../public/data/${p}`, import.meta.url)));
 const index = read("volumes/index.json");
 
 test("every volume passage matches its checksum and has a reference", () => {
-  assert.equal(index.volumes.length, VOLUMES.length);
+  assert.equal(index.volumes.length, VOLUMES.length + GUTENBERG.length + 1);
+  assert.ok(index.volumes.some((v) => v.id === EPICURUS.id));
   for (const v of index.volumes) {
     const d = read(`volumes/${v.id}.json`);
     const entries = Object.entries(d.passages);
@@ -33,6 +34,26 @@ test("numbered works keep their standard numbering", () => {
   assert.match(Object.values(ench).find((p) => p.ref === "Enchiridion 5").text, /^Men are disturbed not by the things which happen/);
   const an = read("volumes/analects.json").passages;
   assert.match(Object.values(an).find((p) => p.ref === "Analects 1.4").text, /I daily examine myself on three points/);
+});
+
+test("the added volumes keep their own numbering and drop editors' notes", () => {
+  const find = (vol, ref) => Object.values(read(`volumes/${vol}.json`).passages).find((p) => p.ref === ref)?.text;
+  assert.equal(find("rochefoucauld", "La Rochefoucauld, Maxim 2"), "Self-love is the greatest of flatterers.");
+  assert.match(find("dhammapada", "Dhammapada 1–2"), /^1\. All that we are is the result of what we have thought/);
+  assert.match(find("pascal", "Pascal, Pensées 394"), /^All the principles of sceptics, stoics, atheists/);
+  assert.match(find("onduties", "On Duties 1.1"), /^My dear son Marcus/);
+  assert.match(find("epicurus", "Epicurus, Letter to Menoeceus, ¶1"), /^Let no one delay to study philosophy/);
+  const montaigne = Object.values(read("volumes/montaigne.json").passages);
+  assert.ok(montaigne.every((p) => !/D\.W\.|\[/.test(p.text)), "Montaigne editors' notes removed");
+  const all = index.volumes.flatMap((v) => Object.values(read(`volumes/${v.id}.json`).passages));
+  assert.ok(all.every((p) => !/&[a-z]+;|<\/?[a-z]|\[Pg \d+\]|\ufffd/.test(p.text)), "no markup left");
+  assert.ok(all.every((p) => !/ \n|\n /.test(p.text)), "no hard-wrapped source lines");
+});
+
+test("entity decoding and the Latin filter", () => {
+  assert.equal(decode("Pens&eacute;es &mdash; &AElig;sop &#233; &#x2014;"), "Pensées — Æsop é —");
+  assert.ok(isEnglish("Now, as Regulus deserves praise for being true to his oath, so those ten"));
+  assert.ok(!isEnglish("Acilius autem, qui Graece scripsit historiam, plures ait fuisse"));
 });
 
 test("card splitting never breaks a paragraph and labels paragraph ranges", () => {
