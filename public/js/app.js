@@ -1,7 +1,7 @@
 import {
   POINTS, RANKS, VIRTUES, WEEKLY_TARGET, GRACE_DAYS_PER_MONTH, MIX_RUN_LENGTH, sha256,
   dayKey, totalPoints, rankFor, pointsFor, streak, weekCount,
-  virtueMeters, todaysDay, verifiedPassage, guardReply, citeRef, fullRef, savedMarkdown, splitInitial,
+  virtueMeters, verifiedPassage, guardReply, citeRef, fullRef, savedMarkdown, splitInitial,
 } from "./logic.js";
 import { load, save, wipe, freshState } from "./store.js";
 import { buildRequest, handoffText } from "./prompts.js";
@@ -251,7 +251,7 @@ function sideSwipe(el, { left, right }) {
 // The explainer slides in over a card: swipe left (or tap Explain) to open,
 // swipe right (or tap ›) to close. Filled from the stored explainer; cards
 // without one offer to ask Claude.
-function explainPanel(card, id, studied) {
+function explainPanel(card, id, studied, { before, after } = {}) {
   const body = h("div", { class: "panel-scroll" });
   const panel = h("aside", { class: "explain-panel", "aria-hidden": "true" },
     h("div", { class: "panel-head" },
@@ -262,7 +262,8 @@ function explainPanel(card, id, studied) {
   let filled = false;
   const fill = async () => {
     await loadExplainers(volOf(id));
-    if (explainers[id]) return body.replaceChildren(explainerView(id), h("div", { class: "btn-row" }, deeperButton(id, body, studied)));
+    const extra = [before?.()].filter(Boolean), tail = [after?.()].filter(Boolean);
+    if (explainers[id]) return body.replaceChildren(...extra, explainerView(id), ...tail, h("div", { class: "btn-row" }, deeperButton(id, body, studied)));
     const ask = h("button", { class: "btn primary", onclick: async () => {
       ask.disabled = true;
       try {
@@ -273,7 +274,7 @@ function explainPanel(card, id, studied) {
         ask.disabled = false;
       }
     } }, handoffMode() ? "Explain in Claude" : "Explain with Claude");
-    body.replaceChildren(h("p", { class: "soft" }, "This card has no stored explainer yet."), h("div", { class: "btn-row" }, ask));
+    body.replaceChildren(...extra, h("p", { class: "soft" }, "This card has no stored explainer yet."), ...tail, h("div", { class: "btn-row" }, ask));
   };
   const open = () => {
     if (!filled) { filled = true; fill(); }
@@ -431,271 +432,184 @@ document.addEventListener("keydown", (e) => {
 
 // ---------- Today: the daily swipe ----------
 
-// Every date with a session on any course (streaks and the weekly target count them all).
+// ---------- Today: the current course or book, read at your own pace ----------
+// Today opens at your place in the current course (the Meditations path or a
+// tradition) or book. Read as many passages as you like; your place is saved as
+// you go, and Today resumes there until it's done.
+
+// Every date you read on (streaks and the weekly target count them all).
 function sessionDates() {
-  return [...new Set([...Object.keys(state.sessions), ...Object.values(state.courses || {}).flatMap((c) => Object.keys(c.sessions || {}))])];
+  const dates = [...Object.keys(state.sessions), ...Object.values(state.courses || {}).flatMap((c) => Object.keys(c.sessions || {}))];
+  return [...new Set(dates)];
 }
 
-function renderToday() {
-  if (state.course && state.course !== "meditations") return renderTraditionToday(state.course);
-  const today = dayKey();
-  const { day: dayNum, done, finished } = todaysDay(state.progress, state.sessions, today, course.days.length);
-  if (finished && !state.sessions[today]) return renderReview();
-  const day = dayByNum(dayNum);
-  const passage = verifiedPassage(library, pid(day));
-  document.body.classList.add("on-cards");
-
-  const deck = h("div", { class: "deck" });
-  const cards = [];
-  const bg = (angle) => ({ "--card-bg": dusk(day.virtue, angle) });
-  let quickRequested = false;
-
-  const next = (el) => {
-    const i = cards.indexOf(el);
-    cards[i + 1]?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  // 1. Passage
-  const favMark = h("span", { class: "fav-mark" }, state.saved[pid(day)] ? "✦" : "");
-  const passageActions = h("div", { class: "btn-row" }, cardActions(pid(day), favMark));
-  loadIndex().then(() => { const b = compareButton(pid(day)); if (b) passageActions.prepend(b); }).catch(() => {});
-  const qsize = passage ? Math.max(19, Math.min(34, 34 - (passage.text.length - 120) / 40)) : 24;
-  const passageCard = h("section", { class: "card", style: { ...bg(180), "--qsize": `${qsize}px` } },
-    h("p", { class: "eyebrow" }, `Day ${day.day} of ${course.days.length} · ${unitOf(day).title}`),
-    h("div", { class: "card-scroll" },
-      passage
-        ? illuminatedQuote(passage.text, pid(day))
-        : h("p", { class: "lede" }, "This passage failed its integrity check, so it isn't shown. Re-run the ingest script."),
-      passage && h("p", { class: "quote-ref" }, `${passage.work} ${passage.ref}`, favMark,
-        h("small", {}, `Marcus Aurelius · tr. ${passage.translator}`)),
-      passage && passageActions),
-    h("p", { class: "hint" }, "Swipe left to explain · Hold to save · Swipe up"));
-  if (passage) explainPanel(passageCard, pid(day), studiedIds(day));
-  let holdTimer;
-  const startHold = (e) => {
-    if (e.target.closest("button, .explain-panel") || passageCard.classList.contains("explaining")) return;
-    passageCard.classList.add("holding");
-    holdTimer = setTimeout(() => {
-      passageCard.classList.remove("holding");
-      navigator.vibrate?.(12);
-      saveSheet(pid(day), () => {
-        favMark.textContent = state.saved[pid(day)] ? "✦" : "";
-        passageCard.querySelectorAll(".save-btn").forEach((b) => (b.textContent = state.saved[pid(day)] ? "Saved ✦" : "Save"));
-      });
-    }, 650);
-  };
-  const endHold = () => { clearTimeout(holdTimer); passageCard.classList.remove("holding"); };
-  passageCard.addEventListener("pointerdown", startHold);
-  ["pointerup", "pointerleave", "pointercancel"].forEach((ev) => passageCard.addEventListener(ev, endHold));
-  passageCard.addEventListener("contextmenu", (e) => e.preventDefault());
-  cards.push(passageCard);
-
-  // 2. Context
-  cards.push(h("section", { class: "card", style: bg(160) },
-    h("p", { class: "eyebrow" }, "Context"),
-    h("p", { class: "lede" }, day.context),
-    h("div", { class: "keyword" },
-      h("span", { class: "greek" }, day.keyword.greek),
-      h("span", { class: "translit" }, day.keyword.translit),
-      h("div", { class: "gloss" }, day.keyword.gloss))));
-
-  // 3. Explainer (text only, for focus)
-  const explainOut = h("div");
-  const explainBtn = explainButton(pid(day), explainOut, studiedIds(day), "Longer explanation");
-  const explainer = h("section", { class: "card", style: { "--card-bg": "linear-gradient(180deg, #1d1b18, #121110)" } },
-    h("p", { class: "eyebrow" }, "Explainer"),
-    h("div", { class: "card-scroll" },
-      h("span", { class: "label-para" }, "Plain-English paraphrase · not Marcus's words"),
-      h("p", { class: "lede" }, day.paraphrase),
-      explainOut,
-      h("div", { class: "btn-row" }, explainBtn,
-        !done && h("button", { class: "btn", onclick: () => {
-          quickRequested = true;
-          endCard.scrollIntoView({ behavior: "smooth" });
-        } }, "Quick mode: finish here"))));
-  cards.push(explainer);
-
-  // 4. Apply: questions to carry into the day
-  const applyCard = h("section", { class: "card", style: bg(140) },
-    h("p", { class: "eyebrow" }, "Apply"),
-    h("div", { class: "card-scroll" },
-      h("p", { class: "soft" }, "Carry one of these into today."),
-      Object.entries(day.apply).map(([area, q]) =>
-        h("div", { class: "choice" }, h("small", {}, area === "decision" ? "A current decision" : area), q))));
-  cards.push(applyCard);
-
-  // End card
-  const endStats = h("div", { class: "stats" });
-  const endMsg = h("p", { class: "soft" });
-  const endCard = h("section", { class: "card end", style: { "--card-bg": "radial-gradient(90% 60% at 50% 100%, #6b4a33 0%, transparent 70%), linear-gradient(180deg, #221d19, #0e0d0c)" } },
-    h("p", { class: "eyebrow" }, "Session complete"),
-    h("h2", {}, "Done for today."),
-    endStats,
-    endMsg,
-    h("div", { class: "btn-row", style: { justifyContent: "center" } },
-      h("button", { class: "btn primary", onclick: () => go("swipe") }, "Keep swiping"),
-      h("button", { class: "btn", onclick: () => go("browse") }, "Browse")));
-  const drawEnd = (earned) => {
-    const sessions = sessionDates();
-    const s = streak(sessions, today);
-    endStats.replaceChildren(
-      h("div", { class: "stat" }, h("b", { class: `num ${earned ? "shimmer" : ""}` }, totalPoints(state.ledger)), h("span", {}, "Points")),
-      h("div", { class: "stat" }, h("b", { class: "num" }, s.count), h("span", {}, "Day streak")),
-      h("div", { class: "stat" }, h("b", { class: "num" }, `${weekCount(sessions, today)}/${WEEKLY_TARGET}`), h("span", {}, "This week")));
-    const nextDay = dayByNum(state.progress.completedDay + 1);
-    endMsg.textContent = nextDay
-      ? `Tomorrow: day ${nextDay.day}, ${unitOf(nextDay).title.toLowerCase()}. Nothing more to see today.`
-      : "That was the last day of the Meditations. Tomorrow: your review week.";
-  };
-  drawEnd(false);
-  new IntersectionObserver((es) => {
-    if (!es[0].isIntersecting) return;
-    const earned = completeSession(day, quickRequested && !state.sessions[today] ? "quick" : "full");
-    drawEnd(earned > 0);
-    if (earned > 0) toast(`+${earned} points`);
-  }, { threshold: 0.7 }).observe(endCard);
-  cards.push(endCard);
-
-  // entrance motion + gentle parallax
-  const io = new IntersectionObserver((es) => es.forEach((en) => en.isIntersecting && en.target.classList.add("in")), { threshold: 0.35 });
-  cards.forEach((c) => { deck.append(c); io.observe(c); });
-  deck.addEventListener("scroll", () => {
-    const y = deck.scrollTop / deck.clientHeight;
-    cards.forEach((c, i) => c.style.setProperty("--shift", String(Math.max(-1, Math.min(1, i - y)))));
-  }, { passive: true });
-  view.replaceChildren(deck);
-  setTimeout(showInstallBanner, 1500);
-  if (done && !finished) toast("Done for today. Revisiting.");
-}
-
-// ---------- Tradition courses (the Traditions wing, one passage a day) ----------
-
-function courseProgress(tid) {
+function courseProgress(key) {
   state.courses ??= {};
-  return (state.courses[tid] ??= { completedDay: 0, sessions: {} });
+  return (state.courses[key] ??= { completedDay: 0, sessions: {} });
 }
 
-function startCourse(tid) {
-  state.course = tid;
+// Make a course ("meditations", a tradition id) or a book ("book:<volume>") Today's reading.
+function startCourse(key) {
+  state.course = key;
   persist();
   go("today");
 }
 
-async function renderTraditionToday(tid) {
-  document.body.classList.add("on-cards");
-  view.replaceChildren(h("div", { class: "page" }, h("p", { class: "muted" }, "Opening today's passage…")));
+const chapterOf = (ref) => (/, ¶/.test(ref) ? ref.replace(/, ¶.*$/, "") : null);
+
+// The reading for Today: a title and an ordered list of passages with their chapters.
+async function currentReading() {
+  const key = state.course || "meditations";
+  if (key === "meditations") {
+    return {
+      key, title: "The Meditations", author: "Marcus Aurelius", progress: state.progress,
+      items: course.days.map((d) => ({ id: pid(d), chapter: `unit${d.unit}`, label: `Day ${d.day} of ${course.days.length} · ${unitOf(d).title}`, day: d })),
+      unitKey: (it) => `${course.id}.${it.day.unit}`, doneKey: course.id,
+    };
+  }
   await loadIndex();
-  const t = traditionVolumes().find((x) => x.id === tid);
-  if (!t) { state.course = "meditations"; persist(); return renderToday(); }
+  if (key.startsWith("book:")) {
+    const vol = key.slice(5);
+    const meta = metaOf(vol);
+    if (!meta) return null;
+    await loadVolume(vol);
+    const ids = idsOf(vol);
+    return {
+      key, title: meta.work, author: meta.author, progress: courseProgress(key),
+      items: ids.map((id, i) => {
+        const ref = library.passages[id].ref;
+        const ch = chapterOf(ref);
+        return { id, chapter: ch, label: `${meta.author} · ${ch || citeRef(library.passages[id])} · ${i + 1} of ${ids.length}` };
+      }),
+      unitKey: null, doneKey: `book.${vol}`,
+    };
+  }
+  const t = traditionVolumes().find((x) => x.id === key);
+  if (!t) return null;
   const weeks = volIndex.traditions.weeks || [];
-  const today = dayKey();
-  const prog = courseProgress(tid);
-  const { day: n, done, finished } = todaysDay(prog, prog.sessions, today, t.days.length);
-  const entry = t.days[n - 1];
-  await Promise.all([loadVolume(volOf(entry.id)), loadExplainers(volOf(entry.id))]);
-  const p = verifiedPassage(library, entry.id);
-  const e = explainers[entry.id];
-  const week = weeks.find((w) => w.n === entry.week);
-  const tones = ["wisdom", "justice", "courage", "temperance"];
-  const bg = (angle) => ({ "--card-bg": dusk(tones[(entry.week - 1) % 4], angle) });
-  const deck = h("div", { class: "deck" });
-  const cards = [];
-
-  if (finished && !prog.sessions[today]) {
-    cards.push(h("section", { class: "card end", style: bg(180) },
-      h("p", { class: "eyebrow" }, `${t.author} · course complete`),
-      h("h2", {}, `You've finished the ${t.days.length}-day course.`),
-      h("p", { class: "soft" }, "Start another tradition, return to the Meditations, or begin this one again."),
-      h("div", { class: "btn-row", style: { justifyContent: "center" } },
-        h("button", { class: "btn primary", onclick: () => go("browse") }, "Choose a course"),
-        h("button", { class: "btn", onclick: () => { prog.completedDay = 0; persist(); renderToday(); } }, "Begin again"),
-        h("button", { class: "btn", onclick: () => startCourse("meditations") }, "The Meditations"))));
-    cards.forEach((c) => { c.classList.add("in"); deck.append(c); });
-    return view.replaceChildren(deck);
-  }
-
-  // 1. Passage
-  const mark = h("span", { class: "fav-mark" }, state.saved[entry.id] ? "✦" : "");
-  const qsize = p ? Math.max(19, Math.min(32, 32 - (p.text.length - 120) / 40)) : 24;
-  const passageCard = h("section", { class: "card", style: { ...bg(180), "--qsize": `${qsize}px` } },
-    h("p", { class: "eyebrow" }, `${t.author} · Day ${n} of ${t.days.length} · ${week ? `Week ${week.n}: ${week.theme}` : ""}`),
-    h("div", { class: "card-scroll" },
-      p ? illuminatedQuote(p.text, entry.id) : h("p", { class: "lede" }, "This passage failed its integrity check, so it isn't shown."),
-      p && originalText(p),
-      p && h("p", { class: "quote-ref" }, citeRef(p), mark, h("small", {}, `${p.author} · tr. ${p.translator}`)),
-      p && h("div", { class: "btn-row" }, compareButton(entry.id), cardActions(entry.id, mark))),
-    h("p", { class: "hint" }, "Swipe left to explain · Swipe up"));
-  if (p) explainPanel(passageCard, entry.id, [entry.id]);
-  cards.push(passageCard);
-
-  // 2. Background
-  if (e?.context) cards.push(h("section", { class: "card", style: bg(160) },
-    h("p", { class: "eyebrow" }, "Background"),
-    h("div", { class: "card-scroll" }, h("p", { class: "lede" }, e.context))));
-
-  // 3. Explainer
-  const deepOut = h("div");
-  const part = (label, text) => text && h("div", { class: "explainer-part" }, h("p", { class: "explainer-label" }, label), renderTutor(text, [entry.id]));
-  cards.push(h("section", { class: "card", style: { "--card-bg": "linear-gradient(180deg, #1d1b18, #121110)" } },
-    h("p", { class: "eyebrow" }, "Explainer"),
-    h("div", { class: "card-scroll" },
-      e ? h("div", { class: "explainer" }, part("In plain English", e.meaning), part("Today", e.today), part("For you", e.you))
-        : h("p", { class: "lede" }, "No stored explainer for this passage yet."),
-      deepOut,
-      h("div", { class: "btn-row" }, e ? deeperButton(entry.id, deepOut, [entry.id]) : explainButton(entry.id, deepOut, [entry.id], "Explain with Claude")))));
-
-  // 4. Compare
-  const theme = compareFor(entry.id)[0];
-  if (theme) {
-    const mine = theme.entries.find((x) => x.id === entry.id);
-    cards.push(h("section", { class: "card", style: bg(140) },
-      h("p", { class: "eyebrow" }, `Compare · ${theme.theme}`),
-      h("div", { class: "card-scroll" },
-        h("p", { class: "lede" }, theme.shared),
-        h("p", { class: "soft" }, theme.differs),
-        mine && h("p", { class: "soft" }, h("strong", {}, `${t.author}: `), mine.similar),
-        h("div", { class: "btn-row" }, h("button", { class: "btn", onclick: () => compareSheet(theme, entry.id) }, "See every tradition")))));
-  }
-
-  // End
-  const endStats = h("div", { class: "stats" });
-  const nextEntry = t.days[n]; // n is 1-based, so this is tomorrow
-  const nextWeek = nextEntry && weeks.find((w) => w.n === nextEntry.week);
-  const endCard = h("section", { class: "card end", style: { "--card-bg": "radial-gradient(90% 60% at 50% 100%, #6b4a33 0%, transparent 70%), linear-gradient(180deg, #221d19, #0e0d0c)" } },
-    h("p", { class: "eyebrow" }, "Session complete"),
-    h("h2", {}, "Done for today."),
-    endStats,
-    h("p", { class: "soft" }, nextEntry ? `Tomorrow: day ${t.days.indexOf(nextEntry) + 1} of ${t.days.length}, ${nextWeek?.theme.toLowerCase() || ""}.` : `That was the last day of the ${t.author} course.`),
-    h("div", { class: "btn-row", style: { justifyContent: "center" } },
-      h("button", { class: "btn primary", onclick: () => go("swipe") }, "Keep swiping"),
-      h("button", { class: "btn", onclick: () => go("browse") }, "Change course")));
-  const drawEnd = (earned) => {
-    const dates = sessionDates();
-    endStats.replaceChildren(
-      h("div", { class: "stat" }, h("b", { class: `num ${earned ? "shimmer" : ""}` }, totalPoints(state.ledger)), h("span", {}, "Points")),
-      h("div", { class: "stat" }, h("b", { class: "num" }, streak(dates, today).count), h("span", {}, "Day streak")),
-      h("div", { class: "stat" }, h("b", { class: "num" }, `${weekCount(dates, today)}/${WEEKLY_TARGET}`), h("span", {}, "This week")));
+  await Promise.all([...new Set(t.days.map((d) => volOf(d.id)))].map((v) => loadVolume(v)));
+  return {
+    key, title: t.work, author: t.author, progress: courseProgress(key),
+    items: t.days.map((d, i) => {
+      const w = weeks.find((x) => x.n === d.week);
+      return { id: d.id, chapter: `week${d.week}`, label: `${t.author} · Day ${i + 1} of ${t.days.length} · Week ${d.week}: ${w?.theme || ""}`, week: d.week };
+    }),
+    unitKey: (it) => `${t.id}.w${it.week}`, doneKey: t.id,
   };
-  drawEnd(false);
-  new IntersectionObserver((es) => {
-    if (!es[0].isIntersecting || prog.sessions[today]) return;
-    let earned = award("session");
-    prog.sessions[today] = { day: n, mode: "full" };
-    if (n > prog.completedDay) {
-      prog.completedDay = n;
-      if (t.days[n]?.week !== entry.week) earned += award("unit", `${t.id}.w${entry.week}`);
-      if (n === t.days.length) earned += award("course", t.id);
-    }
-    persist();
-    drawEnd(earned > 0);
-    if (earned > 0) toast(`+${earned} points`);
-  }, { threshold: 0.7 }).observe(endCard);
-  cards.push(endCard);
+}
 
+// The Meditations course's own material for a day, shown in the explainer panel.
+function courseNotes(d) {
+  return h("div", { class: "course-notes" },
+    h("p", { class: "explainer-label" }, "Context"), h("p", {}, d.context),
+    h("div", { class: "keyword" }, h("span", { class: "greek" }, d.keyword.greek), h("span", { class: "translit" }, d.keyword.translit), h("div", { class: "gloss" }, d.keyword.gloss)),
+    h("p", { class: "explainer-label" }, "Plain-English paraphrase · not Marcus's words"), h("p", {}, d.paraphrase));
+}
+function applyNotes(d) {
+  return h("div", { class: "course-notes" }, h("p", { class: "explainer-label" }, "Carry one into today"),
+    Object.entries(d.apply).map(([area, q]) => h("div", { class: "choice" }, h("small", {}, area === "decision" ? "A current decision" : area), q)));
+}
+
+async function renderToday() {
+  document.body.classList.add("on-cards");
+  const reading = await currentReading();
+  if (!reading) { state.course = "meditations"; persist(); return renderToday(); }
+  const { items, progress } = reading;
+  const today = dayKey();
+  const start = Math.min(progress.completedDay || 0, items.length);
+  if (start >= items.length) return reading.key === "meditations" ? renderReview() : renderFinished(reading);
+
+  const deck = h("div", { class: "deck" });
+  const tones = ["wisdom", "justice", "courage", "temperance"];
   const io = new IntersectionObserver((es) => es.forEach((en) => en.isIntersecting && en.target.classList.add("in")), { threshold: 0.35 });
-  cards.forEach((c) => { deck.append(c); io.observe(c); });
+  let next = start;
+
+  // reading past a card counts it as read; the first passage read each day records the session
+  const markRead = (i) => {
+    if (i + 1 <= (progress.completedDay || 0)) return;
+    progress.completedDay = i + 1;
+    let earned = 0;
+    const sessions = reading.key === "meditations" ? state.sessions : (progress.sessions ??= {});
+    if (!sessions[today]) {
+      sessions[today] = { day: i + 1, mode: "read" };
+      earned += award("session");
+    } else sessions[today].day = i + 1;
+    const it = items[i];
+    if (reading.unitKey && items[i + 1]?.chapter !== it.chapter) earned += award("unit", reading.unitKey(it));
+    if (i + 1 === items.length) earned += award("course", reading.doneKey);
+    persist();
+    if (earned) toast(`+${earned} points`);
+  };
+
+  const cardFor = (i) => {
+    const it = items[i];
+    const p = verifiedPassage(library, it.id);
+    const opensChapter = i === start || items[i - 1]?.chapter !== it.chapter;
+    const bg = { "--card-bg": dusk(it.day?.virtue || tones[i % 4], 160 + (i % 3) * 20) };
+    const mark = h("span", { class: "fav-mark" }, state.saved[it.id] ? "✦" : "");
+    const qsize = p ? Math.max(19, Math.min(32, 32 - (p.text.length - 120) / 40)) : 24;
+    const ask = h("button", { class: "btn", onclick: () => card.explain.open() }, "Explain");
+    const actions = h("div", { class: "btn-row" }, ask, compareButton(it.id), cardActions(it.id, mark));
+    const card = h("section", { class: "card", style: { ...bg, "--qsize": `${qsize}px` } },
+      h("p", { class: "eyebrow" }, i === start && i > 0 ? `Resume · ${it.label}` : it.label),
+      h("div", { class: "card-scroll" },
+        p ? (opensChapter ? illuminatedQuote(p.text, it.id) : h("blockquote", { class: "quote" }, p.text))
+          : h("p", { class: "lede" }, library.passages[it.id] ? "This passage failed its integrity check, so it isn't shown." : "This passage couldn't be loaded. Check your connection."),
+        p && originalText(p),
+        p && h("p", { class: "quote-ref" }, citeRef(p), mark, h("small", {}, `${p.author} · tr. ${p.translator}`)),
+        p && actions),
+      i === start && h("p", { class: "hint" }, "Swipe left to explain · Swipe up for the next · Stop any time, and Today resumes here"));
+    card.dataset.i = String(i);
+    if (p) explainPanel(card, it.id, reading.key === "meditations" ? studiedIds(it.day) : [it.id], it.day
+      ? { after: () => h("div", {}, courseNotes(it.day), applyNotes(it.day)) } : {});
+    return card;
+  };
+
+  const endCard = () => h("section", { class: "card end", style: { "--card-bg": "radial-gradient(90% 60% at 50% 100%, #6b4a33 0%, transparent 70%), linear-gradient(180deg, #221d19, #0e0d0c)" } },
+    h("p", { class: "eyebrow" }, reading.title),
+    h("h2", {}, "The end."),
+    h("p", { class: "soft" }, `You've read all ${items.length} passages of ${reading.title}.`),
+    h("div", { class: "btn-row", style: { justifyContent: "center" } },
+      h("button", { class: "btn primary", onclick: () => renderToday() }, "Continue"),
+      h("button", { class: "btn", onclick: () => go("browse") }, "Choose what's next")));
+
+  const append = (n) => {
+    for (let k = 0; k < n && next < items.length; k++, next++) {
+      const c = cardFor(next);
+      deck.append(c); io.observe(c); seen.observe(c);
+    }
+    if (next >= items.length && !deck.querySelector(".end")) { const e = endCard(); deck.append(e); io.observe(e); seen.observe(e); }
+  };
+  // when a card fills the screen, the one before it has been read; keep a few cards ahead
+  const seen = new IntersectionObserver((es) => {
+    for (const en of es) {
+      if (!en.isIntersecting) continue;
+      if (en.target.classList.contains("end")) { markRead(items.length - 1); continue; }
+      const i = Number(en.target.dataset.i);
+      if (i > start) markRead(i - 1);
+      if (next - i < 3) append(3);
+    }
+  }, { threshold: 0.6 });
+  append(3);
+  deck.addEventListener("scroll", () => {
+    const y = deck.scrollTop / deck.clientHeight;
+    [...deck.children].forEach((c, k) => c.style.setProperty("--shift", String(Math.max(-1, Math.min(1, k - y)))));
+  }, { passive: true });
   view.replaceChildren(deck);
-  if (done) toast("Done for today. Revisiting.");
+  setTimeout(showInstallBanner, 1500);
+}
+
+function renderFinished(reading) {
+  const deck = h("div", { class: "deck" });
+  const card = h("section", { class: "card end in", style: { "--card-bg": "radial-gradient(90% 60% at 50% 0%, #6b5a33 0%, transparent 70%), linear-gradient(180deg, #221d19, #0e0d0c)" } },
+    h("p", { class: "eyebrow" }, `${reading.author} · finished`),
+    h("h2", {}, `You've finished ${reading.title}.`),
+    h("p", { class: "soft" }, "Choose another course or book, or begin this one again."),
+    h("div", { class: "btn-row", style: { justifyContent: "center" } },
+      h("button", { class: "btn primary", onclick: () => go("browse") }, "Choose what's next"),
+      h("button", { class: "btn", onclick: () => { reading.progress.completedDay = 0; persist(); renderToday(); } }, "Begin again")));
+  deck.append(card);
+  view.replaceChildren(deck);
 }
 
 // Course 1 ends with a review week: your saved passages, as cards. Then you
@@ -736,23 +650,6 @@ function renderReview() {
   const io = new IntersectionObserver((es) => es.forEach((en) => en.isIntersecting && en.target.classList.add("in")), { threshold: 0.35 });
   cards.forEach((c) => { deck.append(c); io.observe(c); });
   view.replaceChildren(deck);
-}
-
-// Records the day's session; returns points earned now.
-function completeSession(day, mode) {
-  const today = dayKey();
-  const existing = state.sessions[today];
-  if (existing && (existing.mode === "full" || mode === "quick")) return 0;
-  let earned = award(mode === "quick" ? "quick" : "session");
-  state.sessions[today] = { day: day.day, mode };
-  if (day.day > state.progress.completedDay) {
-    state.progress.completedDay = day.day;
-    const unitDays = course.days.filter((d) => d.unit === day.unit);
-    if (unitDays[unitDays.length - 1].day === day.day) earned += award("unit", `${course.id}.${day.unit}`);
-    if (day.day === course.days.length) earned += award("course", course.id);
-  }
-  persist();
-  return earned;
 }
 
 // ---------- sheets ----------
@@ -1047,7 +944,7 @@ function renderYou() {
     h("h2", {}, "How points work"),
     h("div", { class: "panel muted" },
       h("p", { style: { margin: 0 } },
-        `Daily session ${POINTS.session} · quick mode ${POINTS.quick} · save a card ${POINTS.favourite} (up to 5 a day) · finish a unit ${POINTS.unit} · finish the course ${POINTS.course}. Swipes and time in the app score nothing.`),
+        `First passage read each day ${POINTS.session} · save a card ${POINTS.favourite} (up to 5 a day) · finish a unit ${POINTS.unit} · finish the course ${POINTS.course}. Swipes and time in the app score nothing.`),
       h("p", { style: { marginBottom: 0 } }, "Ranks: ", RANKS.map((r) => `${r.name} ${r.min.toLocaleString()}`).join(" · "))),
     h("h2", {}, "About you"),
     h("div", { class: "panel" },
@@ -1400,15 +1297,24 @@ async function renderBrowse() {
     .filter(([, list]) => list.length);
   const authorRow = (v) => {
     const pos = mix.positions[v.id] || 0;
-    return h("button", { class: "entry", onclick: () => startRun("play", { vol: v.id }) },
-      h("div", { class: "when" }, `${v.author}${v.year ? ` · ${v.year}` : ""}`),
+    const read = state.courses?.[`book:${v.id}`]?.completedDay || 0;
+    const reading = state.course === `book:${v.id}`;
+    return h("button", { class: "entry", onclick: () => bookSheet(v) },
+      h("div", { class: "when" }, `${v.author}${v.year ? ` · ${v.year}` : ""}${reading ? " · reading in Today" : ""}`),
       h("div", { class: "what" }, v.work),
-      h("div", { class: "snip" }, `${v.why}. ${pos ? `Resume at ${pos + 1} of ${v.count}` : `${v.count} passages`}.`));
+      h("div", { class: "snip" }, `${v.why}. ${read ? `Read ${read} of ${v.count}` : pos ? `Swiped to ${pos + 1} of ${v.count}` : `${v.count} passages`}.`));
   };
+  const key = state.course || "meditations";
+  const nowTitle = key === "meditations" ? "Marcus Aurelius · Meditations" : key.startsWith("book:")
+    ? (() => { const v = vols.find((x) => `book:${x.id}` === key); return v ? `${v.author} · ${v.work}` : key; })()
+    : (() => { const t = traditionVolumes().find((x) => x.id === key); return t ? `${t.author} · ${t.work}` : key; })();
   view.replaceChildren(h("div", { class: "page" },
     h("p", { class: "eyebrow", style: { color: "var(--muted)" } }, "Library"),
     h("h1", {}, "Browse"),
-    h("p", { class: "sub" }, `Pick a way in; it opens in Swipe. On any card, tap the author to read on in that book, or a subject to follow it across authors. Reading scores nothing, and a run ends after ${MIX_RUN_LENGTH} cards.`),
+    h("p", { class: "sub" }, `Pick what Today reads, or a way in for Swipe. On any card, tap the author to read on in that book, or a subject to follow it across authors. Swiping scores nothing, and a run ends after ${MIX_RUN_LENGTH} cards.`),
+    h("div", { class: "panel resume" },
+      h("div", {}, h("div", { class: "muted" }, "Reading in Today"), h("b", {}, nowTitle)),
+      h("button", { class: "btn primary", onclick: () => go("today") }, "Read")),
     run && h("div", { class: "panel resume" },
       h("div", {}, h("b", {}, runLabel(run)), h("div", { class: "muted" }, `Card ${Math.min((run.i ?? 0) + 1, run.ids.length)} of ${MIX_RUN_LENGTH}`)),
       h("button", { class: "btn primary", onclick: () => go("swipe") }, "Resume")),
@@ -1426,15 +1332,15 @@ async function renderBrowse() {
     traditionVolumes().length > 0 && [
       h("h2", {}, "World traditions"),
       h("p", { class: "muted" }, `Core passages from ${traditionVolumes().map((t) => t.author).join(", ")}, in four weekly themes: ${(volIndex.traditions.weeks || []).map((w) => w.theme).join(", ")}. Compare, don't rank.`),
-      h("h3", { class: "shelf" }, "Daily courses"),
+      h("h3", { class: "shelf" }, "Courses for Today"),
       h("div", {}, [{ id: "meditations", author: "Marcus Aurelius", work: "Meditations", days: course.days }, ...traditionVolumes()].map((c) => {
         const prog = c.id === "meditations" ? state.progress : state.courses?.[c.id];
         const current = (state.course || "meditations") === c.id;
         const at = prog?.completedDay || 0;
         return h("button", { class: "entry", onclick: () => startCourse(c.id) },
-          h("div", { class: "when" }, `${c.author}${current ? " · your daily course" : ""}`),
-          h("div", { class: "what" }, `${c.days.length}-day course: ${c.work}`),
-          h("div", { class: "snip" }, current ? `Day ${Math.min(at + 1, c.days.length)} of ${c.days.length}. Tap to open Today.` : at ? `Resume at day ${at + 1}. Tap to make it your daily course.` : "Tap to make it your daily course, one passage a day."));
+          h("div", { class: "when" }, `${c.author}${current ? " · reading in Today" : ""}`),
+          h("div", { class: "what" }, `${c.days.length}-passage course: ${c.work}`),
+          h("div", { class: "snip" }, current ? `Passage ${Math.min(at + 1, c.days.length)} of ${c.days.length}. Tap to read on.` : at ? `Resume at passage ${at + 1}. Tap to read it in Today.` : "Tap to read it in Today, as much or as little as you like."));
       })),
       h("h3", { class: "shelf" }, "Compare"),
       h("div", { class: "filters", style: { flexWrap: "wrap" } },
@@ -1450,6 +1356,19 @@ async function renderBrowse() {
       h("div", { class: "what" }, b.title), h("div", { class: "snip" }, b.author)))),
     h("h2", {}, "Coming to the library"),
     h("p", { class: "muted" }, volIndex.coming.join(" · "))));
+}
+
+// An author row: read the book in Today (it resumes where you stopped) or swipe through it.
+function bookSheet(v) {
+  const read = state.courses?.[`book:${v.id}`]?.completedDay || 0;
+  const pos = mixState().positions[v.id] || 0;
+  const back = sheet(h("p", { class: "eyebrow" }, `${v.author}${v.year ? ` · ${v.year}` : ""}`), h("h2", {}, v.work),
+    h("p", { class: "muted" }, `${v.why}. ${v.count} passages.`),
+    h("div", { class: "btn-row" },
+      h("button", { class: "btn primary", onclick: () => { back.remove(); startCourse(`book:${v.id}`); } },
+        read >= v.count ? "Read again in Today" : read ? `Read in Today (resume at ${read + 1})` : "Read in Today"),
+      h("button", { class: "btn", onclick: () => { back.remove(); startRun("play", { vol: v.id }); } }, pos ? `Swipe on from ${pos + 1}` : "Swipe through it"),
+      h("button", { class: "btn", onclick: () => back.remove() }, "Close")));
 }
 
 function alongsideSheet(book) {
