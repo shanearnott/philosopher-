@@ -22,8 +22,8 @@ This is **Phase 1** of the plan (*Stoa — A Philosophy Feed to Replace Instagra
 
 GitHub hosts the app at **https://shanearnott.github.io/philosopher-/**. There's no server, so the tutor calls Claude directly from your device with your own API key.
 
-1. **Turn on Pages, once.** In the repo on GitHub, go to **Settings → Pages**, and under **Build and deployment → Source** choose **GitHub Actions**.
-2. **Publish.** Every push to `main` runs the tests and publishes `public/` (see `.github/workflows/pages.yml`). You can also run it from the **Actions** tab (**Deploy to GitHub Pages → Run workflow**).
+1. **Publish.** Every push to `main` runs the tests and publishes `public/` to the `gh-pages` branch, which GitHub Pages serves (see `.github/workflows/pages.yml`). You can also run it from the **Actions** tab (**Deploy to GitHub Pages → Run workflow**).
+2. **If the page doesn't appear**, go to the repo's **Settings → Pages** and set **Source** to **Deploy from a branch**, with branch `gh-pages` and folder `/ (root)`.
 3. **On your phone or iPad**, open the address in Safari. Stoa shows a banner: tap **Share**, then **Add to Home Screen**, and move it to where Instagram was.
 4. **Turn on the tutor.** The first time you use it, Stoa asks for a Claude API key from [console.anthropic.com](https://console.anthropic.com/settings/keys). You can also add it later under **You → Settings**. Do this *inside the home-screen app*, because iOS keeps its storage separate from Safari.
 
