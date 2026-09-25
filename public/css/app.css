@@ -169,15 +169,17 @@ body.on-cards .tabs { background: rgba(18, 17, 16, 0.55); border-color: rgba(255
 .panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
 .panel-head .eyebrow { margin: 0; }
 .panel-close { width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.18); border-radius: 50%; background: none; color: inherit; display: grid; place-items: center; }
-.panel-scroll { flex: 1; overflow-y: auto; overscroll-behavior: contain; min-height: 0; font-size: calc(18px * var(--text-scale, 1)); }
+.panel-scroll { flex: 1; overflow-y: auto; overscroll-behavior: contain; min-height: 0; font-size: calc(18px * var(--explainer-scale, 1)); }
 /* explainer text: larger than the card chrome, and scaled by the text-size setting */
-.explain-panel .tutor { font-size: calc(21px * var(--text-scale, 1)); line-height: 1.55; }
+.explain-panel .tutor { font-size: calc(21px * var(--explainer-scale, 1)); line-height: 1.55; }
 .explain-panel .tutor blockquote.cited { font-size: 0.92em; }
-.explain-panel .keyword .gloss, .explain-panel .choice { font-size: calc(16px * var(--text-scale, 1)); }
+.explain-panel .keyword .gloss, .explain-panel .choice { font-size: calc(16px * var(--explainer-scale, 1)); }
 .panel-head { gap: 10px; }
 .panel-head .eyebrow { flex: 1; }
 .panel-aa { height: 40px; min-width: 40px; padding: 0 12px; border: 1px solid rgba(255,255,255,0.18); border-radius: 20px; background: none; color: inherit; font: 400 17px/1 var(--serif); }
-.text-sample { display: block; margin-top: 10px; font: 400 calc(19px * var(--text-scale, 1))/1.45 var(--serif); color: var(--text-soft); }
+.text-sample { display: block; margin-top: 10px; font: 400 19px/1.45 var(--serif); color: var(--text-soft); }
+.text-sample.sample-card { font-size: calc(22px * var(--card-scale, 1)); line-height: 1.3; }
+.text-sample.sample-explainer { font-size: calc(19px * var(--explainer-scale, 1)); }
 
 .eyebrow {
   font: 600 11px/1.2 var(--sans); letter-spacing: 0.18em; text-transform: uppercase;
@@ -198,7 +200,7 @@ body.on-cards .tabs { background: rgba(18, 17, 16, 0.55); border-color: rgba(255
 /* passage */
 .quote {
   font-family: var(--serif); font-weight: 400; margin: 0;
-  font-size: calc(var(--qsize, 30px) * var(--text-scale, 1)); line-height: 1.3; letter-spacing: 0.005em;
+  font-size: calc(var(--qsize, 30px) * var(--card-scale, 1)); line-height: 1.3; letter-spacing: 0.005em;
   text-wrap: pretty; white-space: pre-line;
 }
 .quote-ref { margin-top: 22px; font: 500 13px/1.4 var(--sans); letter-spacing: 0.08em; color: var(--gold-soft); }
@@ -454,7 +456,7 @@ h3.shelf { font: 600 12px/1.4 var(--sans); letter-spacing: 0.1em; text-transform
 /* iPad and wider: a centred reading column, larger type */
 @media (min-width: 700px) {
   .card { padding-left: max(48px, calc((100vw - 640px) / 2)); padding-right: max(48px, calc((100vw - 640px) / 2)); }
-  .quote { font-size: calc(var(--qsize, 30px) * 1.25 * var(--text-scale, 1)); }
+  .quote { font-size: calc(var(--qsize, 30px) * 1.25 * var(--card-scale, 1)); }
   .card .lede { font-size: 24px; }
   .card h2 { font-size: 38px; }
   .tutor, textarea.reflect { font-size: 21px; }
@@ -467,7 +469,7 @@ h3.shelf { font: 600 12px/1.4 var(--sans); letter-spacing: 0.1em; text-transform
 /* phones in landscape: keep cards readable */
 @media (max-height: 500px) and (orientation: landscape) {
   .card { padding-top: 20px; padding-bottom: calc(var(--tabs-h) + 12px); }
-  .quote { font-size: calc(20px * var(--text-scale, 1)); }
+  .quote { font-size: calc(20px * var(--card-scale, 1)); }
   .swipe-hint, .hint { display: none; }
 }
 

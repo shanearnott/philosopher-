@@ -7,7 +7,7 @@ export function freshState() {
   return {
     v: 1,
     profile: { role: "", challenges: "", goals: "" },
-    settings: { theme: "auto", hideNumbers: false, token: "", apiKey: "", textScale: 1 },
+    settings: { theme: "auto", hideNumbers: false, token: "", apiKey: "" }, // plus cardScale, explainerScale once set (older saves: textScale)
     progress: { completedDay: 0 },
     sessions: {},
     ledger: [],

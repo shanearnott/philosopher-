@@ -10,7 +10,7 @@ import { THEMES, tagThemes } from "./themes.js";
 import { initialSVG } from "./illumination.js";
 
 // The running version; must equal CACHE in sw.js (test/version.test.mjs).
-const APP_VERSION = "stoa-v34";
+const APP_VERSION = "stoa-v35";
 
 // ---------- boot ----------
 
@@ -118,23 +118,33 @@ function applyTheme() {
   const dark = pref === "dark" || (pref === "auto" && (hr >= 20 || hr < 6));
   document.documentElement.dataset.theme = dark ? "dark" : "light";
   document.body.classList.toggle("hide-numbers", !!state.settings.hideNumbers);
-  document.documentElement.style.setProperty("--text-scale", String(textScale()));
+  document.documentElement.style.setProperty("--card-scale", String(textScale("card")));
+  document.documentElement.style.setProperty("--explainer-scale", String(textScale("explainer")));
 }
-// Text size for passage cards and explainers, set with a slider (You, or Aa in an explainer).
+// Text size, set separately for passage cards and for explainers (You → Settings,
+// or Aa in an explainer). Older saves had one textScale for both.
 const TEXT_SCALE = { min: 0.85, max: 1.6, step: 0.05 };
-const textScale = () => Math.min(TEXT_SCALE.max, Math.max(TEXT_SCALE.min, Number(state.settings.textScale) || 1));
-function textSizeSlider() {
-  const pct = () => `${Math.round(textScale() * 100)}%`;
-  const label = h("span", {}, `Text size on cards and explainers: ${pct()}`);
-  const input = h("input", { type: "range", min: TEXT_SCALE.min, max: TEXT_SCALE.max, step: TEXT_SCALE.step, value: textScale(), style: { width: "100%" }, "aria-label": "Text size" });
-  input.addEventListener("input", () => { state.settings.textScale = Number(input.value); applyTheme(); label.textContent = `Text size on cards and explainers: ${pct()}`; });
+const SCALE_KEY = { card: "cardScale", explainer: "explainerScale" };
+// samples: a real passage (verbatim, from the library) and plain explainer wording
+const SCALE_TEXT = {
+  card: ["Passage cards", () => library.passages["meditations.1.1"]?.text || "Passage text looks like this."],
+  explainer: ["Explainers", () => "Explainer text, in plain English, looks like this at the size you choose."],
+};
+const textScale = (kind) => Math.min(TEXT_SCALE.max, Math.max(TEXT_SCALE.min, Number(state.settings[SCALE_KEY[kind]] ?? state.settings.textScale) || 1));
+function textSizeSlider(kind) {
+  const [name, sampleOf] = SCALE_TEXT[kind];
+  const sample = sampleOf();
+  const pct = () => `${name}: ${Math.round(textScale(kind) * 100)}%`;
+  const label = h("span", {}, pct());
+  const input = h("input", { type: "range", min: TEXT_SCALE.min, max: TEXT_SCALE.max, step: TEXT_SCALE.step, value: textScale(kind), style: { width: "100%" }, "aria-label": `${name} text size` });
+  input.addEventListener("input", () => { state.settings[SCALE_KEY[kind]] = Number(input.value); applyTheme(); label.textContent = pct(); });
   input.addEventListener("change", () => persist());
-  return h("label", { class: "field" }, label, input,
-    h("span", { class: "text-sample", "aria-hidden": "true" }, "The happiness of your life depends upon the quality of your thoughts."));
+  return h("label", { class: "field" }, label, input, h("span", { class: `text-sample sample-${kind}`, "aria-hidden": "true" }, sample));
 }
 function textSizeSheet() {
-  const back = sheet(h("h2", {}, "Text size"), h("p", { class: "muted" }, "For passage cards and explainers. Also in You → Settings."),
-    textSizeSlider(), h("div", { class: "btn-row" }, h("button", { class: "btn primary", onclick: () => back.remove() }, "Done")));
+  const back = sheet(h("h2", {}, "Text size"), h("p", { class: "muted" }, "Set separately for explainers and for passage cards. Also in You → Settings."),
+    textSizeSlider("explainer"), textSizeSlider("card"),
+    h("div", { class: "btn-row" }, h("button", { class: "btn primary", onclick: () => back.remove() }, "Done")));
 }
 applyTheme();
 setInterval(applyTheme, 5 * 60 * 1000);
@@ -994,7 +1004,8 @@ function renderYou() {
     h("h2", {}, "Settings"),
     h("div", { class: "panel" },
       h("label", { class: "field" }, h("span", {}, "Appearance"), themeSel),
-      textSizeSlider(),
+      textSizeSlider("card"),
+      textSizeSlider("explainer"),
       h("label", { class: "field", style: { display: "flex", gap: "10px", alignItems: "center" } }, hide, "Hide all numbers"),
       h("label", { class: "field" }, mixWLabel, mixW),
       !status.claude && h("label", { class: "field" }, h("span", {}, "Optional: Claude API key, pay per use (leave empty to use your Claude app)"), apiKey),
