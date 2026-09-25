@@ -10,7 +10,7 @@ import { THEMES, tagThemes } from "./themes.js";
 import { initialSVG } from "./illumination.js";
 
 // The running version; must equal CACHE in sw.js (test/version.test.mjs).
-const APP_VERSION = "stoa-v31";
+const APP_VERSION = "stoa-v32";
 
 // ---------- boot ----------
 
@@ -118,6 +118,23 @@ function applyTheme() {
   const dark = pref === "dark" || (pref === "auto" && (hr >= 20 || hr < 6));
   document.documentElement.dataset.theme = dark ? "dark" : "light";
   document.body.classList.toggle("hide-numbers", !!state.settings.hideNumbers);
+  document.documentElement.style.setProperty("--text-scale", String(textScale()));
+}
+// Text size for passage cards and explainers, set with a slider (You, or Aa in an explainer).
+const TEXT_SCALE = { min: 0.85, max: 1.6, step: 0.05 };
+const textScale = () => Math.min(TEXT_SCALE.max, Math.max(TEXT_SCALE.min, Number(state.settings.textScale) || 1));
+function textSizeSlider() {
+  const pct = () => `${Math.round(textScale() * 100)}%`;
+  const label = h("span", {}, `Text size on cards and explainers: ${pct()}`);
+  const input = h("input", { type: "range", min: TEXT_SCALE.min, max: TEXT_SCALE.max, step: TEXT_SCALE.step, value: textScale(), style: { width: "100%" }, "aria-label": "Text size" });
+  input.addEventListener("input", () => { state.settings.textScale = Number(input.value); applyTheme(); label.textContent = `Text size on cards and explainers: ${pct()}`; });
+  input.addEventListener("change", () => persist());
+  return h("label", { class: "field" }, label, input,
+    h("span", { class: "text-sample", "aria-hidden": "true" }, "The happiness of your life depends upon the quality of your thoughts."));
+}
+function textSizeSheet() {
+  const back = sheet(h("h2", {}, "Text size"), h("p", { class: "muted" }, "For passage cards and explainers. Also in You → Settings."),
+    textSizeSlider(), h("div", { class: "btn-row" }, h("button", { class: "btn primary", onclick: () => back.remove() }, "Done")));
 }
 applyTheme();
 setInterval(applyTheme, 5 * 60 * 1000);
@@ -259,6 +276,7 @@ function explainPanel(card, id, studied, { before, after } = {}) {
   const panel = h("aside", { class: "explain-panel", "aria-hidden": "true" },
     h("div", { class: "panel-head" },
       h("p", { class: "eyebrow" }, "Explainer"),
+      h("button", { class: "panel-aa", "aria-label": "Text size", title: "Text size", onclick: textSizeSheet }, "Aa"),
       h("button", { class: "panel-close", "aria-label": "Close explainer", onclick: () => close() }, icon("back"))),
     body,
     h("p", { class: "hint" }, "Swipe right to close"));
@@ -956,6 +974,7 @@ function renderYou() {
     h("h2", {}, "Settings"),
     h("div", { class: "panel" },
       h("label", { class: "field" }, h("span", {}, "Appearance"), themeSel),
+      textSizeSlider(),
       h("label", { class: "field", style: { display: "flex", gap: "10px", alignItems: "center" } }, hide, "Hide all numbers"),
       h("label", { class: "field" }, mixWLabel, mixW),
       !status.claude && h("label", { class: "field" }, h("span", {}, "Optional: Claude API key, pay per use (leave empty to use your Claude app)"), apiKey),
