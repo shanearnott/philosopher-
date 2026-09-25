@@ -10,7 +10,7 @@ import { THEMES, tagThemes } from "./themes.js";
 import { initialSVG } from "./illumination.js";
 
 // The running version; must equal CACHE in sw.js (test/version.test.mjs).
-const APP_VERSION = "stoa-v30";
+const APP_VERSION = "stoa-v31";
 
 // ---------- boot ----------
 
@@ -1247,9 +1247,10 @@ function runLabel(run) {
   if (run.mode === "play") return `Play · ${metaOf(run.vol)?.author}`;
   if (run.mode === "shuffle") return "Mix · Everything";
   if (run.mode === "echo") return "Echo";
-  if (run.mode === "daily") return `Daily Mix · ${run.themes.map(subjectLabel).join(" + ")}`;
+  if (run.mode === "daily") return `Daily Mix · ${run.themes.map(subjectLabel).join(" · ")}`;
+  // every topic in the mix, not a count
   const names = (run.themes || []).map(subjectLabel);
-  return names.length > 2 ? `Mix · ${names[0]} + ${names.length - 1} more` : names.length ? `Mix · ${names.join(" + ")}` : "Mix";
+  return names.length ? `Mix · ${names.join(" · ")}` : "Mix";
 }
 
 function mixCard(id, index, run) {
