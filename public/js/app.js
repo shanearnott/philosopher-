@@ -10,7 +10,7 @@ import { THEMES, tagThemes } from "./themes.js";
 import { initialSVG } from "./illumination.js";
 
 // The running version; must equal CACHE in sw.js (test/version.test.mjs).
-const APP_VERSION = "stoa-v28";
+const APP_VERSION = "stoa-v29";
 
 // ---------- boot ----------
 
@@ -1162,32 +1162,59 @@ async function renderMixSubjects() {
   const run = mixState().run?.date === dayKey() ? mixState().run : null;
   let starting = false;
   const play = (subjects) => {
-    if (starting) return;
-    starting = true;
     mixState().subjects = subjects;
     mixState().run = null;
     persist();
     startMix();
   };
   const tile = (glyph, label, blurb, n, on, click) =>
-    h("button", { class: "subject", "aria-pressed": String(on), disabled: starting && !on, onclick: click },
+    h("button", { class: "subject", "aria-pressed": String(on), disabled: starting, onclick: click },
       h("span", { class: "subject-check", "aria-hidden": "true" }, on ? "✓" : ""),
       h("span", { class: "subject-glyph", "aria-hidden": "true" }, glyph), h("b", {}, label), h("small", {}, blurb),
       n != null && h("small", { class: "subject-count" }, `${n.toLocaleString()} cards`));
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // the unpicked tiles drift away in a ripple outwards from the last tap, the
+  // picks glow, then the mix starts
+  const settle = (from, subjects) => {
+    const tiles = [...grid.children];
+    const origin = tiles[from]?.getBoundingClientRect();
+    requestAnimationFrame(() => tiles.forEach((t) => {
+      if (t.getAttribute("aria-pressed") === "true") { t.classList.add("chosen"); return; }
+      const r = t.getBoundingClientRect();
+      const d = origin ? Math.hypot(r.x - origin.x, r.y - origin.y) : 0;
+      t.style.transitionDelay = `${Math.round(d / 4)}ms`;
+      t.classList.add("fade-away");
+    }));
+    setTimeout(() => play(subjects), reduced ? 250 : 1250);
+  };
   const toggle = (k) => {
     if (starting) return;
     chosen.has(k) ? chosen.delete(k) : chosen.add(k);
     if (chosen.size === MIX_PICK) {
-      // the third pick starts the mix, after a beat so the tick shows
+      starting = true;
       draw(true);
-      setTimeout(() => play([...chosen]), 450);
+      settle(keys.indexOf(k) + 1, [...chosen]);
       return;
     }
     draw();
   };
+  // Everything ticks every tile in a cascade, then plays the whole library
+  const everything = () => {
+    if (starting) return;
+    starting = true;
+    chosen.clear();
+    draw(true);
+    summary.textContent = "Starting: everything";
+    [...grid.children].forEach((t, i) => setTimeout(() => {
+      t.setAttribute("aria-pressed", "true");
+      t.querySelector(".subject-check").textContent = "✓";
+      t.classList.add("chosen");
+    }, reduced ? 0 : i * 55));
+    setTimeout(() => play([]), reduced ? 250 : 1500);
+  };
   const draw = (full = false) => {
     grid.replaceChildren(
-      tile("✶", "Everything", "The whole library: tap to start now", null, false, () => play([])),
+      tile("✶", "Everything", "The whole library: tap to start now", null, false, everything),
       ...keys.map((k) => {
         const [glyph, blurb] = SUBJECTS[k] || TRADITIONS_TILE;
         return tile(glyph, subjectLabel(k), blurb, counts[k], chosen.has(k), () => toggle(k));
@@ -1195,9 +1222,9 @@ async function renderMixSubjects() {
     const names = [...chosen].map(subjectLabel).join(" · ");
     summary.textContent = full ? `Starting: ${names}` : chosen.size ? `${chosen.size} of ${MIX_PICK}: ${names}` : `Pick ${MIX_PICK} and Mix starts`;
     buttons.replaceChildren(...[
-      run && h("button", { class: "btn", onclick: () => go("cards") }, `Resume · card ${Math.min((run.i ?? 0) + 1, MIX_RUN_LENGTH)} of ${MIX_RUN_LENGTH}`),
-      !full && chosen.size > 0 && h("button", { class: "btn primary", onclick: () => play([...chosen]) }, `Play ${chosen.size === 1 ? "just this one" : "these two"}`),
-      !full && !chosen.size && last.length > 0 && h("button", { class: "btn", onclick: () => play(last) }, `Last mix: ${last.map(subjectLabel).join(" · ")}`),
+      !full && run && h("button", { class: "btn", onclick: () => go("cards") }, `Resume · card ${Math.min((run.i ?? 0) + 1, MIX_RUN_LENGTH)} of ${MIX_RUN_LENGTH}`),
+      !full && chosen.size > 0 && h("button", { class: "btn primary", onclick: () => { if (!starting) { starting = true; play([...chosen]); } } }, `Play ${chosen.size === 1 ? "just this one" : "these two"}`),
+      !full && !chosen.size && last.length > 0 && h("button", { class: "btn", onclick: () => { if (!starting) { starting = true; play(last); } } }, `Last mix: ${last.map(subjectLabel).join(" · ")}`),
     ].filter(Boolean));
   };
   draw();
@@ -1528,6 +1555,7 @@ function route() {
   tabs.forEach((b) => (b.dataset.tab === tab ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current")));
   if (t !== "learn") document.querySelector(".install")?.remove();
   if (t !== "cards") hidePlayer();
+  document.body.classList.toggle("mix-dark", t === "mix");
   ROUTES[t]();
   window.scrollTo(0, 0);
 }

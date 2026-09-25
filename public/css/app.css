@@ -337,7 +337,30 @@ body.with-player .card { padding-bottom: calc(var(--tabs-h) + var(--safe-b) + 84
 .pick .subject[aria-pressed="true"] .subject-check { background: var(--gold); border-color: var(--gold); color: var(--bg); }
 .mix-go { position: sticky; bottom: calc(var(--tabs-h) + var(--safe-b) + 8px); margin-top: 18px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 18px; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: flex; flex-direction: column; gap: 8px; }
 .mix-go .btn-row { margin: 0; }
-.pick .subject:disabled { opacity: 0.45; }
+/* the picker is always dark, like the cards it leads into */
+body.mix-dark {
+  --bg: #121110; --surface: #1c1a17; --text: #ece6da; --text-soft: #b9b1a2; --muted: #8b8474;
+  --line: rgba(236, 230, 218, 0.12); --accent: #d0795f; color-scheme: dark;
+  background: radial-gradient(120% 60% at 50% 0%, #2a2330 0%, transparent 60%), radial-gradient(90% 50% at 50% 100%, #3a2a1f 0%, transparent 70%), #121110 fixed;
+}
+html:has(body.mix-dark) { background: #121110; }
+body.mix-dark .tabs { background: rgba(18, 17, 16, 0.55); border-color: rgba(255,255,255,0.08); color: #ece6da; }
+body.mix-dark .pick .subject { background: rgba(28, 26, 23, 0.72); }
+/* picking three: the rest drift away, the picks glow */
+.pick .subject { transition: opacity 0.55s ease, transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.55s ease, border-color 0.3s, background 0.3s; }
+.pick .subject:disabled { cursor: default; }
+.pick .subject.fade-away { opacity: 0; transform: scale(0.8) translateY(18px) rotate(-2deg); filter: blur(8px); }
+.pick .subject.chosen { border-color: var(--gold); animation: chosen-glow 1.2s ease-in-out both; }
+.pick .subject.chosen .subject-check { background: var(--gold); border-color: var(--gold); color: var(--bg); }
+@keyframes chosen-glow {
+  0% { box-shadow: 0 0 0 0 rgba(176, 141, 87, 0); transform: scale(1); }
+  45% { box-shadow: 0 0 0 2px rgba(216, 195, 156, 0.5), 0 0 34px rgba(176, 141, 87, 0.45); transform: scale(1.03); }
+  100% { box-shadow: 0 0 0 1px rgba(216, 195, 156, 0.3), 0 0 18px rgba(176, 141, 87, 0.2); transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pick .subject { transition-duration: 0.01s; }
+  .pick .subject.chosen { animation: none; }
+}
 .mix-go .btn-row:empty { display: none; }
 h3.shelf { font: 600 12px/1.4 var(--sans); letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin: 22px 0 0; }
 .original { font: 400 22px/1.9 "Amiri", "Scheherazade New", "Geeza Pro", "Noto Naskh Arabic", serif; color: rgba(239,233,221,0.82); text-align: right; white-space: pre-line; margin: 10px 0 12px; }
