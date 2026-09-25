@@ -102,6 +102,10 @@ test("saved cards export with their comments", async () => {
   assert.match(md, /## Marcus Aurelius, Meditations 4\.7/);
   assert.ok(md.includes(`> ${p.text.split("\n")[0]}`));
   assert.match(md, /\*\*My comment:\*\* For the next hard meeting\./);
+  const withExp = savedMarkdown([{ id: "meditations.4.7", date: "2026-09-24", comment: "", p, explainer: { meaning: "Plain words.", today: "Now.", you: "Me." } }]);
+  assert.match(withExp, /\*\*In plain English:\*\* Plain words\./);
+  assert.match(withExp, /\*\*For you:\*\* Me\./);
+  assert.ok(!/Background/.test(withExp), "only the parts the explainer has");
 });
 
 test("old favourites become saved cards with an empty comment", async () => {

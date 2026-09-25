@@ -445,3 +445,7 @@ h3.shelf { font: 600 12px/1.4 var(--sans); letter-spacing: 0.1em; text-transform
   .page { padding: 0; max-width: none; }
   .entry-print { break-inside: avoid; margin-bottom: 28px; }
 }
+
+/* a card saved from its explainer shows the plain-English part in Saved */
+.saved-explainer { margin-top: 6px; font-size: 14px; line-height: 1.45; color: var(--text-soft); }
+.saved-explainer b { font: 600 10px/1 var(--sans); letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); }

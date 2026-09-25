@@ -10,7 +10,7 @@ import { THEMES, tagThemes } from "./themes.js";
 import { initialSVG } from "./illumination.js";
 
 // The running version; must equal CACHE in sw.js (test/version.test.mjs).
-const APP_VERSION = "stoa-v32";
+const APP_VERSION = "stoa-v33";
 
 // ---------- boot ----------
 
@@ -268,6 +268,21 @@ function sideSwipe(el, { left, right }) {
   el.addEventListener("pointerup", (e) => e.pointerType === "mouse" && end(e.clientX, e.clientY));
 }
 
+// Save from inside an explainer: saves the card with its explainer kept
+// alongside (shown in Saved and in the export), and updates the card's Save.
+function explainerSave(card, id) {
+  const label = () => (state.saved[id]?.explainer ? "Saved with explainer ✦" : "Save with explainer");
+  const btn = h("button", { class: "btn primary" }, label());
+  btn.onclick = () => saveSheet(id, () => {
+    btn.textContent = label();
+    const cardSave = card.querySelector(".card-scroll .save-btn");
+    if (cardSave) cardSave.textContent = state.saved[id] ? "Saved ✦" : "Save";
+    const mark = card.querySelector(".fav-mark");
+    if (mark) mark.textContent = state.saved[id] ? "✦" : "";
+  }, { explainer: true });
+  return btn;
+}
+
 // The explainer slides in over a card: swipe left (or tap Explain) to open,
 // swipe right (or tap ›) to close. Filled from the stored explainer; cards
 // without one offer to ask Claude.
@@ -284,7 +299,7 @@ function explainPanel(card, id, studied, { before, after } = {}) {
   const fill = async () => {
     await loadExplainers(volOf(id));
     const extra = [before?.()].filter(Boolean), tail = [after?.()].filter(Boolean);
-    if (explainers[id]) return body.replaceChildren(...extra, explainerView(id), ...tail, h("div", { class: "btn-row" }, deeperButton(id, body, studied)));
+    if (explainers[id]) return body.replaceChildren(...extra, explainerView(id), ...tail, h("div", { class: "btn-row" }, explainerSave(card, id), deeperButton(id, body, studied)));
     const ask = h("button", { class: "btn primary", onclick: async () => {
       ask.disabled = true;
       try {
@@ -786,20 +801,20 @@ async function shareCard(id) {
   } catch {}
 }
 
-function saveSheet(id, onChange) {
+function saveSheet(id, onChange, { explainer = false } = {}) {
   const p = verifiedPassage(library, id);
   if (!p) return;
   const was = state.saved[id];
   const note = h("textarea", { placeholder: "Why this one? What does it remind you of? (optional)" }, was?.comment || "");
   const done = (msg) => { persist(); back.remove(); onChange?.(); if (current() === "saved") renderSaved(); toast(msg); };
   const back = sheet(
-    h("h2", {}, was ? "Saved card" : "Save this card"),
+    h("h2", {}, was ? "Saved card" : explainer ? "Save with its explainer" : "Save this card"),
     h("p", { class: "muted" }, fullRef(p)),
     h("blockquote", { class: "book-quote" }, snippet(p.text, 260)),
     h("label", { class: "field" }, h("span", {}, "Your comment"), note),
     h("div", { class: "btn-row" },
       h("button", { class: "btn primary", onclick: () => {
-        state.saved[id] = { date: was?.date || dayKey(), comment: note.value.trim() };
+        state.saved[id] = { date: was?.date || dayKey(), comment: note.value.trim(), ...((explainer || was?.explainer) && { explainer: true }) };
         const pts = was ? 0 : award("favourite", id);
         done(was ? "Comment saved" : pts ? `Saved · +${pts}` : "Saved");
       } }, was ? "Save comment" : "Save"),
@@ -814,8 +829,11 @@ async function renderSaved() {
   document.body.classList.remove("on-cards");
   const vols = [...new Set(Object.keys(state.saved).map(volOf))];
   await Promise.all(vols.map((v) => loadVolume(v).catch(() => {})));
+  // cards saved from their explainer keep it: load those explainers for the list and the export
+  const withExp = [...new Set(Object.entries(state.saved).filter(([, sv]) => sv.explainer).map(([id]) => volOf(id)))];
+  await Promise.all(withExp.map((v) => loadExplainers(v).catch(() => {})));
   const items = Object.entries(state.saved)
-    .map(([id, sv]) => ({ id, ...sv, p: verifiedPassage(library, id) }))
+    .map(([id, sv]) => ({ id, ...sv, p: verifiedPassage(library, id), explainer: sv.explainer ? explainers[id] || null : null }))
     .filter((x) => x.p)
     .sort((a, b) => b.date.localeCompare(a.date));
   const authors = [...new Set(items.map((x) => x.p.author))];
@@ -840,7 +858,8 @@ async function renderSaved() {
     h("div", {}, shown.map((x) => h("button", { class: "entry", onclick: () => savedSheet(x.id) },
       h("div", { class: "when" }, fullRef(x.p)),
       h("div", { class: "snip quote-snip" }, snippet(x.p.text)),
-      x.comment ? h("div", { class: "saved-comment" }, x.comment) : h("div", { class: "muted", style: { fontSize: "13px" } }, "No comment yet")))),
+      x.comment ? h("div", { class: "saved-comment" }, x.comment) : h("div", { class: "muted", style: { fontSize: "13px" } }, "No comment yet"),
+      x.explainer && h("div", { class: "saved-explainer" }, h("b", {}, "In plain English: "), snippet(x.explainer.meaning, 160))))),
     items.length > 0 && !shown.length && h("p", { class: "muted" }, "Nothing under this filter.")));
 }
 
@@ -851,8 +870,9 @@ function savedSheet(id) {
   const note = h("textarea", { placeholder: "Your comment" }, sv.comment || "");
   note.addEventListener("change", () => { sv.comment = note.value.trim(); persist(); toast("Comment saved"); });
   const out = h("div");
+  if (sv.explainer) loadExplainers(volOf(id)).then(() => explainers[id] && out.replaceChildren(explainerView(id))).catch(() => {});
   const back = sheet(
-    h("p", { class: "muted" }, `Saved ${fmtDate(sv.date)}`),
+    h("p", { class: "muted" }, `Saved ${fmtDate(sv.date)}${sv.explainer ? " · with its explainer" : ""}`),
     h("blockquote", { class: "book-quote" }, p.text, h("cite", {}, `${fullRef(p)} · tr. ${p.translator}`)),
     h("label", { class: "field" }, h("span", {}, "Your comment"), note),
     out,

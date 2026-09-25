@@ -278,9 +278,15 @@ function splitQuotes(text, sources) {
 // items: [{ id, date, comment, p: verified passage }], newest first.
 export function savedMarkdown(items) {
   const lines = ["# Saved from Stoa", ""];
-  for (const { date, comment, p } of items) {
+  for (const { date, comment, p, explainer } of items) {
     lines.push(`## ${fullRef(p)}`, "", ...p.text.split("\n").map((l) => `> ${l}`), "", `> — tr. ${p.translator} · saved ${date}`, "");
     if (comment) lines.push(`**My comment:** ${comment}`, "");
+    // a card saved from its explainer carries the explainer (our words, not the author's)
+    if (explainer && typeof explainer === "object") {
+      for (const [label, key] of [["In plain English", "meaning"], ["Background", "context"], ["Today", "today"], ["For you", "you"]]) {
+        if (explainer[key]) lines.push(`**${label}:** ${explainer[key]}`, "");
+      }
+    }
   }
   return lines.join("\n");
 }
