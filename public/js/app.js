@@ -10,7 +10,7 @@ import { THEMES, tagThemes } from "./themes.js";
 import { initialSVG } from "./illumination.js";
 
 // The running version; must equal CACHE in sw.js (test/version.test.mjs).
-const APP_VERSION = "stoa-v35";
+const APP_VERSION = "stoa-v36";
 
 // ---------- boot ----------
 
@@ -1077,11 +1077,17 @@ async function loadVolume(vol) {
 // A subject is a theme, or "traditions" (every card in the Traditions wing).
 const subjectLabel = (k) => (k === "traditions" ? "World traditions" : THEMES[k]?.label || k);
 const isTradition = (vol) => traditionVolumes().some((t) => t.id === vol);
+// Religious sources (the Traditions wing) only join a mix when Faith and
+// prayer or World traditions is picked; otherwise subjects like leadership
+// or death draw on the philosophers alone.
+const religiousAllowed = (want) => want.includes("faith") || want.includes("traditions");
 function subjectsMatch(want) {
   const trad = want.includes("traditions"), themes = want.filter((t) => t !== "traditions");
+  const allowRel = religiousAllowed(want);
+  const themed = (v) => (allowRel || !isTradition(v)) && themes.some((t) => v === "meditations" || (metaOf(v)?.themes?.[t] || 0) > 0);
   return {
-    vol: (v) => (trad && isTradition(v)) || themes.some((t) => v === "meditations" || (metaOf(v)?.themes?.[t] || 0) > 0),
-    card: (id) => (trad && isTradition(volOf(id))) || themesOf(id).some((t) => themes.includes(t)),
+    vol: (v) => (trad && isTradition(v)) || themed(v),
+    card: (id) => (trad && isTradition(volOf(id))) || ((allowRel || !isTradition(volOf(id))) && themesOf(id).some((t) => themes.includes(t))),
   };
 }
 
@@ -1189,7 +1195,8 @@ function subjectCounts() {
   const counts = {};
   for (const k of Object.keys(THEMES)) {
     counts[k] = idsOf("meditations").filter((id) => themesOf(id).includes(k)).length
-      + allVolumes().reduce((n, v) => n + (v.themes?.[k] || 0), 0);
+      // religious sources count only toward Faith and prayer, as in the mix itself
+      + allVolumes().filter((v) => k === "faith" || !isTradition(v.id)).reduce((n, v) => n + (v.themes?.[k] || 0), 0);
   }
   counts.traditions = traditionVolumes().reduce((n, t) => n + (t.count || 0), 0);
   return counts;
