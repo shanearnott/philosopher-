@@ -10,7 +10,7 @@ import { THEMES, tagThemes } from "./themes.js";
 import { initialSVG } from "./illumination.js";
 
 // The running version; must equal CACHE in sw.js (test/version.test.mjs).
-const APP_VERSION = "stoa-v27";
+const APP_VERSION = "stoa-v28";
 
 // ---------- boot ----------
 
@@ -1145,42 +1145,68 @@ function subjectCounts() {
   return counts;
 }
 
-// Mix's subject picker: the Browse tiles, tap as many as you like, then Play.
+// Mix's subject picker: the Browse tiles. Pick three and Mix starts by itself;
+// Everything starts at once; fewer than three can be played from the bar.
+const MIX_PICK = 3;
 async function renderMixSubjects() {
   hidePlayer();
   document.body.classList.remove("on-cards");
   await loadIndex();
-  const chosen = new Set(mixSubjects());
+  const chosen = new Set();
+  const last = [...mixSubjects()];
   const counts = subjectCounts();
   const keys = [...Object.keys(SUBJECTS), "traditions"];
   const grid = h("div", { class: "subject-grid pick" });
-  const play = h("button", { class: "btn primary" });
   const summary = h("small", { class: "muted" });
+  const buttons = h("div", { class: "btn-row" });
   const run = mixState().run?.date === dayKey() ? mixState().run : null;
+  let starting = false;
+  const play = (subjects) => {
+    if (starting) return;
+    starting = true;
+    mixState().subjects = subjects;
+    mixState().run = null;
+    persist();
+    startMix();
+  };
   const tile = (glyph, label, blurb, n, on, click) =>
-    h("button", { class: "subject", "aria-pressed": String(on), onclick: click },
+    h("button", { class: "subject", "aria-pressed": String(on), disabled: starting && !on, onclick: click },
       h("span", { class: "subject-check", "aria-hidden": "true" }, on ? "✓" : ""),
       h("span", { class: "subject-glyph", "aria-hidden": "true" }, glyph), h("b", {}, label), h("small", {}, blurb),
       n != null && h("small", { class: "subject-count" }, `${n.toLocaleString()} cards`));
-  const draw = () => {
+  const toggle = (k) => {
+    if (starting) return;
+    chosen.has(k) ? chosen.delete(k) : chosen.add(k);
+    if (chosen.size === MIX_PICK) {
+      // the third pick starts the mix, after a beat so the tick shows
+      draw(true);
+      setTimeout(() => play([...chosen]), 450);
+      return;
+    }
+    draw();
+  };
+  const draw = (full = false) => {
     grid.replaceChildren(
-      tile("✶", "Everything", "The whole library, a new author every card", null, !chosen.size, () => { chosen.clear(); draw(); }),
+      tile("✶", "Everything", "The whole library: tap to start now", null, false, () => play([])),
       ...keys.map((k) => {
         const [glyph, blurb] = SUBJECTS[k] || TRADITIONS_TILE;
-        return tile(glyph, subjectLabel(k), blurb, counts[k], chosen.has(k), () => { chosen.has(k) ? chosen.delete(k) : chosen.add(k); draw(); });
+        return tile(glyph, subjectLabel(k), blurb, counts[k], chosen.has(k), () => toggle(k));
       }));
-    play.textContent = chosen.size ? `Play ${chosen.size} ${chosen.size === 1 ? "subject" : "subjects"}` : "Play everything";
-    summary.textContent = chosen.size ? [...chosen].map(subjectLabel).join(" · ") : "Nothing picked: Mix plays the whole library";
+    const names = [...chosen].map(subjectLabel).join(" · ");
+    summary.textContent = full ? `Starting: ${names}` : chosen.size ? `${chosen.size} of ${MIX_PICK}: ${names}` : `Pick ${MIX_PICK} and Mix starts`;
+    buttons.replaceChildren(...[
+      run && h("button", { class: "btn", onclick: () => go("cards") }, `Resume · card ${Math.min((run.i ?? 0) + 1, MIX_RUN_LENGTH)} of ${MIX_RUN_LENGTH}`),
+      !full && chosen.size > 0 && h("button", { class: "btn primary", onclick: () => play([...chosen]) }, `Play ${chosen.size === 1 ? "just this one" : "these two"}`),
+      !full && !chosen.size && last.length > 0 && h("button", { class: "btn", onclick: () => play(last) }, `Last mix: ${last.map(subjectLabel).join(" · ")}`),
+    ].filter(Boolean));
   };
-  play.onclick = () => { mixState().subjects = [...chosen]; mixState().run = null; persist(); startMix(); };
   draw();
   view.replaceChildren(h("div", { class: "page mix-pick" },
     h("p", { class: "eyebrow", style: { color: "var(--muted)" } }, "Mix"),
-    h("h1", {}, "What should Mix play?"),
-    h("p", { class: "sub" }, "Tap one subject or several. Mix plays cards from any of them at random, across every author and tradition."),
+    h("h1", {}, `Pick ${MIX_PICK} subjects`),
+    h("p", { class: "sub" }, "Mix starts as soon as you pick the third, and plays cards from all three at random, across every author and tradition."),
     grid,
-    h("div", { class: "mix-go" }, summary, h("div", { class: "btn-row" },
-      run && h("button", { class: "btn", onclick: () => go("cards") }, `Resume · card ${Math.min((run.i ?? 0) + 1, MIX_RUN_LENGTH)} of ${MIX_RUN_LENGTH}`), play))));
+    h("div", { class: "mix-go" }, summary, buttons)));
 }
 
 async function extendRun() {
@@ -1409,7 +1435,7 @@ async function renderBrowse() {
       h("button", { class: "btn primary", onclick: () => go("cards") }, "Resume")),
     h("h2", {}, "Mix"),
     h("div", { class: "modes" },
-      mode("Choose subjects", mixSubjects().length ? `Playing: ${mixSubjects().map(subjectLabel).join(", ")}` : "One or several; Mix plays them at random", () => go("mix"), "◈"),
+      mode("Pick 3 subjects", mixSubjects().length ? `Last mix: ${mixSubjects().map(subjectLabel).join(", ")}` : "Pick three and Mix starts by itself", () => go("mix"), "◈"),
       mode("Shuffle", "Everything, a new author every card", () => { mixState().subjects = []; startRun("shuffle"); }, "⤮"),
       mode("Daily Mix", daily, () => startRun("daily"), "☀"),
       mode("Echo", "Each card links to the last by subject", () => startRun("echo"), "∿")),
