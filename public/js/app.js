@@ -10,7 +10,7 @@ import { THEMES, tagThemes } from "./themes.js";
 import { initialSVG } from "./illumination.js";
 
 // The running version; must equal CACHE in sw.js (test/version.test.mjs).
-const APP_VERSION = "stoa-v29";
+const APP_VERSION = "stoa-v30";
 
 // ---------- boot ----------
 
@@ -1198,19 +1198,17 @@ async function renderMixSubjects() {
     }
     draw();
   };
-  // Everything ticks every tile in a cascade, then plays the whole library
+  // Everything: its tile glows and every other tile fades, as with three picks
   const everything = () => {
     if (starting) return;
     starting = true;
     chosen.clear();
     draw(true);
     summary.textContent = "Starting: everything";
-    [...grid.children].forEach((t, i) => setTimeout(() => {
-      t.setAttribute("aria-pressed", "true");
-      t.querySelector(".subject-check").textContent = "✓";
-      t.classList.add("chosen");
-    }, reduced ? 0 : i * 55));
-    setTimeout(() => play([]), reduced ? 250 : 1500);
+    const all = grid.children[0];
+    all.setAttribute("aria-pressed", "true");
+    all.querySelector(".subject-check").textContent = "✓";
+    settle(0, []);
   };
   const draw = (full = false) => {
     grid.replaceChildren(
