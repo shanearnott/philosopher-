@@ -9,6 +9,9 @@ import { callClaude } from "./direct.js";
 import { THEMES, tagThemes } from "./themes.js";
 import { initialSVG } from "./illumination.js";
 
+// The running version; must equal CACHE in sw.js (test/version.test.mjs).
+const APP_VERSION = "stoa-v27";
+
 // ---------- boot ----------
 
 const [library, course] = await Promise.all([
@@ -975,7 +978,8 @@ function renderYou() {
           toast("Everything deleted");
           renderYou();
         } }, "Delete everything"))),
-    h("p", { class: "muted" }, `Texts: ${library.source}. `, h("a", { href: library.sourceUrl, target: "_blank", rel: "noopener" }, "Source"), ".")));
+    h("p", { class: "muted" }, `Texts: ${library.source}. `, h("a", { href: library.sourceUrl, target: "_blank", rel: "noopener" }, "Source"), "."),
+    h("p", { class: "muted", style: { fontSize: "12px" } }, `App version ${APP_VERSION.replace("stoa-", "")}. It updates itself whenever you open it.`)));
 }
 
 
@@ -1117,7 +1121,7 @@ async function startRun(mode, opts = {}) {
   await extendRun();
   await extendRun();
   persist();
-  go("mix");
+  go("cards");
 }
 
 // Mix plays at random from the subjects you've picked (none picked: everything).
@@ -1176,7 +1180,7 @@ async function renderMixSubjects() {
     h("p", { class: "sub" }, "Tap one subject or several. Mix plays cards from any of them at random, across every author and tradition."),
     grid,
     h("div", { class: "mix-go" }, summary, h("div", { class: "btn-row" },
-      run && h("button", { class: "btn", onclick: () => go("mix") }, "Back to cards"), play))));
+      run && h("button", { class: "btn", onclick: () => go("cards") }, `Resume · card ${Math.min((run.i ?? 0) + 1, MIX_RUN_LENGTH)} of ${MIX_RUN_LENGTH}`), play))));
 }
 
 async function extendRun() {
@@ -1235,7 +1239,7 @@ async function playFrom(id) {
   mix.run = { mode: "play", vol, ids: keep, i: keep.length - 1, date: dayKey() };
   await extendRun();
   persist();
-  go("mix");
+  go("cards");
   toast(`Playing ${metaOf(vol).author}`);
 }
 
@@ -1247,7 +1251,7 @@ async function themeFrom(id, theme) {
   mix.run = { mode: "theme", themes: [theme], ids: keep, i: keep.length - 1, date: dayKey() };
   await extendRun();
   persist();
-  go("mix");
+  go("cards");
   toast(subjectLabel(theme));
 }
 
@@ -1327,7 +1331,7 @@ function showPlayer(run) {
       await extendRun();
       renderRun(r.ids.length - 2);
     } }, icon("shuffle")),
-    h("button", { "aria-label": "Subjects", title: "Subjects", onclick: () => { persist(); go("subjects"); } }, icon("subjects")),
+    h("button", { "aria-label": "Subjects", title: "Subjects", onclick: () => { persist(); go("mix"); } }, icon("subjects")),
     h("button", { "aria-label": "Skip", title: "Skip", onclick: skip }, icon("forward")));
   bar.hidden = false;
 }
@@ -1402,10 +1406,10 @@ async function renderBrowse() {
       h("button", { class: "btn primary", onclick: () => go("learn") }, "Read")),
     run && h("div", { class: "panel resume" },
       h("div", {}, h("b", {}, runLabel(run)), h("div", { class: "muted" }, `Card ${Math.min((run.i ?? 0) + 1, run.ids.length)} of ${MIX_RUN_LENGTH}`)),
-      h("button", { class: "btn primary", onclick: () => go("mix") }, "Resume")),
+      h("button", { class: "btn primary", onclick: () => go("cards") }, "Resume")),
     h("h2", {}, "Mix"),
     h("div", { class: "modes" },
-      mode("Choose subjects", mixSubjects().length ? `Playing: ${mixSubjects().map(subjectLabel).join(", ")}` : "One or several; Mix plays them at random", () => go("subjects"), "◈"),
+      mode("Choose subjects", mixSubjects().length ? `Playing: ${mixSubjects().map(subjectLabel).join(", ")}` : "One or several; Mix plays them at random", () => go("mix"), "◈"),
       mode("Shuffle", "Everything, a new author every card", () => { mixState().subjects = []; startRun("shuffle"); }, "⤮"),
       mode("Daily Mix", daily, () => startRun("daily"), "☀"),
       mode("Echo", "Each card links to the last by subject", () => startRun("echo"), "∿")),
@@ -1474,17 +1478,16 @@ function alongsideSheet(book) {
 
 const ROUTES = {
   learn: renderLearn,
-  // Swipe opens straight into cards: today's run, or a fresh shuffle
-  // Mix resumes today's run, or opens the subject picker to start one
-  mix: () => (mixState().run?.date === dayKey() ? renderRun() : renderMixSubjects()),
-  subjects: renderMixSubjects,
+  // the Mix tab always opens its subject picker (with Resume when a run is going)
+  mix: renderMixSubjects,
+  cards: () => (mixState().run?.date === dayKey() ? renderRun() : startMix()),
   browse: renderBrowse,
   saved: renderSaved,
   consult: renderConsult,
   you: renderYou,
 };
-const ALIASES = { today: "learn", swipe: "mix", journal: "saved" }; // old links
-const TAB_OF = { consult: "browse", subjects: "mix" };
+const ALIASES = { today: "learn", swipe: "mix", subjects: "mix", journal: "saved" }; // old links
+const TAB_OF = { consult: "browse", cards: "mix" };
 function current() {
   const t = location.hash.slice(1);
   return ROUTES[t] ? t : ALIASES[t] || "learn";
@@ -1498,7 +1501,7 @@ function route() {
   const tab = TAB_OF[t] || t;
   tabs.forEach((b) => (b.dataset.tab === tab ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current")));
   if (t !== "learn") document.querySelector(".install")?.remove();
-  if (t !== "mix") hidePlayer();
+  if (t !== "cards") hidePlayer();
   ROUTES[t]();
   window.scrollTo(0, 0);
 }
@@ -1507,13 +1510,38 @@ window.addEventListener("hashchange", route);
 // a new day unlocks the next card; re-render if the app stays open past midnight
 let lastDay = dayKey();
 document.addEventListener("visibilitychange", () => {
-  if (document.visibilityState === "visible" && dayKey() !== lastDay) {
+  if (document.visibilityState !== "visible") return;
+  checkForUpdate();
+  if (dayKey() !== lastDay) {
     lastDay = dayKey();
     route();
   }
 });
 route();
 statusReady.then(() => current() === "you" && renderYou());
+
+// Force the newest version: on every open, and every time the app comes back
+// to the front (a home-screen app resumes rather than reloading), ask the
+// server which version is live. If it isn't this one, fetch the new service
+// worker, drop the old caches and reload. APP_VERSION must match CACHE in
+// sw.js; a test checks it, so bump both together.
+let updating = false;
+async function checkForUpdate() {
+  if (updating || !navigator.onLine) return;
+  try {
+    const res = await fetch(`sw.js?check=${Date.now()}`, { cache: "no-store" });
+    const live = (await res.text()).match(/const CACHE = "([^"]+)"/)?.[1];
+    if (!live || live === APP_VERSION) return;
+    // one attempt per version, so a stale CDN copy can't loop the reload
+    try { if (sessionStorage.getItem("stoa.updatedTo") === live) return; sessionStorage.setItem("stoa.updatedTo", live); } catch {}
+    updating = true;
+    const reg = await navigator.serviceWorker?.getRegistration();
+    await reg?.update().catch(() => {});
+    if (window.caches) await Promise.all((await caches.keys()).map((k) => caches.delete(k)));
+    location.reload();
+  } catch { /* offline or blocked: keep the version we have */ }
+}
+checkForUpdate();
 
 if ("serviceWorker" in navigator) {
   // check for a new version on every open, bypassing the browser's cache of sw.js

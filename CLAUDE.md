@@ -41,5 +41,8 @@ A daily philosophy app to replace Instagram. The plan lives in the Claude Doc
 - Subjects live in `public/js/themes.js`. After editing it (or any ingest),
   run `npm run themes` to re-tag every card and the per-volume counts Mix
   uses; `npm test` fails if they're stale. Only `themes` fields change.
+- On any change to `public/`, bump `CACHE` in `public/sw.js` and
+  `APP_VERSION` in `public/js/app.js` together (`test/version.test.mjs`):
+  the app compares them on every open and reloads when a newer one is live.
 - The tutor defaults to the user's Claude app (hand-off, no API cost); an API
   key is optional.
