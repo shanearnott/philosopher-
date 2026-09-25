@@ -10,7 +10,7 @@ import { THEMES, tagThemes } from "./themes.js";
 import { initialSVG } from "./illumination.js";
 
 // The running version; must equal CACHE in sw.js (test/version.test.mjs).
-const APP_VERSION = "stoa-v33";
+const APP_VERSION = "stoa-v34";
 
 // ---------- boot ----------
 

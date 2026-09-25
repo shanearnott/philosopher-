@@ -112,6 +112,44 @@ body.on-cards .tabs { background: rgba(18, 17, 16, 0.55); border-color: rgba(255
 .card.in > *:nth-child(3) { transition-delay: 0.24s; }
 .card.in > *:nth-child(4) { transition-delay: 0.36s; }
 
+/* ---------- the reveal: an illuminated page coming to light ----------
+   Each passage card, the first time it comes into view:
+   1. the eyebrow settles, its letter-spacing drawing in;
+   2. the gilt initial blooms out of the dark with a flash of light;
+   3. the passage appears as if ink were running down the page, a soft
+      edge descending line by line as the blur clears;
+   4. the reference, tags and buttons rise in after the words. */
+.card.in > .eyebrow { animation: stoa-track 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.card.in .quote {
+  -webkit-mask-image: linear-gradient(to bottom, #000 50%, transparent 60%);
+  mask-image: linear-gradient(to bottom, #000 50%, transparent 60%);
+  -webkit-mask-size: 100% 250%; mask-size: 100% 250%;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-position: 0 0; mask-position: 0 0;
+  animation: stoa-ink 1.9s cubic-bezier(0.35, 0.1, 0.25, 1) 0.3s both;
+}
+.card.in .quote .initial svg { animation: stoa-illumine 1.3s cubic-bezier(0.2, 0.7, 0.2, 1) 0.2s both; transform-origin: 50% 60%; }
+.card.in .card-scroll > :not(.quote) { animation: stoa-rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) 1.5s both; }
+.card.in > .hint { transition-delay: 1.9s; }
+@keyframes stoa-track {
+  from { opacity: 0; letter-spacing: 0.42em; }
+  to { opacity: 1; letter-spacing: 0.18em; }
+}
+@keyframes stoa-ink {
+  from { -webkit-mask-position: 0 100%; mask-position: 0 100%; filter: blur(3px); }
+  70% { filter: blur(0); }
+  to { -webkit-mask-position: 0 0; mask-position: 0 0; filter: blur(0); }
+}
+@keyframes stoa-illumine {
+  0% { opacity: 0; transform: scale(0.72) rotate(-5deg); filter: brightness(0.4) drop-shadow(0 0 0 rgba(216, 195, 156, 0)); }
+  55% { opacity: 1; transform: scale(1.05) rotate(0.5deg); filter: brightness(1.55) drop-shadow(0 0 16px rgba(216, 195, 156, 0.6)); }
+  100% { opacity: 0.94; transform: none; filter: brightness(1) drop-shadow(0 0 0 rgba(216, 195, 156, 0)); }
+}
+@keyframes stoa-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
 .card-scroll { overflow-y: auto; max-height: 100%; overscroll-behavior: contain; scrollbar-width: thin; }
 
 /* sideways: swipe left for the explainer, right to close it */
