@@ -1,0 +1,132 @@
+// Claude's jobs: Explain (when no explainer is stored), Go deeper, Consult and
+// Read alongside.
+// Shared by the Node server and the browser (for hosting on GitHub Pages).
+// Every prompt is built from the locked library by passage ID, and Claude is
+// told to cite passages only as [[id]] tokens. The app swaps tokens for
+// verbatim text.
+
+// In-copyright books on the Read alongside shelf: summaries only, never quotes.
+export const ALONGSIDE_BOOKS = {
+  "Man's Search for Meaning": "Viktor Frankl",
+  "Thoughts of a Philosophical Fighter Pilot": "James Stockdale",
+  "The Book of Five Rings": "Miyamoto Musashi",
+};
+
+export const DEFAULT_MODELS = { daily: "claude-sonnet-5", deep: "claude-opus-5" };
+
+export const SYSTEM = `You are the tutor in Stoa, a private daily philosophy app that replaces a social feed. You have read the passage alongside the user: usually from Marcus Aurelius's Meditations (George Long's translation), sometimes from another classic in the user's library.
+
+How you speak:
+- You speak as yourself about the author. Never speak as Marcus or any other author, or roleplay them.
+- Never write out a quotation from any philosopher, and never put words in quotation marks as if the author said them. Paraphrase in your own words.
+- To point to a passage, write its ID in double brackets on its own line, for example [[meditations.5.20]]. The app replaces the token with the verbatim text. Use only IDs you are given in this request.
+- Be honest rather than flattering. Praise only what is actually good, and be specific.
+- Plain prose in short paragraphs. No headings, lists or bold unless asked. Address the user as "you".
+- Stay on conduct and character. Don't moralise about politics, and don't diagnose health problems; if the user seems in crisis, say plainly that a trusted person or professional is the right next step.`;
+
+const LIMITS = { situation: 2000, profile: 1200 };
+const has = (library, id) => typeof id === "string" && Object.hasOwn(library.passages, id);
+const clip = (s, n) => (typeof s === "string" ? s.slice(0, n) : "");
+
+function passageBlock(library, id) {
+  const p = library.passages[id];
+  return `<passage id="${id}" ref="${/^\d/.test(p.ref) ? `${p.work} ${p.ref}` : p.ref}" author="${p.author}">\n${p.text}\n</passage>`;
+}
+
+function profileBlock(profile) {
+  if (!profile) return "";
+  const lines = [
+    profile.role && `Role: ${clip(profile.role, 200)}`,
+    profile.challenges && `Current challenges: ${clip(profile.challenges, LIMITS.profile)}`,
+    profile.goals && `Goals: ${clip(profile.goals, LIMITS.profile)}`,
+  ].filter(Boolean);
+  return lines.length ? `<user_profile>\n${lines.join("\n")}\n</user_profile>` : "";
+}
+
+function studiedIds(library, studied, extra = []) {
+  const ids = new Set([...(Array.isArray(studied) ? studied : []), ...extra]);
+  return [...ids].filter((id) => has(library, id));
+}
+
+// Returns { model, effort, prompt, allowed } or throws a 400-style error.
+export function buildRequest(body, library, course, models = DEFAULT_MODELS) {
+  const { job, passageId, deeper } = body || {};
+  const needsPassage = ["explain", "deeper"].includes(job);
+  if (needsPassage && !has(library, passageId)) throw badRequest("Unknown passage");
+  const day = course.days.find((d) => `meditations.${d.ref}` === passageId);
+  const context = day ? `<context>${day.context}</context>` : "";
+  const studied = studiedIds(library, body.studied, needsPassage ? [passageId] : []);
+  const others = studied.filter((id) => id !== passageId);
+  const model = deeper || job === "deeper" ? models.deep : models.daily;
+  const parts = [];
+  let effort = "low";
+
+  switch (job) {
+    case "explain":
+      parts.push(
+        passageBlock(library, passageId),
+        context,
+        `Explain this passage in 80 to 120 words: what it means, the key idea in plain English, and one concrete modern example. Don't repeat the passage.`,
+      );
+      break;
+    case "deeper":
+      effort = "medium";
+      parts.push(
+        passageBlock(library, passageId),
+        context,
+        profileBlock(body.profile),
+        body.explainer ? `<explainer_already_read>\n${clip(body.explainer, 2000)}\n</explainer_already_read>` : "",
+        `The user has read a short explainer of this passage (above) and wants to go deeper. In 250 to 350 words: the historical and personal context in which the author wrote it; how it connects to the author's other ideas and to one other thinker; the strongest objection to it and how the author might answer; and two concrete practices to try this week, fitted to the user's profile if one is given. Don't repeat the explainer.`,
+      );
+      break;
+    case "consult":
+      if (!studied.length) throw badRequest("No studied passages yet");
+      effort = deeper ? "high" : "medium";
+      parts.push(
+        ...studied.map((id) => passageBlock(library, id)),
+        profileBlock(body.profile),
+        `<situation>\n${clip(body.situation, LIMITS.situation)}\n</situation>`,
+        `The user is consulting their library about the situation above. Choose the 2 or 3 passages above that bear on it most (fewer if fewer fit). For each, put its [[id]] token on its own line, then 2 or 3 sentences on how it applies to this situation. Finish with one practical next step. Use only passages given above.`,
+      );
+      break;
+    case "alongside": {
+      const author = Object.hasOwn(ALONGSIDE_BOOKS, body.book) ? ALONGSIDE_BOOKS[body.book] : null;
+      if (!author) throw badRequest("Unknown book");
+      parts.push(
+        `<book>${body.book}, by ${author}</book>`,
+        `This book is still in copyright. In 150 to 200 words, summarise its central ideas in your own words and say how they connect to Stoic practice, especially Marcus Aurelius and Epictetus. Do not quote the book at all, not even a phrase. Don't use [[id]] tokens.`,
+      );
+      break;
+    }
+    default:
+      throw badRequest("Unknown job");
+  }
+
+  const allowed = job === "consult" ? studied : job === "alongside" ? [] : [passageId, ...others];
+  return { model, effort, prompt: parts.filter(Boolean).join("\n\n"), allowed };
+}
+
+function badRequest(message) {
+  return Object.assign(new Error(message), { status: 400 });
+}
+
+// The Messages API request body for a built request.
+export function requestBody(req) {
+  const body = {
+    model: req.model,
+    max_tokens: 16000,
+    system: SYSTEM,
+    output_config: { effort: req.effort },
+    messages: [{ role: "user", content: req.prompt }],
+  };
+  // Opus 5: re-run a classifier refusal on Anthropic's recommended fallback model
+  if (req.model === "claude-opus-5") body.fallbacks = "default";
+  return body;
+}
+export const FALLBACK_BETA = "server-side-fallback-2026-07-01";
+
+// The same request as one message to paste into the Claude app, so it runs on
+// the user's Claude subscription instead of the API.
+export function handoffText(req) {
+  return `${SYSTEM}\n\n${req.prompt}\n\nAnswer in plain text that I can copy back into the Stoa app. Keep any [[id]] tokens exactly as written.`;
+}
